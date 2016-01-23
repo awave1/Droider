@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_page_tab"
+            android:icon="@drawable/ic_action_home"
+            android:title="Главная" />
+        <item
+            android:id="@+id/news_tab"
+            android:icon="@drawable/ic_action_public"
+            android:title="Новости" />
+        <item
+            android:id="@+id/apps_tab"
+            android:icon="@drawable/ic_action_apps"
+            android:title="Приложения" />
+        <item
+            android:id="@+id/games_tab"
+            android:icon="@drawable/ic_action_gamepad"
+            android:title="Игры" />
+        <item
+            android:id="@+id/video_tab"
+            android:icon="@drawable/ic_action_videos"
+            android:title="Видео"/>
+    </group>
+
+    <item
+        android:title="Прочее">
+        <menu>
+            <item
+                android:id="@+id/settings_tab"
+                android:icon="@drawable/ic_action_settings"
+                android:title="Настройки" />
+            <item
+                android:id="@+id/info_tab"
+                android:icon="@drawable/ic_action_group"
+                android:title="О Нас" />
+        </menu>
+    </item>
+
+</menu>

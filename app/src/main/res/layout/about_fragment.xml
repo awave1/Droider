@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/about_frag_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="О Приложении"
+        android:textStyle="bold"
+        android:textColor="@color/primary_header_text"
+        android:textSize="28sp"
+        android:gravity="center_horizontal"/>
+
+    <View
+        android:id="@+id/divider_line"
+        android:layout_below="@+id/about_frag_title"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/accent_material_dark"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/about_frag_body"
+        android:layout_below="@+id/divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="45sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:text="¯\_(ツ)_/¯"/>
+</RelativeLayout>

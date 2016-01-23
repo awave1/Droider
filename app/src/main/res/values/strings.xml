@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Droider</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="drawer_item_home">Главная</string>
+    <string name="drawer_item_news">Новости</string>
+    <string name="drawer_item_apps">Приложения</string>
+    <string name="drawer_item_games">Игры</string>
+    <string name="drawer_item_videos">Видео</string>
+    <string name="drawer_item_settings">Настройки</string>
+    <string name="drawer_item_about">О приложении</string>
+    <string name="share">Поделиться</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="drawer_item_section_header">Прочее</string>
+
+    <string name="drawer_close">Close</string>
+    <string name="drawer_open">Open</string>
+
+    <string name="interval_title">Интервал уведомления</string>
+    <string name="interval">Как часто вы хотите получать уведомления</string>
+    <string-array name="interval_names">
+        <item>1 час</item>
+        <item>3 часa</item>
+        <item>6 часов</item>
+        <item>12 часов</item>
+        <item>24 часа</item>
+    </string-array>
+
+    <string-array name="interval_times">
+        <item>1</item>
+        <item>3</item>
+        <item>6</item>
+        <item>12</item>
+        <item>24</item>
+    </string-array>
+    
+    
+    <string name="sizes">Выберите размер шрифта</string>
+    <string name="sizes_title">Размер шрифта</string>
+    <string-array name="sizes_names">
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>22</item>
+        <item>24</item>
+    </string-array>
+
+    <string-array name="sizes_values">
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>22</item>
+        <item>24</item>
+    </string-array>
+
+</resources>

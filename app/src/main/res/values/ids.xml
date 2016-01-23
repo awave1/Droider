@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="article_title" type="id">article_title</item>
+    <item name="article_post" type="id">article_post</item>
+    <item name="article_image" type="id">article_image</item>
+    <item name="article_header" type="id">article_header</item>
+    <item name="article_flow" type="id">article_flow</item>
+</resources>

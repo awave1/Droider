@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navigation_header_background">#212121</color>
+    <color name="statusBarColor">#ff0a0a0a</color>
+    <color name="TextColor">#607D8B</color>
+    <color name="red">#D32F2F</color>
+    <color name="primary_bgr">#ff1d1d1d</color>
+    <color name="white">#ffffffff</color>
+    <color name="primary_header_text">#ffedfaff</color>
+    <color name="gray_text">#aaaaaa</color>
+
+    <!--new color pallete-->
+    <color name="toolbarColor">#424242</color>
+    <color name="selected_text">#E0E0E0</color>
+
+    <color name="card_image_tint">#EEEEEE</color>
+
+    <color name="card_selected">#EEEEEE</color>
+
+</resources>
