@@ -26,6 +26,13 @@ import java.io.IOException;
  * Created by awave on 2016-01-23.
  */
 public class Helper {
+    public static final String HOME_URL = "http://droider.ru/page/";
+    public static final String NEWS_URL = "http://droider.ru/category/news/page/";
+    public static final String APPS_URL = "http://droider.ru/category/apps_and_games/programs/page/";
+    public static final String GAMES_URL = "http://droider.ru/category/apps_and_games/games/page/";
+    public static final String VIDEOS_URL = "http://droider.ru/category/video/page/";
+
+
     public static String youtubeVideo;
     public static CharSequence trimWhiteSpace(CharSequence src){
         if (src == null){

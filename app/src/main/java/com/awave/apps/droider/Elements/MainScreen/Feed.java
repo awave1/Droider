@@ -16,16 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.awave.apps.droider.Main.AdapterMain;
+import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
 import com.awave.apps.droider.Utils.Utils.Feed.OnTaskCompleted;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
 
 import java.util.ArrayList;
 
+/**
+ * Created by awave on 2016-01-23.
+ */
+public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
-public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
-    private static final String FEED = "http://droider.ru/category/video/page/";
-    private static final String TAG = "Videos";
+    private static final String TAG = "Feed";
+    private static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -40,10 +44,16 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
     private boolean loading = true;
     private byte visibleThreshold = 5;
     byte firstVisibleItem, visibleItemCount, totalItemCount, nextPage = 1;
+
+
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.feed_fragment, container, false);
+        Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
+        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_FEED_URL) = " + getArguments().getString(EXTRA_FEED_URL));
 
-        mSwipeRefreshLayout = new SwipeRefreshLayout(getActivity());
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_dark,
@@ -51,21 +61,22 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
         mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-        mRecyclerView = new RecyclerView(getActivity());
+
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
+        adapter = new AdapterMain(getActivity(), items, metrics);
+        this.initLayoutManager();
         mRecyclerView.setHasFixedSize(true);
 
         metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        adapter = new AdapterMain(getActivity(),items, metrics);
 
-        this.initLayoutManager();
-
-        return mSwipeRefreshLayout;
+        return v;
     }
 
     @Override
-    public void onTaskComplete() {
-        adapter.notifyDataSetChanged();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -76,14 +87,19 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 1000);
-        this.getFeeds(FEED);
+        this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
+    }
+
+    @Override
+    public void onTaskComplete() {
+        adapter.notifyDataSetChanged();
     }
 
     private RecyclerView.OnScrollListener onScrollPortrait = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            visibleItemCount =(byte) recyclerView.getChildCount();
+            visibleItemCount = (byte) recyclerView.getChildCount();
             totalItemCount = (byte) mLayoutManager.getItemCount();
             firstVisibleItem = (byte) mLayoutManager.findFirstVisibleItemPosition();
 
@@ -100,7 +116,7 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
                 Log.i(TAG, "end called");
                 nextPage++;
                 // Do something
-                loadMore(FEED + nextPage);
+                loadMore(getArguments().getString(EXTRA_FEED_URL) + nextPage);
                 loading = true;
             }
         }
@@ -110,7 +126,7 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            visibleItemCount =(byte) recyclerView.getChildCount();
+            visibleItemCount = (byte) recyclerView.getChildCount();
             totalItemCount = (byte) mGridLayoutManager.getItemCount();
             firstVisibleItem = (byte) mGridLayoutManager.findFirstVisibleItemPosition();
 
@@ -127,41 +143,48 @@ public class Videos extends Fragment implements OnTaskCompleted, SwipeRefreshLay
                 Log.i(TAG, "end called");
                 nextPage++;
                 // Do something
-                loadMore(FEED + nextPage);
+                loadMore(getArguments().getString(EXTRA_FEED_URL) + nextPage);
                 loading = true;
             }
         }
     };
 
-    private void loadMore(String url) {
-        new FeedParser(this,items,getActivity()).execute(url);
-    }
+    private void initLayoutManager() {
 
-    private void getFeeds(String url) {
-        items.clear();
-        new FeedParser(this, items, getActivity()).execute(url + 1);
-    }
-
-    private void initLayoutManager(){
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollPortrait);
-            mSwipeRefreshLayout.addView(mRecyclerView, ViewGroup.LayoutParams.MATCH_PARENT);
 
-            this.getFeeds(FEED);
+            this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
         }
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
             mRecyclerView.setLayoutManager(mGridLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollLandscape);
-            mSwipeRefreshLayout.addView(mRecyclerView, ViewGroup.LayoutParams.MATCH_PARENT);
 
-            this.getFeeds(FEED);
+            this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
         }
+    }
+
+    public static Feed instance(String feedUrl){
+        Feed feed = new Feed();
+        Bundle bundle = new Bundle();
+        bundle.putString(Feed.EXTRA_FEED_URL, feedUrl);
+        feed.setArguments(bundle);
+        return feed;
+    }
+
+    private void loadMore(String url) {
+        new FeedParser(this, items, getActivity()).execute(url);
+    }
+
+    private void getFeeds(String url) {
+        items.clear();
+        new FeedParser(this, items, getActivity()).execute(url + 1);
     }
 }
