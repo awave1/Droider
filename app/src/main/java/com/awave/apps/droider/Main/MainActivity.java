@@ -20,18 +20,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Utils.Utils.Helper;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
-import com.awave.apps.droider.Elements.MainScreen.Apps;
-import com.awave.apps.droider.Elements.MainScreen.Games;
-import com.awave.apps.droider.Elements.MainScreen.HomePage;
-import com.awave.apps.droider.Elements.MainScreen.News;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
-import com.awave.apps.droider.Elements.MainScreen.Videos;
+
 import com.awave.apps.droider.R;
 
 
@@ -92,14 +89,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onClick(DialogInterface dialog, int which) {
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
-                            .replace(R.id.container_main, new HomePage())
+                            .replace(R.id.container_main, Feed.instance(Helper.HOME_URL))
                             .commit();
                 }
             }).create();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container_main, new HomePage()).commit();
+        fragmentManager.beginTransaction().replace(R.id.container_main, Feed.instance(Helper.HOME_URL)).commit();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -214,23 +211,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
 
             case R.id.home_page_tab:
-                fragment = new HomePage();
+                fragment = Feed.instance(Helper.HOME_URL); 
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
                 break;
             case R.id.news_tab:
-                fragment = new News();
+                fragment = Feed.instance(Helper.NEWS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
                 break;
             case R.id.apps_tab:
-                fragment = new Apps();
+                fragment = Feed.instance(Helper.APPS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
                 break;
             case R.id.games_tab:
-                fragment = new Games();
+                fragment = Feed.instance(Helper.GAMES_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
                 break;
             case R.id.video_tab:
-                fragment = new Videos();
+                fragment = Feed.instance(Helper.VIDEOS_URL); 
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
                 break;
             case R.id.settings_tab:
