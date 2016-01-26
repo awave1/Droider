@@ -109,6 +109,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                 try {
                     new ArticleActivity.Parser().execute(url);
                     Intent article = new Intent(activity, ArticleActivity.class);
+                    article.putExtra("title", viewHolder.articleTitle.getText().toString());
                     activity.startActivity(article);
                     setShareUrl(url);
                     setShareTitle(item.getTitle());

@@ -23,6 +23,13 @@
             android:elevation="4dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+            <android.support.v7.widget.Toolbar
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/toolbar_article"
+                android:layout_width="match_parent"
+                app:popupTheme="@style/AppTheme"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -39,14 +46,6 @@
                     android:background="@drawable/tint_header"
                     android:gravity="bottom"/>
             </FrameLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:layout_height="?attr/actionBarSize"
-                android:id="@+id/toolbar_article"
-                android:layout_width="match_parent"
-                app:popupTheme="@style/AppTheme"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

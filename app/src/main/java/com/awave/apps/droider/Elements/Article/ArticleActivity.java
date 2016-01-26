@@ -3,7 +3,10 @@ package com.awave.apps.droider.Elements.Article;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
@@ -40,8 +43,9 @@ import java.io.IOException;
 /**
  * Created by awave on 16/05/2015
  */
-public class ArticleActivity extends AppCompatActivity {
-    private Toolbar toolbar;
+public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+    private static Toolbar toolbar;
+    CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
     private FrameLayout header;
@@ -51,8 +55,7 @@ public class ArticleActivity extends AppCompatActivity {
     private static TextView article;
     private static DisplayMetrics metrics;
     private static ImageParser imageParser;
-    private static String title = "";
-
+    private String title;
     private static final String TAG = ArticleActivity.class.getSimpleName();
 
     @Override
@@ -60,16 +63,26 @@ public class ArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article);
 
+        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);
+        appBarLayout.addOnOffsetChangedListener(this);
+
         nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
-        articleRelLayout = (RelativeLayout)findViewById(R.id.articleRelLayout);
+        articleRelLayout = (RelativeLayout) findViewById(R.id.articleRelLayout);
+        Bundle extras = getIntent().getExtras();
+        title = extras.getString("title");
+
+        collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         setSupportActionBar(toolbar);
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //странно, но эта хрень когда так установлено - не двигается в тулбар, а когда просто текст, но двигатеся #бред
-        getSupportActionBar().setTitle(title);
 
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
+        articleHeader = (TextView) findViewById(R.id.article_header);
+        articleHeader.setText(title);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -83,7 +96,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
 
-        articleHeader = (TextView) findViewById(R.id.article_header);
+
         article = (TextView) findViewById(R.id.article);
 
         metrics = new DisplayMetrics(); // for ImageParser
@@ -121,6 +134,22 @@ public class ArticleActivity extends AppCompatActivity {
             Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
             Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
         }
+
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        Log.d(TAG, appBarLayout.getBottom() + " Bottom");
+        Log.d(TAG, verticalOffset + " verticalOffset");
+        if (Math.abs(verticalOffset) >= appBarLayout.getBottom())
+        {
+            collapsingToolbar.setTitle(title);
+        }
+        else
+        {
+            assert getSupportActionBar() != null;
+            collapsingToolbar.setTitle("");
+        }
     }
 
     public static class Parser extends AsyncTask<String, String, String>{
@@ -137,7 +166,6 @@ public class ArticleActivity extends AppCompatActivity {
 
                 elements.attr("style", "padding-left:10dp;padding-right:10dp");
 
-                title = titleDiv.attr("title") + "\n";
                 html =  elements.toString();
             }
             catch (IOException e){
@@ -148,7 +176,6 @@ public class ArticleActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String aVoid) {
-            articleHeader.setText(title);
             Spanned htmlSpan = Html.fromHtml(html.trim(), imageParser, null);
             article.setText(Helper.trimWhiteSpace(htmlSpan));
             article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
