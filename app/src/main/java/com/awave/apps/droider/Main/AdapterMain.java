@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
+import com.awave.apps.droider.Utils.Utils.Helper;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -99,7 +101,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.articleTitle.setText(item.getTitle());
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteurl.setText(item.getLink());
-        Picasso.with(activity).load(item.getImg()).into(viewHolder.cardImage);
+        Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
 
         final String url = item.getLink();
 
@@ -109,7 +111,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                 try {
                     new ArticleActivity.Parser().execute(url);
                     Intent article = new Intent(activity, ArticleActivity.class);
-                    article.putExtra("title", viewHolder.articleTitle.getText().toString());
+                    article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
                     activity.startActivity(article);
                     setShareUrl(url);
                     setShareTitle(item.getTitle());

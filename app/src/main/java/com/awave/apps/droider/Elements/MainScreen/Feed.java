@@ -20,6 +20,7 @@ import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
 import com.awave.apps.droider.Utils.Utils.Feed.OnTaskCompleted;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
+import com.awave.apps.droider.Utils.Utils.Helper;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
-    private static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -51,7 +51,7 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.feed_fragment, container, false);
         Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
-        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_FEED_URL) = " + getArguments().getString(EXTRA_FEED_URL));
+        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_FEED_URL) = " + getArguments().getString(Helper.EXTRA_FEED_URL));
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -87,7 +87,7 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 1000);
-        this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
+        this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
                 Log.i(TAG, "end called");
                 nextPage++;
                 // Do something
-                loadMore(getArguments().getString(EXTRA_FEED_URL) + nextPage);
+                loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + nextPage);
                 loading = true;
             }
         }
@@ -143,7 +143,7 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
                 Log.i(TAG, "end called");
                 nextPage++;
                 // Do something
-                loadMore(getArguments().getString(EXTRA_FEED_URL) + nextPage);
+                loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + nextPage);
                 loading = true;
             }
         }
@@ -158,7 +158,7 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollPortrait);
 
-            this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
+            this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -167,14 +167,14 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollLandscape);
 
-            this.getFeeds(getArguments().getString(EXTRA_FEED_URL));
+            this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
     }
 
     public static Feed instance(String feedUrl){
         Feed feed = new Feed();
         Bundle bundle = new Bundle();
-        bundle.putString(Feed.EXTRA_FEED_URL, feedUrl);
+        bundle.putString(Helper.EXTRA_FEED_URL, feedUrl);
         feed.setArguments(bundle);
         return feed;
     }

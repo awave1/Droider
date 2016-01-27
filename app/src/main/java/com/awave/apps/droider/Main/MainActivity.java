@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,9 +23,7 @@ import android.view.MenuItem;
 
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Utils.Utils.Helper;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+
 
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
+//    private GoogleApiClient client;
 
 
     @Override
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 
         if (!Helper.isOnline(this)) {
             new AlertDialog.Builder(this).setTitle("Соединение прервано").setMessage("Попробуйте позже")

@@ -19,14 +19,15 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
+import com.awave.apps.droider.Utils.Utils.Blur;
 import com.awave.apps.droider.Utils.Utils.DeveloperKey;
 import com.awave.apps.droider.Utils.Utils.Helper;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -40,15 +41,12 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 
-/**
- * Created by awave on 16/05/2015
- */
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
     private static Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
-    private FrameLayout header;
+    private FrameLayout headerImage;
     private RelativeLayout articleRelLayout;
     private static NestedScrollView nestedScrollView;
     private static TextView articleHeader;
@@ -69,7 +67,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
         articleRelLayout = (RelativeLayout) findViewById(R.id.articleRelLayout);
         Bundle extras = getIntent().getExtras();
-        title = extras.getString("title");
+        title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
 
         collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
@@ -78,6 +76,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
@@ -96,7 +95,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
 
-
         article = (TextView) findViewById(R.id.article);
 
         metrics = new DisplayMetrics(); // for ImageParser
@@ -104,18 +102,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         imageParser = new ImageParser(article, getResources(), this, metrics);
 
-        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = nestedScrollView.getScrollY();
-                float blurRadius = (float) scrollY / 100;
-                Helper.Blur.setBlurRadius(blurRadius);
-            }
-        });
-
-        header = (FrameLayout) findViewById(R.id.article_header_content);
+        headerImage = (FrameLayout) findViewById(R.id.article_header_content);
         if (!AdapterMain.getHeadImage().contains("youtube")){
-            new Helper.Blur.AsyncBlurImage(header, this).execute(AdapterMain.getHeadImage());
+            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
         }
         else {
             YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
@@ -144,11 +133,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom())
         {
             collapsingToolbar.setTitle(title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         }
         else
         {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         }
     }
 

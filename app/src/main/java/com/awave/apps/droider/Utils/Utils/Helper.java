@@ -32,6 +32,9 @@ public class Helper {
     public static final String GAMES_URL = "http://droider.ru/category/apps_and_games/games/page/";
     public static final String VIDEOS_URL = "http://droider.ru/category/video/page/";
 
+    public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
+    public static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
+
 
     public static String youtubeVideo;
     public static CharSequence trimWhiteSpace(CharSequence src){
@@ -84,109 +87,5 @@ public class Helper {
         builder.setMessage(message);
 
         return builder.create();
-    }
-
-    public static class Blur {
-        private static final float BITMAP_SCALE = 0.4f;
-        private static float BLUR_RADIUS = 10.5f; // 8.5f
-
-        public static float getBlurRadius() {
-            return BLUR_RADIUS;
-        }
-
-        public static void setBlurRadius(float blurRadius) {
-            BLUR_RADIUS = blurRadius;
-        }
-
-        public static Bitmap blur (Context context, Bitmap original){
-            int w = Math.round(original.getWidth() * BITMAP_SCALE);
-            int h = Math.round(original.getHeight() * BITMAP_SCALE);
-
-            Bitmap input = Bitmap.createScaledBitmap(original, w, h, false);
-            Bitmap output = Bitmap.createBitmap(input);
-
-            RenderScript renderScript = RenderScript.create(context);
-            ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-
-            Allocation tempIn = Allocation.createFromBitmap(renderScript, input);
-            Allocation tempOut = Allocation.createFromBitmap(renderScript, output);
-
-            intrinsicBlur.setRadius(BLUR_RADIUS);
-            intrinsicBlur.setInput(tempIn);
-            intrinsicBlur.forEach(tempOut);
-            tempOut.copyTo(output);
-
-            return output;
-        }
-
-        public static Bitmap onScrollBlur(Bitmap original, float blurRadius, Context context){
-            int w = Math.round(original.getWidth() * BITMAP_SCALE);
-            int h = Math.round(original.getHeight() * BITMAP_SCALE);
-
-            Bitmap input = Bitmap.createScaledBitmap(original, w, h, false);
-            Bitmap output = Bitmap.createBitmap(input);
-
-            RenderScript renderScript = RenderScript.create(context);
-            ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-
-            Allocation tempIn = Allocation.createFromBitmap(renderScript, input);
-            Allocation tempOut = Allocation.createFromBitmap(renderScript, output);
-
-            intrinsicBlur.setRadius(blurRadius);
-            intrinsicBlur.setInput(tempIn);
-            intrinsicBlur.forEach(tempOut);
-            tempOut.copyTo(output);
-            renderScript.destroy();
-
-            return output;
-        }
-
-        public static class AsyncBlurImage extends AsyncTask<String, Void, Bitmap> {
-            private ImageView image;
-            private Drawable drawable;
-            private FrameLayout frameLayout;
-
-            private Context mContext;
-
-            public AsyncBlurImage(ImageView imageView, Context context) {
-                this.image = imageView;
-                this.mContext = context;
-            }
-
-            public AsyncBlurImage(Drawable drawable, Context context){
-                this.drawable = drawable;
-                this.mContext = context;
-            }
-
-            public AsyncBlurImage (FrameLayout frameLayout, Context context){
-                this.frameLayout = frameLayout;
-                this.mContext = context;
-            }
-
-            @Override
-            protected Bitmap doInBackground(String... src) {
-                Bitmap blurred = null;
-                Bitmap original = null;
-                try {
-                    original = Picasso.with(mContext).load(src[0]).get();
-                    blurred = Helper.Blur.blur(mContext, original);
-                }
-                catch (IOException e){
-                    Log.d(AsyncBlurImage.class.getSimpleName(), "Failed to load image");
-                }
-                return blurred;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                int sdkVer = Build.VERSION.SDK_INT;
-                if (sdkVer < Build.VERSION_CODES.JELLY_BEAN){
-                    frameLayout.setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), result));
-                }
-                else {
-                    frameLayout.setBackground(new BitmapDrawable(mContext.getResources(), result));
-                }
-            }
-        }
     }
 }
