@@ -11,20 +11,13 @@
         android:orderInCategory="100"
         app:showAsAction="collapseActionView"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
-    <!--<item-->
-        <!--android:id="@+id/action_open_in_browser"-->
-        <!--android:title="@string/open_in_browser"-->
-        <!--android:icon="@drawable/chrome"-->
-        <!--android:orderInCategory="100"-->
-        <!--app:showAsAction="never"-->
-        <!--/>-->
 
-    <!--<item-->
-        <!--android:id="@+id/YouTube_menu"-->
-        <!--android:title="YouTube"-->
-        <!--android:icon="@drawable/you_tube"-->
-        <!--android:orderInCategory="100"-->
-        <!--app:showAsAction="ifRoom"-->
-        <!--android:visible="false"-->
-        <!--/>-->
+    <item
+        android:id="@+id/action_open_in_browser"
+        android:title="@string/open_in_browser"
+        android:icon="@drawable/chrome"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        />
+
 </menu>

@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,16 +26,15 @@ import java.util.ArrayList;
 /**
  * Created by awave on 2016-01-23.
  */
-public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
+public class Feed extends android.app.Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    public static SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private GridLayoutManager mGridLayoutManager;
     private AdapterMain adapter;
-
     private DisplayMetrics metrics;
     private ArrayList<FeedItem> items = new ArrayList<>();
 
@@ -81,13 +79,20 @@ public class Feed extends Fragment implements OnTaskCompleted, SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
+                if (Helper.isOnline(getActivity())) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                }
+                else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    Helper.checkInternerConnection(getActivity());
+                }
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-        }, 1000);
-        this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+        });
     }
 
     @Override

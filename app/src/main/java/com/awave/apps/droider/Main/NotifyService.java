@@ -28,13 +28,6 @@ public class NotifyService extends Service {
     @Override
     public void onCreate() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        /*Locale locale = new Locale("ru");
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
-                */
         super.onCreate();
     }
 
@@ -47,7 +40,7 @@ public class NotifyService extends Service {
                     public void run() {
                         Notify();
                     }
-                },NewPush(Interval()),NewPush(Interval()*2));
+                },NewPush(Interval()),NewPush(Interval()));
                 Log.d("NOTIFY", "Repeat in " + Interval() + "hour");
             }
             catch (IllegalArgumentException e) {
@@ -104,8 +97,8 @@ public class NotifyService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
                 .setContentTitle("Droider")
-                .setContentText("Новые статьи")
-                .setDefaults(Notification.COLOR_DEFAULT);
+                .setContentText("Проверь, что нового?")
+                .setDefaults(Notification.FLAG_SHOW_LIGHTS);
 
 
 
@@ -126,6 +119,7 @@ public class NotifyService extends Service {
 
         NotificationManager notificationManager = (NotificationManager) getApplicationContext()
                 .getSystemService(Context.NOTIFICATION_SERVICE);
+        Log.d("Notify ", "Сработало");
         notificationManager.notify(NOTIFY_ID, notification);
     }
 }

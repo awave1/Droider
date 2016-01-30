@@ -3,8 +3,11 @@ package com.awave.apps.droider.Utils.Utils.Feed;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
+import com.awave.apps.droider.Elements.MainScreen.Feed;
+import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
 import com.awave.apps.droider.Utils.Utils.Helper;
 
@@ -23,23 +26,20 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     private String TAG = "FeedParser";
     private ArrayList<FeedItem> items = new ArrayList<>();
     private OnTaskCompleted onTaskCompleted;
-
     private ArrayList<String> title = new ArrayList<>();
     private ArrayList<String> link = new ArrayList<>();
     private ArrayList<String> description = new ArrayList<>();
     private ArrayList<String> img = new ArrayList<>();
     private ArrayList<String> youTubeLink = new ArrayList<>();
-
     private int count = 0;
 
-    private ProgressDialog mProgressDialog;
+
     private Context context;
 
     public FeedParser(OnTaskCompleted onTaskCompleted, ArrayList<FeedItem> data, Context context) {
         this.onTaskCompleted = onTaskCompleted;
         this.items = data;
         this.context = context;
-        mProgressDialog = new ProgressDialog(context);
     }
 
     @Override
@@ -90,8 +90,9 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
 
             items.add(item);
         }
-        mProgressDialog.dismiss();
         onTaskCompleted.onTaskComplete();
+        //хз как, но надо сделать так, чтобы кружок рефрешера крутился пока всё грузится, за это отвечатет setRefreshing метод
+        //но я так и не понял куда его ещё воткнуть чтобы он крутился пока всё грузится и выключался как только всё загрузится
     }
 }
 

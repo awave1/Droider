@@ -21,7 +21,6 @@ import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
 import com.awave.apps.droider.Utils.Utils.Helper;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 

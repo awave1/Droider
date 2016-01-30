@@ -2,25 +2,12 @@ package com.awave.apps.droider.Utils.Utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
+import com.awave.apps.droider.Elements.MainScreen.Feed;
 
 /**
  * Created by awave on 2016-01-23.
@@ -87,5 +74,15 @@ public class Helper {
         builder.setMessage(message);
 
         return builder.create();
+    }
+
+    public static void checkInternerConnection(final Context context)
+    {
+        new AlertDialog.Builder(context).setTitle("Соединение прервано").setMessage("Проверьте своё соединение с интернетом")
+                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                }).create().show();
     }
 }

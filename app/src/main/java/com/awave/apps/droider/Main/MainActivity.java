@@ -4,31 +4,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.awave.apps.droider.Elements.MainScreen.Feed;
-import com.awave.apps.droider.Utils.Utils.Helper;
-
-
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
+import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
 
 import com.awave.apps.droider.R;
+import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
+import com.awave.apps.droider.Utils.Utils.Helper;
 
 
 
@@ -77,30 +72,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 
-        if (!Helper.isOnline(this)) {
-            new AlertDialog.Builder(this).setTitle("Соединение прервано").setMessage("Попробуйте позже")
-                    .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+        if (!Helper.isOnline(this))
+            Helper.checkInternerConnection(this);
 
-                        }
-                    }).setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
-                            .replace(R.id.container_main, Feed.instance(Helper.HOME_URL))
-                            .commit();
-                }
-            }).create();
-        }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container_main, Feed.instance(Helper.HOME_URL)).commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container_main, Feed.instance(Helper.HOME_URL))
+                .commit();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+
 
     @Override
     protected void onStart() {
@@ -125,18 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onResume() {
-        stopService(new Intent(this, NotifyService.class));
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        startService(new Intent(this, NotifyService.class));
-        super.onPause();
-    }
-
-    @Override
     protected void onStop() {
         startService(new Intent(this, NotifyService.class));
         super.onStop();
@@ -158,11 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        client.disconnect();
     }
 
-    @Override
-    protected void onDestroy() {
-        startService(new Intent(this, NotifyService.class));
-        super.onDestroy();
-    }
 
     public void restoreActionBar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -205,8 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Fragment fragment = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.app.Fragment fragment = null;
 
         switch (menuItem.getItemId()) {
 
@@ -231,10 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
                 break;
             case R.id.settings_tab:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
-                        .replace(R.id.container_main, new Preferences())
-                        .commit();
+                  fragment = new Preferences();
+                getSupportActionBar().setTitle(R.string.drawer_item_settings);
                 break;
             case R.id.info_tab:
                 fragment = new AboutFragment();
@@ -243,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.container_main, fragment)
                     .commit();
         }
