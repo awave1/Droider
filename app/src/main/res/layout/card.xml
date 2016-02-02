@@ -66,6 +66,7 @@
                 android:id="@+id/articleDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="15sp"
                 android:paddingEnd="0dp"
                 android:paddingStart="8dp"
                 android:paddingLeft="0dp"

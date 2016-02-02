@@ -33,13 +33,20 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     private ArrayList<String> youTubeLink = new ArrayList<>();
     private int count = 0;
 
-
     private Context context;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public FeedParser(OnTaskCompleted onTaskCompleted, ArrayList<FeedItem> data, Context context) {
+    public FeedParser(OnTaskCompleted onTaskCompleted, ArrayList<FeedItem> data, Context context, SwipeRefreshLayout refreshLayout) {
         this.onTaskCompleted = onTaskCompleted;
         this.items = data;
         this.context = context;
+        this.mSwipeRefreshLayout = refreshLayout;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+//        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -87,9 +94,9 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
             else {
                 item.setImg(img.get(i));
             }
-
             items.add(item);
         }
+//        mSwipeRefreshLayout.setRefreshing(true);
         onTaskCompleted.onTaskComplete();
         //хз как, но надо сделать так, чтобы кружок рефрешера крутился пока всё грузится, за это отвечатет setRefreshing метод
         //но я так и не понял куда его ещё воткнуть чтобы он крутился пока всё грузится и выключался как только всё загрузится

@@ -76,7 +76,7 @@ public class Helper {
         return builder.create();
     }
 
-    public static void checkInternerConnection(final Context context)
+    public static void checkInternetConnection(final Context context)
     {
         new AlertDialog.Builder(context).setTitle("Соединение прервано").setMessage("Проверьте своё соединение с интернетом")
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {

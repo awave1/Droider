@@ -4,6 +4,7 @@ package com.awave.apps.droider.Utils.Utils.Article;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,8 +14,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.awave.apps.droider.Main.AdapterMain;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ImageParser implements Html.ImageGetter {
@@ -24,6 +29,7 @@ public class ImageParser implements Html.ImageGetter {
     public TextView mTextView;
     public Resources mRes;
     public DisplayMetrics mMetrics;
+    private ByteArrayOutputStream outputStream;
 
     public ImageParser(TextView textView, Resources resources, Context context, DisplayMetrics metrics){
         this.mTextView = textView;
@@ -35,11 +41,12 @@ public class ImageParser implements Html.ImageGetter {
 
     public Bitmap fetchDrawable(String source){
         try {
-            Log.i(TAG, source);
-            return Picasso.with(mContext).load(source).resize(mMetrics.widthPixels, 0).get();
+            Log.d(TAG, source);
+            return Picasso.with(mContext).load(source)
+                    .resize(mMetrics.widthPixels, 0).get();
         }
         catch (IOException e){
-            e.printStackTrace();
+            Log.e(TAG, "fetchDrawable: Error fetchin images!", e.getCause());
             return null;
         }
     }
@@ -79,7 +86,7 @@ public class ImageParser implements Html.ImageGetter {
         protected Bitmap doInBackground(String... strings) {
             String src = strings[0];
 
-            if (isHeadImage(src)){
+            if (isQrCode(src)){
                 return fetchDrawable(src);
             }
             else {
@@ -106,9 +113,9 @@ public class ImageParser implements Html.ImageGetter {
 
         private boolean isHeadImage(String img) {
             boolean flag = true;
-//            if (AdapterMain.getHeadImage().equals(img)) {
-//                flag = false;
-//            }
+            if (AdapterMain.getHeadImage().equals(img)) {
+                flag = false;
+            }
             return flag;
         }
 
@@ -116,7 +123,7 @@ public class ImageParser implements Html.ImageGetter {
             boolean flag = true;
             String qr = "http://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=https://play.google.com/store/apps/details?";
 
-            if (img.contains(qr)){
+            if (img.contains(qr) || AdapterMain.getHeadImage().equals(img)){
                 flag = false;
             }
 

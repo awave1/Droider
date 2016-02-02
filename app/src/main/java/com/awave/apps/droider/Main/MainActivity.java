@@ -1,16 +1,13 @@
 package com.awave.apps.droider.Main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,7 +19,6 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
 
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
 import com.awave.apps.droider.Utils.Utils.Helper;
 
 
@@ -73,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 
         if (!Helper.isOnline(this))
-            Helper.checkInternerConnection(this);
+            Helper.checkInternetConnection(this);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.container_main, Feed.instance(Helper.HOME_URL))

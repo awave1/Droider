@@ -110,18 +110,18 @@ public class Blur {
 
         @Override
         protected Bitmap doInBackground(String... src) {
-            Bitmap blurred = null;
-            Bitmap original;
+//            Bitmap blurred = null;
+            Bitmap original = null;
             try {
                 // Todo change to Glide
                 original = Picasso.with(mContext).load(src[0]).get();
-                blurred = Blur.blur(mContext, original);
+//                blurred = Blur.blur(mContext, original);
             }
             catch (IOException e) {
                 Log.e(TAG, "doInBackground: Failed to load image!", e.getCause());
             }
 
-            return blurred;
+            return original;
         }
 
         @Override

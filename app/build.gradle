@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.awave.apps.droider"
+        applicationId "com.apps.wow.droider"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 3
@@ -37,5 +37,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.android.support:support-v4:23.1.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+
     testCompile 'junit:junit:4.12'
 }

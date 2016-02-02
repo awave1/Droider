@@ -11,16 +11,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Spanned;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
@@ -28,12 +32,14 @@ import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
 import com.awave.apps.droider.Utils.Utils.Blur;
 import com.awave.apps.droider.Utils.Utils.DeveloperKey;
 import com.awave.apps.droider.Utils.Utils.Helper;
+import com.bumptech.glide.util.Util;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -47,12 +53,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private FrameLayout headerImage;
     private RelativeLayout articleRelLayout;
     private static NestedScrollView nestedScrollView;
+
     private static TextView articleHeader;
     private static TextView article;
+
     private static DisplayMetrics metrics;
+    private static Display display;
     private static ImageParser imageParser;
     private String title;
-    private static final String TAG = ArticleActivity.class.getSimpleName();
+    private static final String TAG = "ArticleActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +90,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleHeader = (TextView) findViewById(R.id.article_header);
         articleHeader.setText(title);
 
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
+        display = getWindowManager().getDefaultDisplay();
+        metrics = new DisplayMetrics(); // for ImageParser
+        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenHeight = metrics.heightPixels;
 
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
@@ -94,9 +104,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
 
         article = (TextView) findViewById(R.id.article);
+        // for webview
+//        article.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+//        article.getSettings().setDefaultTextEncodingName("utf-8");
+//        article.getSettings().setUseWideViewPort(true);
+//        article.setBackgroundColor(getResources().getColor(R.color.primary_bgr));
 
-        metrics = new DisplayMetrics(); // for ImageParser
-        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         imageParser = new ImageParser(article, getResources(), this, metrics);
 
@@ -126,20 +139,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.d(TAG, appBarLayout.getBottom() + " Bottom");
-        Log.d(TAG, verticalOffset + " verticalOffset");
-        if (Math.abs(verticalOffset) >= appBarLayout.getBottom())
-        {
+        if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
         }
-        else
-        {
+        else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
         }
     }
 
@@ -151,13 +158,27 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             try {
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
-                Elements titleDiv = document.select("div.title a");
+                Elements imgs = document.select("div.entry img");
+//                Elements titleDiv = document.select("div.title a");
                 String qr = "http://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=https://play.google.com/store/apps/details?id=";
                 String video = "https://www.youtube.com/embed/";
 
-                elements.attr("style", "padding-left:10dp;padding-right:10dp");
+                // todo finish parser fo webview
+//                elements.attr("style", "padding-left:20dp;padding-right:20dp;color:white");
+//                imgs.attr("style", "padding-left:0dp;padding-right:0dp");
 
-                html =  elements.toString();
+                Log.d(TAG, "doInBackground: html = " + elements.toString());
+                Log.d(TAG, "doInBackground: imgs = " + imgs.toString());
+//                html = elements.toString().replace("<img src=\""+AdapterMain.getHeadImage()+"\">", "");
+
+                html = elements.toString();
+//                Log.d(TAG, "doInBackground: html aft = " + html);
+//                if (html.contains(AdapterMain.getHeadImage())) {
+//                    Log.d(TAG, "doInBackground: html has head image!");
+//                }
+//                else {
+//                    Log.d(TAG, "doInBackground: html doesn't have head image");
+//                }
             }
             catch (IOException e){
                 Log.d(TAG, "Failed");
@@ -167,10 +188,21 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPostExecute(String aVoid) {
-            Spanned htmlSpan = Html.fromHtml(html.trim(), imageParser, null);
-            article.setText(Helper.trimWhiteSpace(htmlSpan));
+            SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
+            article.setText(Helper.trimWhiteSpace(spannableString));
             article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
+
+            // TEST
+//            article.loadData(Base64.encodeToString(html.getBytes(), Base64.DEFAULT), "text/html; charset=utf-8", "base64");
         }
+
+//        private String padRight(String s, int n) {
+//            return String.format("%10s", s);
+//        }
+//
+//        private String padLeft(String s, int n) {
+//            return String.format("%s", s);
+//        }
     }
 
     public void restoreActionBar() {

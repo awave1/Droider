@@ -22,17 +22,11 @@
             android:layout_height="match_parent"
             android:elevation="4dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <android.support.v7.widget.Toolbar
-                android:layout_height="?attr/actionBarSize"
-                android:id="@+id/toolbar_article"
-                android:layout_width="match_parent"
-                app:popupTheme="@style/AppTheme"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/article_header_content"
+                android:background="@drawable/title_tint"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
                 <TextView
@@ -41,10 +35,23 @@
                     android:id="@+id/article_header"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:textSize="25sp"
+                    android:shadowDx="5"
+                    android:shadowDy="2"
+                    android:shadowColor="@color/primary_bgr"
+                    android:shadowRadius="5"
                     android:textStyle="bold|italic"
                     android:background="@drawable/tint_header"
                     android:gravity="bottom"/>
             </FrameLayout>
+            <android.support.v7.widget.Toolbar
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/toolbar_article"
+                android:layout_width="match_parent"
+                app:popupTheme="@style/AppTheme"
+                app:layout_collapseMode="pin"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -65,22 +72,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="15dp"
+                android:textSize="14sp"
                 android:id="@+id/article"/>
 
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/abc_ic_menu_share_mtrl_alpha"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:clickable="true"-->
-        <!--android:onClick="fabShare"-->
-        <!--app:actionProviderClass="android.support.v7.widget.ShareActionProvider"-->
-        <!--app:layout_anchor="@id/appbar_article"-->
-        <!--app:layout_anchorGravity="bottom|right|end"/>-->
-
 </android.support.design.widget.CoordinatorLayout>

@@ -88,7 +88,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 }
                 else {
                     mSwipeRefreshLayout.setRefreshing(false);
-                    Helper.checkInternerConnection(getActivity());
+                    Helper.checkInternetConnection(getActivity());
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -185,11 +185,11 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     }
 
     private void loadMore(String url) {
-        new FeedParser(this, items, getActivity()).execute(url);
+        new FeedParser(this, items, getActivity(), mSwipeRefreshLayout).execute(url);
     }
 
     private void getFeeds(String url) {
         items.clear();
-        new FeedParser(this, items, getActivity()).execute(url + 1);
+        new FeedParser(this, items, getActivity(), mSwipeRefreshLayout).execute(url + 1);
     }
 }
