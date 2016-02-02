@@ -1,6 +1,7 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -13,14 +14,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,14 +31,12 @@ import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
 import com.awave.apps.droider.Utils.Utils.Blur;
 import com.awave.apps.droider.Utils.Utils.DeveloperKey;
 import com.awave.apps.droider.Utils.Utils.Helper;
-import com.bumptech.glide.util.Util;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -188,10 +185,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPostExecute(String aVoid) {
-            SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
-            article.setText(Helper.trimWhiteSpace(spannableString));
-            article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
+            try {
+                SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
+                article.setText(Helper.trimWhiteSpace(spannableString));
+                article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
 
+            } catch (StringIndexOutOfBoundsException stoobe)
+            {
+                stoobe.printStackTrace();
+            }
             // TEST
 //            article.loadData(Base64.encodeToString(html.getBytes(), Base64.DEFAULT), "text/html; charset=utf-8", "base64");
         }
@@ -217,22 +219,42 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
         restoreActionBar();
-
-        // Set up ShareActionProvider's default share intent
         MenuItem shareItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
-        mShareActionProvider.setShareIntent(getDefaultIntent());
+        // Set up ShareActionProvider's default share intent
+//        switch ()
+
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    private Intent getDefaultIntent() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId())
+        {
+            case R.id.action_share:
+                mShareActionProvider.setShareIntent(shareIntent());
+                shareIntent();
+                break;
+            case R.id.action_open_in_browser:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AdapterMain.getShareUrl())));
+                break;
+        }
+        return true;
+    }
+
+    private Intent shareIntent() {
         share = new Intent(Intent.ACTION_SEND);
         share.putExtra(Intent.EXTRA_TEXT, AdapterMain.getShareTitle() + ":  " + AdapterMain.getShareUrl());
         share.setType("text/plain");
         return share;
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

@@ -59,15 +59,12 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
         mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-
         mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
         adapter = new AdapterMain(getActivity(), items, metrics);
-        this.initLayoutManager();
         mRecyclerView.setHasFixedSize(true);
-
         metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
+        initLayoutManager();
         return v;
     }
 
@@ -83,14 +80,11 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             @Override
             public void run() {
                 if (Helper.isOnline(getActivity())) {
-                    mSwipeRefreshLayout.setRefreshing(true);
                     getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
                 }
                 else {
-                    mSwipeRefreshLayout.setRefreshing(false);
                     Helper.checkInternetConnection(getActivity());
                 }
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -163,7 +157,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollPortrait);
 
-            this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -172,7 +166,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             mRecyclerView.setAdapter(adapter);
             mRecyclerView.addOnScrollListener(onScrollLandscape);
 
-            this.getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
     }
 

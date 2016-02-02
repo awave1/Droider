@@ -12,12 +12,11 @@
         app:showAsAction="collapseActionView"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
 
-    <!--<item-->
-        <!--android:id="@+id/action_open_in_browser"-->
-        <!--android:title="@string/open_in_browser"-->
-        <!--android:icon="@drawable/chrome"-->
-        <!--android:orderInCategory="100"-->
-        <!--app:showAsAction="never"-->
-        <!--/>-->
+    <item
+        android:id="@+id/action_open_in_browser"
+        android:title="@string/open_in_browser"
+        android:orderInCategory="100"
+        app:showAsAction="collapseActionView"
+        />
 
 </menu>
