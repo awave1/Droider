@@ -8,11 +8,13 @@
     <string name="drawer_item_games">Игры</string>
     <string name="drawer_item_videos">Видео</string>
     <string name="drawer_item_settings">Настройки</string>
-    <string name="drawer_item_about">О приложении</string>
+    <string name="drawer_item_about">О Проекте</string>
     <string name="share">Поделиться</string>
     <string name="open_in_browser">Открыть в браузере</string>
     <string name="drawer_item_section_header">Прочее</string>
 
+    <string name="description">Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной системе Android, в частности. Наша цель – интересно, оперативно и доступно рассказывать поклонникам технологий о новых устройствах, приложениях и играх.</string>
+    
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
 

@@ -34,7 +34,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     private ArrayList<String> img = new ArrayList<>();
     private ArrayList<String> youTubeLink = new ArrayList<>();
     private int count = 0;
-
+    private Handler refreshHandler = new Handler();
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -47,7 +47,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        new Handler().post(new Runnable() {
+        refreshHandler.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
@@ -123,7 +123,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
             }
             items.add(item);
         }
-        new Handler().post(new Runnable() {
+        refreshHandler.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(false);

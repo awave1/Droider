@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        restoreActionBar();
 
         drawer = (DrawerLayout) findViewById(R.id.nav_drawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
