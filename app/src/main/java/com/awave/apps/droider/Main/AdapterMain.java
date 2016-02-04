@@ -100,7 +100,9 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.articleTitle.setText(item.getTitle());
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteurl.setText(item.getLink());
-        Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
+        if (viewHolder.cardImage != null){
+            Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
+        }
 
         final String url = item.getLink();
 

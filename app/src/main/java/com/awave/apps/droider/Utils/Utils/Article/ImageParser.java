@@ -6,9 +6,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,6 +21,7 @@ import com.awave.apps.droider.Main.AdapterMain;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +33,6 @@ public class ImageParser implements Html.ImageGetter {
     public TextView mTextView;
     public Resources mRes;
     public DisplayMetrics mMetrics;
-    private ByteArrayOutputStream outputStream;
 
     public ImageParser(TextView textView, Resources resources, Context context, DisplayMetrics metrics){
         this.mTextView = textView;
@@ -41,12 +44,12 @@ public class ImageParser implements Html.ImageGetter {
 
     public Bitmap fetchDrawable(String source){
         try {
-            Log.d(TAG, source);
+            Log.d(TAG+".fetchDrawable", source);
             return Picasso.with(mContext).load(source)
                     .resize(mMetrics.widthPixels, 0).get();
         }
         catch (IOException e){
-            Log.e(TAG, "fetchDrawable: Error fetchin images!", e.getCause());
+            Log.e(TAG, "fetchDrawable: Error fetching images!", e.getCause());
             return null;
         }
     }
@@ -61,6 +64,7 @@ public class ImageParser implements Html.ImageGetter {
 
     public class URLDrawable extends BitmapDrawable {
         protected Drawable drawable;
+
         @Override
         public void draw(Canvas canvas) {
             if (drawable != null){
@@ -73,6 +77,8 @@ public class ImageParser implements Html.ImageGetter {
         }
     }
 
+
+
     public class ImageGetterAsyncTask extends AsyncTask<String, Void, Bitmap>{
         protected URLDrawable urlDrawable;
 
@@ -80,6 +86,11 @@ public class ImageParser implements Html.ImageGetter {
 
         public ImageGetterAsyncTask (URLDrawable u){
             this.urlDrawable = u;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
         @Override
@@ -107,7 +118,6 @@ public class ImageParser implements Html.ImageGetter {
             drawableResult.setBounds(0, 0, w, h);
             urlDrawable.setDrawable(drawableResult);
             urlDrawable.setBounds(0, 0, drawableResult.getIntrinsicWidth(), drawableResult.getIntrinsicHeight());
-
             ImageParser.this.mTextView.setText(ImageParser.this.mTextView.getText());
         }
 
@@ -126,7 +136,6 @@ public class ImageParser implements Html.ImageGetter {
             if (img.contains(qr) || AdapterMain.getHeadImage().equals(img)){
                 flag = false;
             }
-
             return flag;
         }
     }

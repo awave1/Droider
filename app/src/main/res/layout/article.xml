@@ -67,15 +67,24 @@
             android:id="@+id/articleRelLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="15dp"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:id="@+id/article"/>
 
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:elevation="4dp"-->
+        <!--android:src="@drawable/ic_open_in_browser"-->
+        <!--android:id="@+id/article_fab_share"-->
+        <!--app:layout_anchor="@id/appbar_article"-->
+        <!--app:layout_anchorGravity="bottom|right|end"/>-->
 </android.support.design.widget.CoordinatorLayout>

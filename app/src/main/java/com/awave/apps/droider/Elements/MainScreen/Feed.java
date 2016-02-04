@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
@@ -146,6 +147,31 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             }
         }
     };
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            adapter.notifyDataSetChanged();
+            mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
+            mRecyclerView.setLayoutManager(mGridLayoutManager);
+
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.addOnScrollListener(onScrollLandscape);
+
+            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            adapter.notifyDataSetChanged();
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.addOnScrollListener(onScrollPortrait);
+
+            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+        }
+    }
 
     private void initLayoutManager() {
 

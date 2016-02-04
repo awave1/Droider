@@ -31,18 +31,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences sp;
     Toolbar toolbar;
     String mTitle = "Главная";
+
+    public static int mainOrientation;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
 //    private GoogleApiClient client;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        MainActivity.mainOrientation = this.getResources().getConfiguration().orientation;
+        Log.d(TAG, "onCreate: mainOrientation = " + mainOrientation);
+        Log.d(TAG, "onCreate: this.getResources().getConfiguration().orientation; = " + this.getResources().getConfiguration().orientation);
         // Handle Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -123,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client.disconnect();
     }
-
 
     public void restoreActionBar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

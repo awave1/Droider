@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
@@ -43,6 +44,8 @@ import java.io.IOException;
 
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+    private static final String TAG = "ArticleActivity";
+
     private static Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
@@ -57,8 +60,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static DisplayMetrics metrics;
     private static Display display;
     private static ImageParser imageParser;
+
     private String title;
-    private static final String TAG = "ArticleActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +134,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
             Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
         }
-
     }
 
     @Override
@@ -143,12 +145,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
-
+            assert getActionBar() != null;
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         }
     }
 
     public static class Parser extends AsyncTask<String, String, String>{
         private String html = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -197,14 +207,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             // TEST
 //            article.loadData(Base64.encodeToString(html.getBytes(), Base64.DEFAULT), "text/html; charset=utf-8", "base64");
         }
-
-//        private String padRight(String s, int n) {
-//            return String.format("%10s", s);
-//        }
-//
-//        private String padLeft(String s, int n) {
-//            return String.format("%s", s);
-//        }
     }
 
     public void restoreActionBar() {
@@ -254,7 +256,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         share.setType("text/plain");
         return share;
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {
