@@ -13,12 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
 import com.awave.apps.droider.Utils.Utils.Feed.OnTaskCompleted;
+import com.awave.apps.droider.Utils.Utils.Feed.Orientation;
 import com.awave.apps.droider.Utils.Utils.FeedItem;
 import com.awave.apps.droider.Utils.Utils.Helper;
 
@@ -33,16 +33,13 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
 
     public static SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
-    private GridLayoutManager mGridLayoutManager;
+    public static LinearLayoutManager mLayoutManager;
+    public static GridLayoutManager mGridLayoutManager;
     private AdapterMain adapter;
     private DisplayMetrics metrics;
     private ArrayList<FeedItem> items = new ArrayList<>();
 
-    private int previousTotal = 0;
-    private boolean loading = true;
-    private byte visibleThreshold = 5;
-    byte firstVisibleItem, visibleItemCount, totalItemCount, nextPage = 1;
+
 
 
     @Nullable
@@ -94,82 +91,41 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         adapter.notifyDataSetChanged();
     }
 
-    private RecyclerView.OnScrollListener onScrollPortrait = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            visibleItemCount = (byte) recyclerView.getChildCount();
-            totalItemCount = (byte) mLayoutManager.getItemCount();
-            firstVisibleItem = (byte) mLayoutManager.findFirstVisibleItemPosition();
-
-            if (loading) {
-                if (totalItemCount > previousTotal) {
-                    loading = false;
-                    previousTotal = totalItemCount;
-                }
-            }
-            if (!loading && (totalItemCount - visibleItemCount)
-                    <= (firstVisibleItem + visibleThreshold)) {
-                // End has been reached
-
-                Log.i(TAG, "end called");
-                nextPage++;
-                // Do something
-                loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + nextPage);
-                loading = true;
-            }
-        }
-    };
-
-    private RecyclerView.OnScrollListener onScrollLandscape = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            visibleItemCount = (byte) recyclerView.getChildCount();
-            totalItemCount = (byte) mGridLayoutManager.getItemCount();
-            firstVisibleItem = (byte) mGridLayoutManager.findFirstVisibleItemPosition();
-
-            if (loading) {
-                if (totalItemCount > previousTotal) {
-                    loading = false;
-                    previousTotal = totalItemCount;
-                }
-            }
-            if (!loading && (totalItemCount - visibleItemCount)
-                    <= (firstVisibleItem + visibleThreshold)) {
-                // End has been reached
-
-                Log.i(TAG, "end called");
-                nextPage++;
-                // Do something
-                loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + nextPage);
-                loading = true;
-            }
-        }
-    };
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            adapter.notifyDataSetChanged();
-            mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
-            mRecyclerView.setLayoutManager(mGridLayoutManager);
+        switch (newConfig.orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                adapter.notifyDataSetChanged();
+                mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
+                mRecyclerView.setLayoutManager(mGridLayoutManager);
 
-            mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(onScrollLandscape);
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                    @Override
+                    public void loadingMore() {
+                        loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPageLand);
+                        adapter.notifyDataSetChanged();
 
-            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            adapter.notifyDataSetChanged();
-            mLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(mLayoutManager);
+                    }
+                });
 
-            mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(onScrollPortrait);
+                getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                adapter.notifyDataSetChanged();
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                    @Override
+                    public void loadingMore() {
+                        loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPagePort);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
 
-            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                break;
         }
     }
 
@@ -180,8 +136,13 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(onScrollPortrait);
-
+            mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                @Override
+                public void loadingMore() {
+                    loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPagePort);
+                    adapter.notifyDataSetChanged();
+                }
+            });
             getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -189,8 +150,13 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             mRecyclerView.setLayoutManager(mGridLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(onScrollLandscape);
-
+            mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                @Override
+                public void loadingMore() {
+                    loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPageLand);
+                    adapter.notifyDataSetChanged();
+                }
+            });
             getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
     }
@@ -203,7 +169,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         return feed;
     }
 
-    private void loadMore(String url) {
+    public  void loadMore(String url) {
         new FeedParser(this, items, getActivity(), mSwipeRefreshLayout).execute(url);
     }
 

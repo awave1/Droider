@@ -36,6 +36,24 @@ public class AboutFragment extends android.app.Fragment {
             }
         });
 
+        ImageView IstIm = (ImageView)v.findViewById(R.id.IstIm);
+
+        IstIm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/istishev")));
+            }
+        });
+
+
+        ImageView VedIm = (ImageView)v.findViewById(R.id.VedIm);
+
+        VedIm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/borisvedensky")));
+            }
+        });
         return v;
     }
 }

@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 
@@ -21,6 +24,8 @@ public class Helper {
 
     public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
     public static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
+
+
 
 
     public static String youtubeVideo;
@@ -85,4 +90,6 @@ public class Helper {
                     }
                 }).create().show();
     }
+
+
 }

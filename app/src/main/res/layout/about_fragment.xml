@@ -106,7 +106,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="15dp"
-                android:text="Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast, Цифра М24"
+                android:text="Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast"
                 android:id="@+id/IstDescr"/>
         </LinearLayout>
 

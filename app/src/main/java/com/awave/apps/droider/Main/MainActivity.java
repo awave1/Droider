@@ -3,6 +3,7 @@ package com.awave.apps.droider.Main;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -177,22 +178,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.home_page_tab:
                 fragment = Feed.instance(Helper.HOME_URL); 
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 break;
             case R.id.news_tab:
                 fragment = Feed.instance(Helper.NEWS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 break;
             case R.id.apps_tab:
                 fragment = Feed.instance(Helper.APPS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 break;
             case R.id.games_tab:
                 fragment = Feed.instance(Helper.GAMES_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 break;
             case R.id.video_tab:
                 fragment = Feed.instance(Helper.VIDEOS_URL); 
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 break;
             case R.id.settings_tab:
                   fragment = new Preferences();

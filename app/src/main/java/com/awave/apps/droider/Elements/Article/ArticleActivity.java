@@ -1,5 +1,6 @@
 package com.awave.apps.droider.Elements.Article;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,9 +85,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         articleHeader = (TextView) findViewById(R.id.article_header);
         articleHeader.setText(title);
@@ -127,6 +132,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
                 @Override
                 public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.d(TAG, "onInitializationFailure: ");
 
                 }
             });
@@ -257,9 +263,4 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         return share;
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
 }

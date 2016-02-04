@@ -141,4 +141,5 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     public int getItemCount() {
         return data.size();
     }
+
 }

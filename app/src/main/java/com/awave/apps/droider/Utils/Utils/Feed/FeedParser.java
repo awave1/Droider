@@ -46,16 +46,6 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     }
 
     @Override
-    protected void onPreExecute() {
-        refreshHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
-    }
-
-    @Override
     protected Void doInBackground(final String... params) {
 
         final Document[] document = new Document[1];
