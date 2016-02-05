@@ -79,8 +79,8 @@
                 android:gravity="center"
                 tools:text="ShortDescr"/>
             <View
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/accent"/>
