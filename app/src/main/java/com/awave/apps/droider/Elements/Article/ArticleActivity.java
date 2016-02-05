@@ -71,6 +71,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     private String title;
     private String shortDescr;
+    private Bitmap headerBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         Bundle extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
         shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
+        headerBitmap = extras.getParcelable(Helper.EXTRA_HEADER_IMAGE);
 
         collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
@@ -119,21 +121,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
 
         article = (TextView) findViewById(R.id.article);
-        // for webview
-//        article.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-//        article.getSettings().setDefaultTextEncodingName("utf-8");
-//        article.getSettings().setUseWideViewPort(true);
-//        article.setBackgroundColor(getResources().getColor(R.color.primary_bgr));
-
 
         imageParser = new ImageParser(article, getResources(), this, metrics);
 
         headerImage = (FrameLayout) findViewById(R.id.article_header_content);
-//        byte[] out = getIntent().getExtras().getByteArray(Helper.EXTRA_HEADER_IMAGE);
-//        Bitmap b = BitmapFactory.decodeByteArray(out, 0, out.length);
-//        Drawable head = new BitmapDrawable(this.getResources(), b);
         if (!AdapterMain.getHeadImage().contains("youtube")){
-//            headerImage.setBackground(head);
+//            headerImage.setBackground(new BitmapDrawable(this.getResources(), headerBitmap));
             new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
         }
         else {
@@ -185,12 +178,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             try {
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
-                Elements imgs = document.select("div.entry img");
 
                 elements.remove(0);
                 elements.remove(2);
                 Log.d(TAG, "doInBackground: html = " + elements.toString());
-                Log.d(TAG, "doInBackground: imgs = " + imgs.toString());
 
                 html = elements.toString();
             }
@@ -206,7 +197,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
                 article.setText(Helper.trimWhiteSpace(spannableString));
                 article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
-
             } catch (StringIndexOutOfBoundsException stoobe)
             {
                 stoobe.printStackTrace();

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
@@ -107,10 +108,10 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
 
         if (viewHolder.cardImage != null){
             Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
-
         }
 
         final String url = item.getLink();
+
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +121,20 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     Intent article = new Intent(activity, ArticleActivity.class);
                     article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
+//                    article.putExtra(Helper.EXTRA_HEADER_IMAGE,
+//                            ((BitmapDrawable) viewHolder.cardImage.getDrawable()).getBitmap());
+
                     activity.startActivity(article);
                     setShareUrl(url);
                     setShareTitle(item.getTitle());
                     setHeadImage(item.getImg());
                 } catch (Exception e) {
-                    Log.d(TAG, "Failed to open ArticleActivity");
+                    // Ошибка происходит если пытаться отправить пикчу
+                    // в статью. Сначала он выкидывал NullPointerException
+                    // на article в ArticleActivity. Я закомментил
+                    // после этого ничего не открывалось
+                    Toast.makeText(activity, "Произошла ошибка при открытии статьи!", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "onClick: Failed to open ArticleActivity!");
                 }
             }
         });
