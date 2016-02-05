@@ -5,6 +5,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +25,7 @@ import com.awave.apps.droider.Utils.Utils.FeedItem;
 import com.awave.apps.droider.Utils.Utils.Helper;
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
@@ -100,8 +104,10 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.articleTitle.setText(item.getTitle());
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteurl.setText(item.getLink());
+
         if (viewHolder.cardImage != null){
             Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
+
         }
 
         final String url = item.getLink();
@@ -113,6 +119,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     new ArticleActivity.Parser().execute(url);
                     Intent article = new Intent(activity, ArticleActivity.class);
                     article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
+                    article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
                     activity.startActivity(article);
                     setShareUrl(url);
                     setShareTitle(item.getTitle());
@@ -127,7 +134,6 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             @Override
             public boolean onLongClick(View view) {
                 Log.d(TAG, "onLingClick cardview");
-
                 ClipboardManager clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData copyLink = ClipData.newPlainText("", item.getLink());
                 clipboardManager.setPrimaryClip(copyLink);

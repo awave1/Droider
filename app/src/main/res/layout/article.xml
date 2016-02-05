@@ -63,19 +63,32 @@
         android:layout_marginBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/articleRelLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/article_shortDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="16sp"
+                tools:text="ShortDescr"/>
+            <View
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/accent"/>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="15dp"
+                android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:id="@+id/article"/>
-
-        </RelativeLayout>
-
+                android:id="@+id/article"
+                tools:text="article"/>
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <!--<android.support.design.widget.FloatingActionButton-->

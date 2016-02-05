@@ -2,6 +2,10 @@ package com.awave.apps.droider.Elements.Article;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,17 +58,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
     private FrameLayout headerImage;
-    private RelativeLayout articleRelLayout;
+    private LinearLayout articleRelLayout;
     private static NestedScrollView nestedScrollView;
 
-    private static TextView articleHeader;
+    private TextView articleHeader;
     private static TextView article;
+    private TextView articleShortDescription;
 
     private static DisplayMetrics metrics;
     private static Display display;
     private static ImageParser imageParser;
 
     private String title;
+    private String shortDescr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +81,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         appBarLayout.addOnOffsetChangedListener(this);
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
-        articleRelLayout = (RelativeLayout) findViewById(R.id.articleRelLayout);
+        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         Bundle extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
+        shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
         collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
@@ -94,6 +102,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         articleHeader = (TextView) findViewById(R.id.article_header);
         articleHeader.setText(title);
+        articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
+        articleShortDescription.setText(shortDescr);
 
         display = getWindowManager().getDefaultDisplay();
         metrics = new DisplayMetrics(); // for ImageParser
@@ -119,7 +129,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         imageParser = new ImageParser(article, getResources(), this, metrics);
 
         headerImage = (FrameLayout) findViewById(R.id.article_header_content);
+//        byte[] out = getIntent().getExtras().getByteArray(Helper.EXTRA_HEADER_IMAGE);
+//        Bitmap b = BitmapFactory.decodeByteArray(out, 0, out.length);
+//        Drawable head = new BitmapDrawable(this.getResources(), b);
         if (!AdapterMain.getHeadImage().contains("youtube")){
+//            headerImage.setBackground(head);
             new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
         }
         else {
@@ -172,26 +186,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
                 Elements imgs = document.select("div.entry img");
-//                Elements titleDiv = document.select("div.title a");
-                String qr = "http://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=https://play.google.com/store/apps/details?id=";
-                String video = "https://www.youtube.com/embed/";
 
-                // todo finish parser fo webview
-//                elements.attr("style", "padding-left:20dp;padding-right:20dp;color:white");
-//                imgs.attr("style", "padding-left:0dp;padding-right:0dp");
-
+                elements.remove(0);
+                elements.remove(2);
                 Log.d(TAG, "doInBackground: html = " + elements.toString());
                 Log.d(TAG, "doInBackground: imgs = " + imgs.toString());
-//                html = elements.toString().replace("<img src=\""+AdapterMain.getHeadImage()+"\">", "");
 
                 html = elements.toString();
-//                Log.d(TAG, "doInBackground: html aft = " + html);
-//                if (html.contains(AdapterMain.getHeadImage())) {
-//                    Log.d(TAG, "doInBackground: html has head image!");
-//                }
-//                else {
-//                    Log.d(TAG, "doInBackground: html doesn't have head image");
-//                }
             }
             catch (IOException e){
                 Log.d(TAG, "Failed");
@@ -210,8 +211,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             {
                 stoobe.printStackTrace();
             }
-            // TEST
-//            article.loadData(Base64.encodeToString(html.getBytes(), Base64.DEFAULT), "text/html; charset=utf-8", "base64");
         }
     }
 

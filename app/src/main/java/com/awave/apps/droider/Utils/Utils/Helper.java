@@ -24,11 +24,11 @@ public class Helper {
 
     public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
     public static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
-
-
-
+    public static final String EXTRA_HEADER_IMAGE = "com.awave.apps.droider.Elements.EXTRA_HEADER_IMAGE";
+    public static final String EXTRA_SHORT_DESCRIPTION = "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
 
     public static String youtubeVideo;
+
     public static CharSequence trimWhiteSpace(CharSequence src){
         if (src == null){
             return "";

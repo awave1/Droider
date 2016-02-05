@@ -80,7 +80,6 @@ public abstract class Orientation extends RecyclerView.OnScrollListener {
 
     }
 
-
     public void LandscapeOrientation(Activity activity, RecyclerView recyclerView, GridLayoutManager mGridLayoutManager)
     {
         try {
@@ -111,7 +110,5 @@ public abstract class Orientation extends RecyclerView.OnScrollListener {
             Log.d("IOOBE", "чёт пиздец Land");
 
         }
-
     }
-
 }
