@@ -1,6 +1,7 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -39,6 +41,7 @@ import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
 import com.awave.apps.droider.Utils.Utils.Blur;
 import com.awave.apps.droider.Utils.Utils.DeveloperKey;
 import com.awave.apps.droider.Utils.Utils.Helper;
+import com.bumptech.glide.Glide;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -125,11 +128,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         imageParser = new ImageParser(article, getResources(), this, metrics);
 
         headerImage = (FrameLayout) findViewById(R.id.article_header_content);
-        if (!AdapterMain.getHeadImage().contains("youtube")){
-//            headerImage.setBackground(new BitmapDrawable(this.getResources(), headerBitmap));
-            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
-        }
-        else {
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+        headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
+        else
+        headerImage.setBackground(AdapterMain.getHeaderImage());
+//        if (!AdapterMain.getHeadImage().contains("youtube")){
+//            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
+//        }
+        if(AdapterMain.getHeadImage().contains("youtube")) {
+            FrameLayout  youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
+            youtubeFrame.setVisibility(View.VISIBLE);
             YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
             youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
@@ -143,7 +152,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
                 }
             });
-            getSupportFragmentManager().beginTransaction().replace(R.id.article_header_content, youtubeFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
             Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
             Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
         }
@@ -180,7 +189,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 Elements elements = document.select("div.entry p");
 
                 elements.remove(0);
-                elements.remove(2);
+                elements.remove(1);
                 Log.d(TAG, "doInBackground: html = " + elements.toString());
 
                 html = elements.toString();

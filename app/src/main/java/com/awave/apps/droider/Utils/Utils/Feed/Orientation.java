@@ -9,10 +9,6 @@ import android.util.Log;
 
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 
-
-/**
- * Created by jackson on 04.02.16.
- */
 public abstract class Orientation extends RecyclerView.OnScrollListener {
 
     public Orientation(Activity activity)
@@ -51,64 +47,50 @@ public abstract class Orientation extends RecyclerView.OnScrollListener {
 
     public void PortraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager mLayoutManager)
     {
-        try {
-            this.activity = activity;
-            visibleItemCountPort = (byte) recyclerView.getChildCount();
-            totalItemCountPort = (byte) mLayoutManager.getItemCount();
-            Log.d("TOTALITEMCOUNTPortrait", totalItemCountPort + "");
-            firstVisibleItemPort = (byte) mLayoutManager.findFirstVisibleItemPosition();
-            Log.d("firstVisibleItemPort", firstVisibleItemPort+"");
-            if (loadingPort) {
-                if (totalItemCountPort > previousTotalPort) {
-                    loadingPort = false;
-                    previousTotalPort = totalItemCountPort;
-                }
+        this.activity = activity;
+        visibleItemCountPort = (byte) recyclerView.getChildCount();
+        totalItemCountPort = (byte) mLayoutManager.getItemCount();
+        Log.d("TOTALITEMCOUNTPortrait", totalItemCountPort + "");
+        firstVisibleItemPort = (byte) mLayoutManager.findFirstVisibleItemPosition();
+        Log.d("firstVisibleItemPort", firstVisibleItemPort+"");
+        if (loadingPort) {
+            if (totalItemCountPort > previousTotalPort) {
+                loadingPort = false;
+                previousTotalPort = totalItemCountPort;
             }
-            if (!loadingPort && (totalItemCountPort - visibleItemCountPort)
-                    <= (firstVisibleItemPort + visibleThresholdPort)) {
-                // End has been reached
-
-                nextPagePort++;
-                loadingMore();
-                loadingPort = true;
-            }
-        } catch (IndexOutOfBoundsException IOOBE)
-        {
-            Log.d("IOOBE", "чёт пиздец Port");
-
         }
+        if (!loadingPort && (totalItemCountPort - visibleItemCountPort)
+                <= (firstVisibleItemPort + visibleThresholdPort)) {
+            // End has been reached
 
+            nextPagePort++;
+            loadingMore();
+            loadingPort = true;
+        }
     }
 
     public void LandscapeOrientation(Activity activity, RecyclerView recyclerView, GridLayoutManager mGridLayoutManager)
     {
-        try {
+        this.activity = activity;
+        visibleItemCountLand = (byte) recyclerView.getChildCount();
+        totalItemCountLand = (byte) mGridLayoutManager.getItemCount();
+        Log.d("TOTALITEMCOUNTLandscape", totalItemCountLand+"");
 
-            this.activity = activity;
-            visibleItemCountLand = (byte) recyclerView.getChildCount();
-            totalItemCountLand = (byte) mGridLayoutManager.getItemCount();
-            Log.d("TOTALITEMCOUNTLandscape", totalItemCountLand+"");
-
-            firstVisibleItemLand = (byte) mGridLayoutManager.findFirstVisibleItemPosition();
-            Log.d("firstVisibleItemLand", firstVisibleItemLand+"");
-            if (loadingLand) {
-                if (totalItemCountLand > previousTotalLand) {
-                    loadingLand = false;
-                    previousTotalLand = totalItemCountLand;
-                }
+        firstVisibleItemLand = (byte) mGridLayoutManager.findFirstVisibleItemPosition();
+        Log.d("firstVisibleItemLand", firstVisibleItemLand+"");
+        if (loadingLand) {
+            if (totalItemCountLand > previousTotalLand) {
+                loadingLand = false;
+                previousTotalLand = totalItemCountLand;
             }
-            if (!loadingLand && (totalItemCountLand - visibleItemCountLand)
-                    <= (firstVisibleItemLand + visibleThresholdLand)) {
-                // End has been reached
+        }
+        if (!loadingLand && (totalItemCountLand - visibleItemCountLand)
+                <= (firstVisibleItemLand + visibleThresholdLand)) {
+            // End has been reached
 
-                nextPageLand++;
-                loadingMore();
-                loadingLand = true;
-            }
-        } catch (Exception IOOBE)
-        {
-            Log.d("IOOBE", "чёт пиздец Land");
-
+            nextPageLand++;
+            loadingMore();
+            loadingLand = true;
         }
     }
 }

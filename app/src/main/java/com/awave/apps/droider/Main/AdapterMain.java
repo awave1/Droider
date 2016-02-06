@@ -5,9 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +24,6 @@ import com.awave.apps.droider.Utils.Utils.FeedItem;
 import com.awave.apps.droider.Utils.Utils.Helper;
 import com.bumptech.glide.Glide;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
@@ -39,6 +36,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     private static String shareUrl;
     private static String shareTitle;
     private static String headImage;
+    private static Drawable headerImg;
     private static DisplayMetrics mMetrics;
 
     public AdapterMain(Activity activity, ArrayList<FeedItem> data, DisplayMetrics metrics) {
@@ -51,14 +49,14 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
 
         private CardView cardView;
         public ImageView cardImage;
-        private TextView siteurl;
+        private TextView siteUrl;
         private TextView articleTitle;
         private TextView description;
 
         public ViewHolder(View holderView) {
             super(holderView);
             cardImage = (ImageView) holderView.findViewById(R.id.card_image);
-            siteurl = (TextView) holderView.findViewById(R.id.siteurl);
+            siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
             articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
             cardView = (CardView) holderView.findViewById(R.id.card_view);
             description = (TextView) holderView.findViewById(R.id.articleDescription);
@@ -98,13 +96,16 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         AdapterMain.headImage = mImage;
     }
 
+    public static Drawable getHeaderImage() { return  headerImg; }
+    public static void setHeaderImg(Drawable mHeaderImg) { AdapterMain.headerImg = mHeaderImg; }
+
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
 
         final FeedItem item = data.get(i);
         viewHolder.articleTitle.setText(item.getTitle());
         viewHolder.description.setText(item.getDescription());
-        viewHolder.siteurl.setText(item.getLink());
+        viewHolder.siteUrl.setText(item.getLink());
 
         if (viewHolder.cardImage != null){
             Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
@@ -127,6 +128,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     activity.startActivity(article);
                     setShareUrl(url);
                     setShareTitle(item.getTitle());
+                    setHeaderImg(viewHolder.cardImage.getDrawable());
                     setHeadImage(item.getImg());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу
