@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -48,9 +49,11 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
@@ -62,19 +65,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private Intent share = getIntent();
     private FrameLayout headerImage;
     private LinearLayout articleRelLayout;
-    private static NestedScrollView nestedScrollView;
-
+    private static ArrayList<String> youTubeLink = new ArrayList<>();
     private TextView articleHeader;
     private static TextView article;
     private TextView articleShortDescription;
-
+    private static YouTubePlayerSupportFragment youtubeFragment;
     private static DisplayMetrics metrics;
     private static Display display;
     private static ImageParser imageParser;
-
+    private static FrameLayout  youtubeFrame;
     private String title;
     private String shortDescr;
-    private Bitmap headerBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +84,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);
         appBarLayout.addOnOffsetChangedListener(this);
-
-        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
+        youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         Bundle extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
         shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
-        headerBitmap = extras.getParcelable(Helper.EXTRA_HEADER_IMAGE);
 
         collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
@@ -136,14 +135,23 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 //        if (!AdapterMain.getHeadImage().contains("youtube")){
 //            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
 //        }
+
+
         if(AdapterMain.getHeadImage().contains("youtube")) {
-            FrameLayout  youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
             youtubeFrame.setVisibility(View.VISIBLE);
-            YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
+            youtubeFragment = YouTubePlayerSupportFragment.newInstance();
             youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
-                    youTubePlayer.cueVideo(Helper.trimYoutubeId(Helper.getYoutubeVideo()));
+                   synchronized (youtubeFragment)
+                   {
+                       try {
+                           youtubeFragment.wait(500);
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
+                       }
+                   }
+                    youTubePlayer.cueVideo(Parser.YouTubeVideoURL);
                 }
 
                 @Override
@@ -153,8 +161,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 }
             });
             getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
-            Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
-            Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
         }
     }
 
@@ -174,11 +180,24 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
     }
 
+    @Override
+    protected void onStop() {
+        youTubeLink.clear();
+        super.onStop();
+    }
+
     public static class Parser extends AsyncTask<String, String, String>{
         private String html = "";
+        private static String YouTubeVideoURL;
 
         @Override
         protected void onPreExecute() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                 // ждём
+                }
+            },500);
             super.onPreExecute();
         }
 
@@ -187,6 +206,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             try {
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
+
+                Elements entry = document.select("div.entry");
+
+                for (Element youtube : entry) {
+                    youTubeLink.add(youtube.getElementsByTag("iframe").attr("src"));
+                        if (youTubeLink.get(youtube.getAllElements().indexOf(youtube)).contains("youtube")) {
+                            Log.d(TAG, "doInBackground: was here");
+                            YouTubeVideoURL = youTubeLink.get(0);
+                            YouTubeVideoURL = Helper.trimYoutubeId(YouTubeVideoURL);
+                        }
+                }
+
+                Log.d(TAG, "Youtube Video: " + youTubeLink.get(0));
+                Log.d(TAG, "Youtube Video ID: " +YouTubeVideoURL);
 
                 elements.remove(0);
                 elements.remove(1);
