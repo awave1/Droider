@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 
         if (!Helper.isOnline(this))
-            Helper.checkInternetConnection(this);
+            Helper.initInternetConnectionDialog(this);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.container_main, Feed.instance(Helper.HOME_URL))

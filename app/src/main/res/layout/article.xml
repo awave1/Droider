@@ -49,7 +49,6 @@
                 android:layout_width="match_parent"
                 app:popupTheme="@style/AppTheme"
                 app:layout_collapseMode="pin"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -84,7 +83,7 @@
                 android:layout_marginRight="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/accent"/>
+                android:background="@color/colorAccent"/>
 
             <FrameLayout
                 android:layout_width="wrap_content"

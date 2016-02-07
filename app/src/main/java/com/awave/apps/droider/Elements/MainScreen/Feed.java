@@ -37,17 +37,18 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     public static GridLayoutManager mGridLayoutManager;
     private AdapterMain adapter;
     private DisplayMetrics metrics;
-    private ArrayList<FeedItem> items = new ArrayList<>();
+    private static ArrayList<FeedItem> items = new ArrayList<>();
 
-
-
+    public static boolean isRefreshing;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.feed_fragment, container, false);
+
         Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
         Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_FEED_URL) = " + getArguments().getString(Helper.EXTRA_FEED_URL));
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -56,12 +57,16 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
         mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+
         mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
         adapter = new AdapterMain(getActivity(), items, metrics);
         mRecyclerView.setHasFixedSize(true);
+
         metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         initLayoutManager();
+
+
         return v;
     }
 
@@ -80,7 +85,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                     getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
                 }
                 else {
-                    Helper.checkInternetConnection(getActivity());
+                    Helper.initInternetConnectionDialog(getActivity());
                 }
             }
         });
@@ -145,6 +150,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             });
             getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
         }
+
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
             mRecyclerView.setLayoutManager(mGridLayoutManager);

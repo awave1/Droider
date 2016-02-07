@@ -9,6 +9,9 @@
         <item name="colorPrimary">@color/primary_bgr</item>
         <item name="colorPrimaryDark">@color/navigation_header_background</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
 
         <!--<item name="material_drawer_selected_text">@color/primary_header_text</item>-->
     </style>

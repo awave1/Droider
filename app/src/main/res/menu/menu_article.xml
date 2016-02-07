@@ -15,9 +15,9 @@
     <item
         android:id="@+id/action_open_in_browser"
         android:title="@string/open_in_browser"
-        android:icon="@drawable/ic_open_in_browser"
+        android:icon="@drawable/ic_explore"
         android:orderInCategory="100"
-        app:showAsAction="collapseActionView"
+        app:showAsAction="always"
         />
 
 </menu>

@@ -231,7 +231,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // Set up ShareActionProvider's default share intent
 //        switch ()
 
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -241,8 +240,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_share:
                 mShareActionProvider.setShareIntent(shareIntent());
                 shareIntent();

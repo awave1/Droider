@@ -2,8 +2,11 @@ package com.awave.apps.droider.Utils.Utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,28 +71,24 @@ public class Helper {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static AlertDialog createDialog(Context context, String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setTitle(title);
-        builder.setMessage(message);
-
-        return builder.create();
-    }
-
-    public static void checkInternetConnection(final Context context)
-    {
+    public static void initInternetConnectionDialog(final Context context) {
         new AlertDialog.Builder(context).setTitle("Соединение прервано").setMessage("Проверьте своё соединение с интернетом")
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Включить Wi-Fi?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Helper.enableWiFi(context, true);
+                    }
+                })
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
                 }).create().show();
     }
 
+    public static void enableWiFi(Context c, boolean wifi){
+        WifiManager wifiConfiguration = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+        wifiConfiguration.setWifiEnabled(wifi);
+    }
 
 }

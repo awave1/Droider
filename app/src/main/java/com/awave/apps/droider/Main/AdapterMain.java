@@ -97,6 +97,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     }
 
     public static Drawable getHeaderImage() { return  headerImg; }
+
     public static void setHeaderImg(Drawable mHeaderImg) { AdapterMain.headerImg = mHeaderImg; }
 
     @Override

@@ -22,7 +22,7 @@
             android:id="@+id/divider_line"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="@color/accent_material_dark"
+            android:background="@color/colorAccent"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp" />
@@ -55,7 +55,7 @@
             android:layout_height="1dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:background="@color/accent"
+            android:background="@color/colorAccent"
             android:layout_marginTop = "10dp"/>
 
         <LinearLayout
@@ -127,7 +127,7 @@
             android:id="@+id/divider_line2"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="@color/accent_material_dark"
+            android:background="@color/colorAccent"
             android:layout_marginTop = "10dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
