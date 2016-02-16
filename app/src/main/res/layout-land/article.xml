@@ -34,12 +34,8 @@
                     android:id="@+id/article_header"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:textSize="25sp"
-                    android:shadowDx="5"
-                    android:shadowDy="2"
-                    android:shadowColor="@color/primary_bgr"
-                    android:shadowRadius="5"
                     android:textStyle="bold|italic"
-                    android:background="@drawable/tint_header"
+                    android:background="@drawable/title_tint"
                     android:gravity="bottom"/>
             </FrameLayout>
             <android.support.v7.widget.Toolbar

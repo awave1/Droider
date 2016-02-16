@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -76,10 +77,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static FrameLayout  youtubeFrame;
     private String title;
     private String shortDescr;
+    private int theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Тёмная");
+        if(themeName.equals("Светлая"))
+            theme = R.style.LightTheme;
+        else
+            theme = R.style.DarkTheme;
+        //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        setTheme(theme);
         setContentView(R.layout.article);
 
         AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);

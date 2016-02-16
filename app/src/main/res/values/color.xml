@@ -2,8 +2,8 @@
 <resources>
 
     <!-- For Dark Theme-->
-    <color name="colorPrimaryDark_dark">#212121</color>
     <color name="colorPrimary_dark">#FF212121</color>
+    <color name="colorPrimaryDark_dark">#212121</color>
     <color name="colorAccent_dark">#FF80CBC4</color>
     <color name="colorBackground_dark">#1a1818</color>
     <color name="colorNavigationBar_dark">#212121</color>
@@ -20,7 +20,7 @@
     <color name="colorAccent_light">#FF009688</color>
     <color name="colorBackground_light">#FFFAFAFA</color>
     <color name="colorForeground_light">#FF000000</color>
-    <color name="colorNavigationBar_light">#FF000000</color>
+    <color name="colorNavigationBar_light">#dfdada</color>
     <color name="colorStatusBar_light">#FF757575</color>
     <color name="textColorPrimary_light">#de000000</color>
     <color name="textColorSecondary_light">#8a000000</color>
