@@ -6,7 +6,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    card_view:cardBackgroundColor="@color/primary_bgr"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="5dp">
@@ -15,7 +14,7 @@
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary_bgr">
+        android:background="?android:attr/colorBackground">
 
         <ImageView
             android:id="@+id/card_image"
@@ -32,12 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:paddingLeft="5dp"
-            android:shadowDx="5"
-            android:shadowDy="2"
-            android:shadowColor="@color/primary_bgr"
-            android:shadowRadius="5"
-            android:textColor="@color/white"
+            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textStyle="bold|italic"
             android:textSize="25sp"
@@ -72,7 +68,7 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="8dp"
                 android:layout_marginBottom="13dp"
-                android:textColor="@drawable/main_adapter_textselector"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                 tools:text="Description!"/>
         </LinearLayout>

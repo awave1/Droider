@@ -1,6 +1,5 @@
 package com.awave.apps.droider.Utils.Utils.Feed;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;

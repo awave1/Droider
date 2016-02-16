@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences sp;
     Toolbar toolbar;
     String mTitle = "Главная";
-
+    int theme;
     public static int mainOrientation;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -42,8 +42,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Тёмная");
+        if(themeName.equals("Светлая"))
+            theme = R.style.LightTheme;
+        else
+            theme = R.style.DarkTheme;
         //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        setTheme(theme);
         setContentView(R.layout.main);
 
         MainActivity.mainOrientation = this.getResources().getConfiguration().orientation;

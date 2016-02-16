@@ -26,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/article_header_content"
-                android:background="@drawable/title_tint"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
                 <TextView
@@ -47,7 +46,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/toolbar_article"
                 android:layout_width="match_parent"
-                app:popupTheme="@style/AppTheme"
+                app:popupTheme="@style/DarkTheme"
                 app:layout_collapseMode="pin"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
@@ -85,7 +84,7 @@
                 android:layout_marginRight="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
+                android:background="@color/colorAccent_dark"/>
 
             <FrameLayout
                 android:layout_width="wrap_content"

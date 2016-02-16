@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:key="notify"
-        android:title="Включить уведомления"
-        android:defaultValue="true">
-    </SwitchPreference>
-    <ListPreference
-        android:entries="@array/interval_names"
-        android:entryValues="@array/interval_times"
-        android:key="interval"
-        android:summary="@string/interval"
-        android:title="@string/interval_title">
-    </ListPreference>
+    <PreferenceCategory
+        android:title="Уведомления">
+        <SwitchPreference
+            android:key="notify"
+            android:title="Включить уведомления"
+            android:defaultValue="true">
+        </SwitchPreference>
+        <ListPreference
+            android:entries="@array/interval_names"
+            android:entryValues="@array/interval_times"
+            android:key="interval"
+            android:summary="@string/interval"
+            android:title="@string/interval_title">
+        </ListPreference>
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Тема">
+        <ListPreference
+            android:entries="@array/theme_values"
+            android:entryValues="@array/theme_values"
+            android:key="theme"
+            android:summary="@string/theme_summary"
+            android:title="@string/theme_title">
+        </ListPreference>
+    </PreferenceCategory>
 
 </PreferenceScreen>

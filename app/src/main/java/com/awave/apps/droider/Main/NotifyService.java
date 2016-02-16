@@ -65,11 +65,11 @@ public class NotifyService extends Service {
     public byte Interval() {
         if (Byte.parseByte(sp.getString("interval", "3")) == 3)
             return 3;
-        else if (Integer.parseInt(sp.getString("interval", "6")) == 6)
+        else if (Byte.parseByte(sp.getString("interval", "6")) == 6)
             return  6;
-        else if (Integer.parseInt(sp.getString("interval","12")) == 12)
+        else if (Byte.parseByte(sp.getString("interval", "12")) == 12)
             return 12;
-        else if (Integer.parseInt(sp.getString("interval","24")) == 24)
+        else if (Byte.parseByte(sp.getString("interval", "24")) == 24)
             return 24;
         else
             return 1;

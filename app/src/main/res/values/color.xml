@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="navigation_header_background">#212121</color>
-    <color name="statusBarColor">#ff0a0a0a</color>
+
+    <!-- For Dark Theme-->
+    <color name="colorPrimaryDark_dark">#212121</color>
+    <color name="colorPrimary_dark">#FF212121</color>
+    <color name="colorAccent_dark">#FF80CBC4</color>
+    <color name="colorBackground_dark">#1a1818</color>
+    <color name="colorNavigationBar_dark">#212121</color>
+    <color name="colorStatusBar_dark">#ff0a0a0a</color>
+    <color name="textColorPrimary_dark">#ffffffff</color>
+    <color name="textColorSecondary_dark">#b3ffffff</color>
+    <color name="shadowColor_dark">#FF000000</color>
+
+
+
+    <!-- For Light Theme-->
+    <color name="colorPrimary_light">#FFF5F5F5</color>
+    <color name="colorPrimaryDark_light">#FF757575</color>
+    <color name="colorAccent_light">#FF009688</color>
+    <color name="colorBackground_light">#FFFAFAFA</color>
+    <color name="colorForeground_light">#FF000000</color>
+    <color name="colorNavigationBar_light">#FF000000</color>
+    <color name="colorStatusBar_light">#FF757575</color>
+    <color name="textColorPrimary_light">#de000000</color>
+    <color name="textColorSecondary_light">#8a000000</color>
+    <color name="shadowColor_light">#FFFFFF</color>
+    <color name="Background_light">#EEEEEE</color>
+
+    <!-- Other-->
     <color name="TextColor">#607D8B</color>
     <color name="red">#D32F2F</color>
-    <color name="primary_bgr">#ff1d1d1d</color>
     <color name="white">#ffffffff</color>
     <color name="primary_header_text">#ffedfaff</color>
     <color name="gray_text">#aaaaaa</color>
@@ -14,5 +39,5 @@
     <color name="card_image_tint">#EEEEEE</color>
     <color name="card_selected">#EEEEEE</color>
     <color name="accent">#ff80cbc4</color>
-
+    <color name="primary_bgr">#FF000000</color>
 </resources>

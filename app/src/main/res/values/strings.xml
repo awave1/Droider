@@ -38,6 +38,7 @@
     
     
     <string name="sizes">Выберите размер шрифта</string>
+
     <string name="sizes_title">Размер шрифта</string>
     <string-array name="sizes_names">
         <item>12</item>
@@ -59,4 +60,11 @@
         <item>24</item>
     </string-array>
 
+    <string-array name="theme_values">
+        <item>Светлая</item>
+        <item>Тёмная</item>
+    </string-array>
+    
+    <string name="theme_title">Выбрать тему</string>
+    <string name="theme_summary">Светлая или тёмная</string>
 </resources>

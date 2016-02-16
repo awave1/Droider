@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Base.Theme.AppCompat">
+    <style name="DarkTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBarOverlay">false</item>
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <!-- ...and here we setting appcompat’s color theming attrs -->
+        <item name="colorPrimary">@color/primary_bgr</item>
+        <item name="colorPrimaryDark">@color/colorNavigationBar_dark</item>
+        <item name="android:background">@color/colorBackground_dark</item>
+        <item name="colorAccent">@color/colorAccent_dark</item>
+        <item name="android:colorBackground">@color/colorBackground_dark</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary_dark</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary_dark</item>
+        <item name="android:shadowColor">@color/shadowColor_dark</item>
+    </style>
 
+    <style name="LightTheme" parent="Base.Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBarOverlay">false</item>
 
-  <!--<item name="material_drawer_selected_text">@color/primary_header_text</item>-->
-        <!--<item name="colorAccent">@color/material_drawer_selected_text</item>-->
+        <item name="colorPrimary">@color/colorPrimary_light</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
+        <item name="android:background">@color/Background_light</item>
+        <item name="colorAccent">@color/colorAccent_light</item>
+        <item name="android:colorBackground">@color/colorBackground_light</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary_light</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
+        <item name="android:shadowColor">@color/shadowColor_light</item>
     </style>
 </resources>
