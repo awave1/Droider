@@ -4,6 +4,7 @@ package com.awave.apps.droider.Utils.Utils.Article;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,7 @@ import com.awave.apps.droider.Main.AdapterMain;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class ImageParser implements Html.ImageGetter {
     private final String TAG = ImageParser.class.getSimpleName();
@@ -33,19 +35,33 @@ public class ImageParser implements Html.ImageGetter {
         this.mMetrics = metrics;
     }
 
-
-    public Bitmap fetchDrawable(String source){
+    /**
+     * Тут все ясно. Передается url и через Picasso скачиватеся
+     * @param source - url to download a Bitmap
+     * @return new Bitmap downloaded from source
+     */
+    public Bitmap fetchBitmap(String source){
         try {
-            Log.d(TAG+".fetchDrawable", source);
-            return Picasso.with(mContext).load(source)
-                    .resize(mMetrics.widthPixels, 0).get();
+            return Picasso.with(mContext).load(source).resize(mMetrics.widthPixels, 0).get();
         }
+
         catch (IOException e){
-            Log.e(TAG, "fetchDrawable: Error fetching images!", e.getCause());
+            Log.e(TAG, "fetchBitmap: Error fetching images!", e.getCause());
             return null;
         }
-    }
+   }
 
+    /**
+     * This method is called when the HTML parser encounters an
+     * img tag.  The <code>src</code> argument is the
+     * string from the "src" attribute; the return value should be
+     * a Drawable representation of the image or <code>null</code>
+     * for a generic replacement image.  Make sure you call
+     * setBounds() on your Drawable if it doesn't already have
+     * its bounds set.
+     *
+     * @param src
+     */
     @Override
     public Drawable getDrawable(String src) {
         URLDrawable urlDraw = new URLDrawable();
@@ -54,25 +70,8 @@ public class ImageParser implements Html.ImageGetter {
         return urlDraw;
     }
 
-    public class URLDrawable extends BitmapDrawable {
-        protected Drawable drawable;
-
-        @Override
-        public void draw(Canvas canvas) {
-            if (drawable != null){
-                drawable.draw(canvas);
-            }
-        }
-
-        public void setDrawable(Drawable drawable) {
-            this.drawable = drawable;
-        }
-    }
-
     public class ImageGetterAsyncTask extends AsyncTask<String, Void, Bitmap>{
         protected URLDrawable urlDrawable;
-
-        private boolean flag = true;
 
         public ImageGetterAsyncTask (URLDrawable u){
             this.urlDrawable = u;
@@ -88,7 +87,7 @@ public class ImageParser implements Html.ImageGetter {
             String src = strings[0];
 
             if (isQrCodeOrHead(src)){
-                return fetchDrawable(src);
+                return fetchBitmap(src);
             }
             else {
                 Log.d(TAG, "Flag is false; Image and qr skipped");
@@ -107,7 +106,9 @@ public class ImageParser implements Html.ImageGetter {
             drawableResult.setBounds(0, 0, w, h);
             urlDrawable.setDrawable(drawableResult);
             urlDrawable.setBounds(0, 0, drawableResult.getIntrinsicWidth(), drawableResult.getIntrinsicHeight());
-            ImageParser.this.mTextView.setText(ImageParser.this.mTextView.getText());
+
+            ImageParser.this.mTextView.setText(ImageParser.this.mTextView.getText());  // Без этой строчки пикчи
+                                                                                      // не появляются. Магия
         }
 
         private boolean isQrCodeOrHead(String img){
@@ -118,6 +119,30 @@ public class ImageParser implements Html.ImageGetter {
                 flag = false;
             }
             return flag;
+        }
+    }
+
+    // Этот класс можно сказать служит как хэлпер.
+    // метод draw отвечает за рисование пикчи в тексте
+    //
+    // Из доков:
+    /**
+     *  Draw in its bounds (set via setBounds)
+     *  respecting optional effects such as alpha (set via setAlpha)
+     *  and color filter (set via setColorFilter).
+    */
+    public class URLDrawable extends BitmapDrawable {
+        protected Drawable drawable;
+
+        @Override
+        public void draw(Canvas canvas) {
+            if (drawable != null){
+                drawable.draw(canvas);
+            }
+        }
+
+        public void setDrawable(Drawable drawable) {
+            this.drawable = drawable;
         }
     }
 }

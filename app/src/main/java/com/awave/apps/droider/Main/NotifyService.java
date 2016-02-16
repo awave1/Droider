@@ -40,7 +40,7 @@ public class NotifyService extends Service {
                     public void run() {
                         Notify();
                     }
-                },NewPush(Interval()),NewPush(Interval()));
+                },NewPush(Interval()), NewPush(Interval()));
                 Log.d("NOTIFY", "Repeat in " + Interval() + "hour");
             }
             catch (IllegalArgumentException e) {
@@ -81,6 +81,10 @@ public class NotifyService extends Service {
     }
     public long NewPush(long time) {
         return  (time*1000*60*60);
+    }
+
+    private long minutePush(long time){
+        return time * 1000*60;
     }
 
     public void Notify() {

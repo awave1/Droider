@@ -1,12 +1,7 @@
 package com.awave.apps.droider.Elements.Article;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,14 +9,10 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,19 +20,19 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
-import com.awave.apps.droider.Utils.Utils.Blur;
 import com.awave.apps.droider.Utils.Utils.DeveloperKey;
 import com.awave.apps.droider.Utils.Utils.Helper;
-import com.bumptech.glide.Glide;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -57,7 +48,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static final String TAG = "ArticleActivity";
 
     private static Toolbar toolbar;
-    CollapsingToolbarLayout collapsingToolbar;
+    private CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
     private FrameLayout headerImage;
@@ -65,7 +56,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static NestedScrollView nestedScrollView;
 
     private TextView articleHeader;
-    private static TextView article;
+    private static WebView article;
     private TextView articleShortDescription;
 
     private static DisplayMetrics metrics;
@@ -81,21 +72,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article);
 
-        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);
-        appBarLayout.addOnOffsetChangedListener(this);
-
-        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
-        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         Bundle extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
         shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
         headerBitmap = extras.getParcelable(Helper.EXTRA_HEADER_IMAGE);
 
+        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);
+        appBarLayout.addOnOffsetChangedListener(this);
+
+        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
+        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         setSupportActionBar(toolbar);
-
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -107,11 +97,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         articleHeader = (TextView) findViewById(R.id.article_header);
         articleHeader.setText(title);
+
         articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
         articleShortDescription.setText(shortDescr);
 
         display = getWindowManager().getDefaultDisplay();
-        metrics = new DisplayMetrics(); // for ImageParser
+        metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int screenHeight = metrics.heightPixels;
 
@@ -123,39 +114,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
 
-        article = (TextView) findViewById(R.id.article);
-
-        imageParser = new ImageParser(article, getResources(), this, metrics);
+        article = (WebView) findViewById(R.id.article);
+        this.setupArticleWebView(article);
 
         headerImage = (FrameLayout) findViewById(R.id.article_header_content);
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-        headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
+            headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
         else
-        headerImage.setBackground(AdapterMain.getHeaderImage());
-//        if (!AdapterMain.getHeadImage().contains("youtube")){
-//            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
-//        }
-        if(AdapterMain.getHeadImage().contains("youtube")) {
-            FrameLayout  youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
-            youtubeFrame.setVisibility(View.VISIBLE);
-            YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
-            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-                @Override
-                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
-                    youTubePlayer.cueVideo(Helper.trimYoutubeId(Helper.getYoutubeVideo()));
-                }
+            headerImage.setBackground(AdapterMain.getHeaderImage());
 
-                @Override
-                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                    Log.d(TAG, "onInitializationFailure: ");
-
-                }
-            });
-            getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
-            Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
-            Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
-        }
+        this.setupYoutube();
     }
 
     @Override
@@ -187,12 +156,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             try {
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
+                Elements imgs = document.select("div.entry img");
+                imgs.wrap("<div class=\"article_image\"></div>");
 
                 elements.remove(0);
                 elements.remove(1);
-                Log.d(TAG, "doInBackground: html = " + elements.toString());
 
-                html = elements.toString();
+                html = setupHtml(elements.toString());
+
+                Log.d(TAG, "doInBackground: html content = " + html);
             }
             catch (IOException e){
                 Log.d(TAG, "Failed");
@@ -203,13 +175,25 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             try {
-                SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
-                article.setText(Helper.trimWhiteSpace(spannableString));
-                article.setMovementMethod(LinkMovementMethod.getInstance()); // Handles hyperlink clicks
-            } catch (StringIndexOutOfBoundsException stoobe)
+//                SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
+//                article.setText(Helper.trimWhiteSpace(spannableString));
+//                article.setMovementMethod(LinkMovementMethod.getInstance());
+                article.loadDataWithBaseURL(null, html, "text/html", "UTF-8", "");
+
+            } catch (StringIndexOutOfBoundsException e)
             {
-                stoobe.printStackTrace();
+                e.printStackTrace();
             }
+        }
+
+        private String setupHtml(String html){
+            String head = "<head><style>" +
+                    ".container{padding-left:40px;padding-right:40px;}" +
+                    ".article_image{margin-left:-40px;margin-right:-40px;}" +
+                    "img{max-width: 100%; width: auto; height: auto;}" +
+                    "iframe{max-width: 100%; width: auto; height: auto;}" +
+                    "</style></head>";
+            return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
         }
     }
 
@@ -229,7 +213,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         mShareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
         // Set up ShareActionProvider's default share intent
-//        switch ()
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -259,4 +242,34 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         return share;
     }
 
+    private void setupArticleWebView(WebView w){
+        WebChromeClient client = new WebChromeClient();
+        WebSettings settings = w.getSettings();
+        w.setWebChromeClient(client);
+        settings.setJavaScriptEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+    }
+
+    private void setupYoutube(){
+        if(AdapterMain.getHeadImage().contains("youtube")) {
+            FrameLayout youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
+            youtubeFrame.setVisibility(View.VISIBLE);
+            YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
+            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
+                    youTubePlayer.cueVideo(Helper.trimYoutubeId(Helper.getYoutubeVideo()));
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.d(TAG, "onInitializationFailure: YoutubePlayer failed to initialize!");
+
+                }
+            });
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
+            Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
+            Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
+        }
+    }
 }
