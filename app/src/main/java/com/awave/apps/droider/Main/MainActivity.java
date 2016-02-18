@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.main);
 
         MainActivity.mainOrientation = this.getResources().getConfiguration().orientation;
-        Log.d(TAG, "onCreate: mainOrientation = " + mainOrientation);
-        Log.d(TAG, "onCreate: this.getResources().getConfiguration().orientation; = " + this.getResources().getConfiguration().orientation);
         // Handle Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 

@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/articleHeadImage_tint"
-                    android:background="@drawable/tint_header"/>
+                    android:background="@drawable/title_tint"/>
 
                 <TextView
                     android:layout_width="match_parent"

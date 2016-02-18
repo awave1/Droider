@@ -144,31 +144,31 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 //        }
 
 
-        if(AdapterMain.getHeadImage().contains("youtube")) {
-            youtubeFrame.setVisibility(View.VISIBLE);
-            youtubeFragment = YouTubePlayerSupportFragment.newInstance();
-            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-                @Override
-                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
-                   synchronized (youtubeFragment)
-                   {
-                       try {
-                           youtubeFragment.wait(500);
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                   }
-                    youTubePlayer.cueVideo(Parser.YouTubeVideoURL);
-                }
-
-                @Override
-                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                    Log.d(TAG, "onInitializationFailure: ");
-
-                }
-            });
-            getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
-        }
+//        if(AdapterMain.getHeadImage().contains("youtube")) {
+//            youtubeFrame.setVisibility(View.VISIBLE);
+//            youtubeFragment = YouTubePlayerSupportFragment.newInstance();
+//            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+//                @Override
+//                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
+//                   synchronized (youtubeFragment)
+//                   {
+//                       try {
+//                           youtubeFragment.wait(500);
+//                       } catch (InterruptedException e) {
+//                           e.printStackTrace();
+//                       }
+//                   }
+//                    youTubePlayer.cueVideo(Parser.YouTubeVideoURL);
+//                }
+//
+//                @Override
+//                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+//                    Log.d(TAG, "onInitializationFailure: ");
+//
+//                }
+//            });
+//            getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
+//        }
     }
 
     @Override

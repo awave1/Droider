@@ -7,14 +7,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginStart="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginRight="4dp"
     card_view:cardBackgroundColor="?attr/cardBackgroundColor"
-    card_view:cardCornerRadius="4dp"
+    card_view:cardCornerRadius="2dp"
     card_view:cardUseCompatPadding="true"
-    card_view:cardElevation="4dp">
+    card_view:cardElevation="2dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cardLayout"
@@ -33,33 +33,40 @@
             android:fadingEdgeLength="40dp"
             tools:ignore="ContentDescription"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/card_image_tint"/>
+
+        <TextView
+            android:id="@+id/articleTitle_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="24dp"
+            android:includeFontPadding="false"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="24sp"
+            android:gravity="bottom|start"
+            android:layout_alignBottom="@+id/card_image"
+            tools:text="Title!"/>
         <LinearLayout
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/articleTitle_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="24dp"
-                android:includeFontPadding="false"
-                android:textColor="?android:attr/textColor"
-                android:textSize="24sp"
-                android:gravity="bottom|start"
-                tools:text="Title!"/>
 
             <TextView
                 android:id="@+id/articleDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
+                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
