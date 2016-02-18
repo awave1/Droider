@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -31,7 +32,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
 
     public static ArrayList<FeedItem> data;
 
-    private Activity activity;
+    private static Activity activity;
 
     private static String shareUrl;
     private static String shareTitle;
@@ -55,11 +56,15 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
 
         public ViewHolder(View holderView) {
             super(holderView);
+            cardView = (CardView) holderView.findViewById(R.id.card_view);
             cardImage = (ImageView) holderView.findViewById(R.id.card_image);
             siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
+
             articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
-            cardView = (CardView) holderView.findViewById(R.id.card_view);
+            articleTitle.setTypeface(Helper.getRobotoFont("Medium", false, AdapterMain.activity));
+
             description = (TextView) holderView.findViewById(R.id.articleDescription);
+            description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
         }
     }
 
@@ -123,8 +128,6 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     Intent article = new Intent(activity, ArticleActivity.class);
                     article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
-//                    article.putExtra(Helper.EXTRA_HEADER_IMAGE,
-//                            ((BitmapDrawable) viewHolder.cardImage.getDrawable()).getBitmap());
 
                     activity.startActivity(article);
                     setShareUrl(url);

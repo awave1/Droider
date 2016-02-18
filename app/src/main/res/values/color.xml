@@ -4,7 +4,7 @@
     <color name="statusBarColor">#ff0a0a0a</color>
     <color name="TextColor">#607D8B</color>
     <color name="red">#D32F2F</color>
-    <color name="primary_bgr">#ff1d1d1d</color>
+    <color name="primary_bgr">#212121</color>
     <color name="white">#ffffffff</color>
     <color name="primary_header_text">#ffedfaff</color>
     <color name="gray_text">#aaaaaa</color>

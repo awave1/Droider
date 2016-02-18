@@ -7,6 +7,6 @@
     android:adjustViewBounds="true"
     android:orientation="vertical"
     android:scaleType="centerCrop"
-    android:src="@drawable/header"
+    android:src="@drawable/footer"
     tools:ignore="ContentDescription">
 </ImageView>

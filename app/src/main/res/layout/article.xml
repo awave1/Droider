@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="fill_vertical"
+    android:fitsSystemWindows="true"
     tools:context=".Elements.Article.ArticleActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -22,34 +23,41 @@
             android:layout_height="match_parent"
             android:elevation="4dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <FrameLayout
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/article_header_content"
-                android:background="@drawable/title_tint"
+                android:orientation="vertical"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/articleHeadImage_tint"
+                    android:background="@drawable/tint_header"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/article_header"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-                    android:textSize="25sp"
-                    android:shadowDx="5"
-                    android:shadowDy="2"
-                    android:shadowColor="@color/primary_bgr"
-                    android:shadowRadius="5"
+                    android:textSize="24sp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:textStyle="bold|italic"
-                    android:background="@drawable/tint_header"
-                    android:gravity="bottom"/>
-            </FrameLayout>
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:gravity="center|center_horizontal"/>
+            </RelativeLayout>
+
             <android.support.v7.widget.Toolbar
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/toolbar_article"
                 android:layout_width="match_parent"
-                app:popupTheme="@style/AppTheme"
                 app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -59,47 +67,58 @@
         android:layout_height="match_parent"
         android:id="@+id/nested_scroll_view"
         android:layout_gravity="fill_vertical"
-        android:layout_marginBottom="?attr/actionBarSize"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:id="@+id/articleRelLayout"
+        android:layout_marginBottom="70dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:behavior_overlapTop="34dp">
+        <android.support.v7.widget.CardView
+            android:id="@+id/articleFrameContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp">
+            <LinearLayout
+                android:id="@+id/articleRelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/cardBackgroundColor"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/article_shortDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="10dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:gravity="center"
-                tools:text="ShortDescr"/>
-            <View
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
+                <TextView
+                    android:id="@+id/article_shortDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:background="?attr/cardBackgroundColor"
+                    android:gravity="fill"
+                    tools:text="ShortDescr"/>
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/YouTubeFrame"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"/>
-            <WebView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/primary_bgr"
-                android:id="@+id/article"
-                tools:text="article"/>
-        </LinearLayout>
+                <FrameLayout
+                    android:fitsSystemWindows="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/YouTubeFrame"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <WebView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/article"
+                    android:background="?attr/cardBackgroundColor"
+                    tools:text="article"/>
+
+                <!-- comments toolbar here -->
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
     </android.support.v4.widget.NestedScrollView>
 
     <!--<android.support.design.widget.FloatingActionButton-->

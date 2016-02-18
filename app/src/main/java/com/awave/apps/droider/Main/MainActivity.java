@@ -2,6 +2,7 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences sp;
     Toolbar toolbar;
     String mTitle = "Главная";
+    int theme;
+
 
     public static int mainOrientation;
     /**
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemTextColor(ColorStateList.valueOf(getColor(R.color.textColor_light)));
 
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 

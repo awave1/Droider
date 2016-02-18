@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <gradient
-        android:startColor="#ff1d1d1d"
-        android:angle="90">
-    </gradient>
-</shape>
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid
+                android:color="?attr/cardTitleTint">
+            </solid>
+        </shape>
+    </item>
+    <!--<item>-->
+        <!--<shape>-->
+            <!--<gradient-->
+                <!--android:startColor="?attr/cardBackgroundColor"-->
+                <!--android:angle="90">-->
+            <!--</gradient>-->
+        <!--</shape>-->
+    <!--</item>-->
+</layer-list>

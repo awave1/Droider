@@ -1,17 +1,23 @@
 package com.awave.apps.droider.Utils.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 
@@ -19,6 +25,8 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
  * Created by awave on 2016-01-23.
  */
 public class Helper {
+    private static final String TAG = "Helper";
+
     public static final String HOME_URL = "http://droider.ru/page/";
     public static final String NEWS_URL = "http://droider.ru/category/news/page/";
     public static final String APPS_URL = "http://droider.ru/category/apps_and_games/programs/page/";
@@ -91,4 +99,48 @@ public class Helper {
         wifiConfiguration.setWifiEnabled(wifi);
     }
 
+
+    public static Typeface getRobotoFont(String type, boolean isItalic, Activity a){
+        if (!isItalic){
+            switch (type){
+                case "Thin":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Thin.ttf");
+                case "Light":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Light.ttf");
+                case "Medium":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Medium.ttf");
+                case "Regular":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Regular.ttf");
+                case "Bold":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Bold.ttf");
+                default:
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Regular");
+            }
+        }
+        else {
+            switch (type){
+                case "Thin":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-ThinItalic.ttf");
+                case "Light":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-LightItalic.ttf");
+                case "Medium":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-MediumItalic.ttf");
+                case "Bold":
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-BoldItalic.ttf");
+                default:
+                    return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-MediumItalic.ttf");
+            }
+        }
+    }
+
+    public static void setTransparent(boolean isTransparent, Activity a){
+        if (isTransparent && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            a.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            a.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+        else {
+            a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+    }
 }

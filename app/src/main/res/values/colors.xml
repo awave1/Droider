@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDark">#212121</color>
-    <color name="colorPrimary">#424242</color>
-    <color name="colorAccent">#f44336</color>
+    <!-- Theme Colors Only! -->
+    <!-- use either _dark or _light after name of the color -->
+
+    <!--DarkTheme-->
+    <color name="colorPrimaryDark_dark">#212121</color>
+    <color name="colorPrimary_dark">#424242</color>
+    <color name="colorAccent_dark">#f44336</color>
+    <color name="textColorPrimary_dark">#ffffff</color>
+    <color name="textColor_dark">#ffffff</color>
+    <color name="textColorSecondary_dark">#FAFAFA</color>
+    <color name="textShadowColor_dark">#424242</color>
+    <color name="colorBackground_dark">#212121</color>
+    <color name="cardBackgroundColor_dark">#616161</color>
+    <color name="cardTitleTint_dark">#53f5f5f5</color>
+
+    <!--LightTheme-->
+    <color name="colorPrimaryDark_light">#212121</color>
+    <color name="colorPrimary_light">#424242</color>
+    <color name="colorAccent_light">#03A9F4</color>
+    <color name="textColorPrimary_light">#ffffff</color>
+    <color name="textColor_light">#000000</color>
+    <color name="textColorSecondary_light">#212121</color>
+    <color name="textShadowColor_light">#424242</color>
+    <color name="colorBackground_light">#E0E0E0</color>
+    <color name="cardBackgroundColor_light">#F5F5F5</color>
+    <color name="cardTitleTint_light">#7d212121</color>
+    <color name="navDrawerBackgroundColor_light">#e0e0e0</color>
+    <color name="colorControlNormal_light">#ffffff</color>
 </resources>

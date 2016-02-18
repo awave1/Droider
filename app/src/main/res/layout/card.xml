@@ -1,80 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    card_view:cardBackgroundColor="@color/primary_bgr"
+    android:layout_marginStart="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp"
+    card_view:cardBackgroundColor="?attr/cardBackgroundColor"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true"
-    card_view:cardElevation="5dp">
+    card_view:cardElevation="4dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary_bgr">
+        android:background="?attr/cardBackgroundColor">
 
         <ImageView
             android:id="@+id/card_image"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:scaleType="centerCrop"
             android:requiresFadingEdge="vertical"
             android:fadingEdge="vertical"
             android:fadingEdgeLength="40dp"
             tools:ignore="ContentDescription"/>
-        <TextView
-            android:id="@+id/articleTitle_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="5dp"
-            android:paddingLeft="5dp"
-            android:shadowDx="5"
-            android:shadowDy="2"
-            android:shadowColor="@color/primary_bgr"
-            android:shadowRadius="5"
-            android:textColor="@color/white"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:textStyle="bold|italic"
-            android:textSize="25sp"
-            android:layout_alignBottom="@+id/card_image"
-            android:gravity="bottom|start"
-            android:background="@drawable/title_tint"
-            tools:text="Title!"/>
-
-        <TextView
-            android:id="@+id/siteurl"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            android:layout_below="@+id/card_image" />
 
         <LinearLayout
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
-            android:orientation="vertical"
-            android:layout_marginTop="13dp"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp">
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/articleTitle_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="24dp"
+                android:includeFontPadding="false"
+                android:textColor="?android:attr/textColor"
+                android:textSize="24sp"
+                android:gravity="bottom|start"
+                tools:text="Title!"/>
+
             <TextView
                 android:id="@+id/articleDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:paddingEnd="0dp"
-                android:paddingStart="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="8dp"
-                android:layout_marginBottom="13dp"
-                android:textColor="@drawable/main_adapter_textselector"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                android:textSize="14sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
+                android:textColor="?android:attr/textColor"
                 tools:text="Description!"/>
         </LinearLayout>
     </RelativeLayout>
+    <TextView
+        android:id="@+id/siteurl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_below="@+id/card_image" />
 </android.support.v7.widget.CardView>

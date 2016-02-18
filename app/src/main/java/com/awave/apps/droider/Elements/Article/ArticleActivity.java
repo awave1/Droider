@@ -1,7 +1,10 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,11 +23,13 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -39,6 +44,7 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -51,7 +57,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
-    private FrameLayout headerImage;
+    private RelativeLayout headerImage;
     private LinearLayout articleRelLayout;
     private static NestedScrollView nestedScrollView;
 
@@ -88,6 +94,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        upArrow.setColorFilter(getResources().getColor(R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,9 +108,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         articleHeader = (TextView) findViewById(R.id.article_header);
         articleHeader.setText(title);
+        articleHeader.setTypeface(Helper.getRobotoFont("Light", false, this));
 
         articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
         articleShortDescription.setText(shortDescr);
+        articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
         display = getWindowManager().getDefaultDisplay();
         metrics = new DisplayMetrics();
@@ -117,21 +130,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         article = (WebView) findViewById(R.id.article);
         this.setupArticleWebView(article);
 
-        headerImage = (FrameLayout) findViewById(R.id.article_header_content);
+        headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
             headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
         else
             headerImage.setBackground(AdapterMain.getHeaderImage());
 
-        this.setupYoutube();
+//        this.setupYoutube();
     }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-
         }
         else {
             assert getSupportActionBar() != null;
@@ -157,7 +169,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select("div.entry p");
                 Elements imgs = document.select("div.entry img");
+                Elements iframe = document.select("div.entry iframe");
+
+                iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
+
+                for (Element e: imgs) {
+                    if (e.attr("src").equals(AdapterMain.getHeadImage())){
+                        e.remove();
+                    }
+                }
 
                 elements.remove(0);
                 elements.remove(1);
@@ -175,10 +196,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             try {
-//                SpannableString spannableString = new SpannableString(Html.fromHtml(html, imageParser, null));
-//                article.setText(Helper.trimWhiteSpace(spannableString));
-//                article.setMovementMethod(LinkMovementMethod.getInstance());
-                article.loadDataWithBaseURL(null, html, "text/html", "UTF-8", "");
+                article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
 
             } catch (StringIndexOutOfBoundsException e)
             {
@@ -187,11 +205,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
 
         private String setupHtml(String html){
-            String head = "<head><style>" +
-                    ".container{padding-left:40px;padding-right:40px;}" +
-                    ".article_image{margin-left:-40px;margin-right:-40px;}" +
+            String head = "<head>" +
+                    "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>"+
+                    "<style>" +
+                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;}"+
+                    ".container{padding-left:16px;padding-right:16px;}" +
+                    ".article_image{margin-left:-16px;margin-right:-16px;}" +
+                    ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}"+
+                    "iframe{max-width: 100%; width: 100%; height: 260px;}"+
                     "img{max-width: 100%; width: auto; height: auto;}" +
-                    "iframe{max-width: 100%; width: auto; height: auto;}" +
                     "</style></head>";
             return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
         }
@@ -243,6 +265,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
     private void setupArticleWebView(WebView w){
+        w.setBackgroundColor(getResources().getColor(R.color.cardBackgroundColor_light));
         WebChromeClient client = new WebChromeClient();
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
