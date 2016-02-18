@@ -1,34 +1,27 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,12 +29,7 @@ import android.widget.TextView;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.Article.ImageParser;
-import com.awave.apps.droider.Utils.Utils.DeveloperKey;
-import com.awave.apps.droider.Utils.Utils.Helper;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.awave.apps.droider.Utils.Helper;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -49,7 +37,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
@@ -61,34 +48,28 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private Intent share = getIntent();
     private RelativeLayout headerImage;
     private LinearLayout articleRelLayout;
-    private static ArrayList<String> youTubeLink = new ArrayList<>();
     private TextView articleHeader;
     private static WebView article;
     private TextView articleShortDescription;
-    private static YouTubePlayerSupportFragment youtubeFragment;
     private static DisplayMetrics metrics;
-    private static Display display;
-    private static ImageParser imageParser;
-    private static FrameLayout  youtubeFrame;
     private String title;
     private String shortDescr;
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article);
 
-        AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.appbar_article);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         appBarLayout.addOnOffsetChangedListener(this);
-        youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
         shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
-        NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
-        collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         setSupportActionBar(toolbar);
@@ -114,7 +95,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleShortDescription.setText(shortDescr);
         articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
-        display = getWindowManager().getDefaultDisplay();
         metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int screenHeight = metrics.heightPixels;
@@ -122,7 +102,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
 
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
@@ -132,51 +112,18 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
             headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
         else
             headerImage.setBackground(AdapterMain.getHeaderImage());
 
-//        this.setupYoutube();
-
-//        if (!AdapterMain.getHeadImage().contains("youtube")){
-//            new Blur.AsyncBlurImage(headerImage, this).execute(AdapterMain.getHeadImage());
-//        }
-
-
-//        if(AdapterMain.getHeadImage().contains("youtube")) {
-//            youtubeFrame.setVisibility(View.VISIBLE);
-//            youtubeFragment = YouTubePlayerSupportFragment.newInstance();
-//            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-//                @Override
-//                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
-//                   synchronized (youtubeFragment)
-//                   {
-//                       try {
-//                           youtubeFragment.wait(500);
-//                       } catch (InterruptedException e) {
-//                           e.printStackTrace();
-//                       }
-//                   }
-//                    youTubePlayer.cueVideo(Parser.YouTubeVideoURL);
-//                }
-//
-//                @Override
-//                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//                    Log.d(TAG, "onInitializationFailure: ");
-//
-//                }
-//            });
-//            getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
-//        }
     }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-        }
-        else {
+        } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
@@ -186,24 +133,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
     }
 
-    @Override
-    protected void onStop() {
-        youTubeLink.clear();
-        super.onStop();
-    }
 
-    public static class Parser extends AsyncTask<String, String, String>{
+    public static class Parser extends AsyncTask<String, String, String> {
         private String html = "";
-        private static String YouTubeVideoURL;
 
         @Override
         protected void onPreExecute() {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                 // ждём
-                }
-            },500);
+           //тут добавить анимацию загрузки статьи, на подобии конкуретнов
             super.onPreExecute();
         }
 
@@ -218,25 +154,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
 
-                for (Element e: imgs) {
-                    if (e.attr("src").equals(AdapterMain.getHeadImage())){
+                for (Element e : imgs) {
+                    if (e.attr("src").equals(AdapterMain.getHeadImage())) {
                         e.remove();
+                        break;
                     }
                 }
-
-                Elements entry = document.select("div.entry");
-
-                for (Element youtube : entry) {
-                    youTubeLink.add(youtube.getElementsByTag("iframe").attr("src"));
-                        if (youTubeLink.get(youtube.getAllElements().indexOf(youtube)).contains("youtube")) {
-                            Log.d(TAG, "doInBackground: was here");
-                            YouTubeVideoURL = youTubeLink.get(0);
-                            YouTubeVideoURL = Helper.trimYoutubeId(YouTubeVideoURL);
-                        }
-                }
-
-                Log.d(TAG, "Youtube Video: " + youTubeLink.get(0));
-                Log.d(TAG, "Youtube Video ID: " +YouTubeVideoURL);
 
                 elements.remove(0);
                 elements.remove(1);
@@ -244,8 +167,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 html = setupHtml(elements.toString());
 
                 Log.d(TAG, "doInBackground: html content = " + html);
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 Log.d(TAG, "Failed");
             }
             return "";
@@ -256,21 +178,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             try {
                 article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
 
-            } catch (StringIndexOutOfBoundsException e)
-            {
+            } catch (StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         }
 
-        private String setupHtml(String html){
+        private String setupHtml(String html) {
             String head = "<head>" +
-                    "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>"+
+                    "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
-                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;}"+
-                    ".container{padding-left:16px;padding-right:16px;}" +
+                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;}" +
+                    ".container{padding-left:16px;padding-right:16px; padding-bottom:16px}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
-                    ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}"+
-                    "iframe{max-width: 100%; width: 100%; height: 260px;}"+
+                    ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
+                    "iframe{max-width: 100%; width: 100%; height: 260px;}" +
                     "img{max-width: 100%; width: auto; height: auto;}" +
                     "</style></head>";
             return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
@@ -309,7 +230,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 shareIntent();
                 break;
             case R.id.action_open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AdapterMain.getShareUrl())));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
                 break;
         }
         return true;
@@ -317,40 +238,18 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     private Intent shareIntent() {
         share = new Intent(Intent.ACTION_SEND);
-        share.putExtra(Intent.EXTRA_TEXT, AdapterMain.getShareTitle() + ":  " + AdapterMain.getShareUrl());
+        share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
         share.setType("text/plain");
         return share;
     }
 
-    private void setupArticleWebView(WebView w){
+    private void setupArticleWebView(WebView w) {
         w.setBackgroundColor(getResources().getColor(R.color.cardBackgroundColor_light));
         WebChromeClient client = new WebChromeClient();
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
     }
-
-//    private void setupYoutube(){
-//        if(AdapterMain.getHeadImage().contains("youtube")) {
-//            FrameLayout youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame);
-//            youtubeFrame.setVisibility(View.VISIBLE);
-//            YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
-//            youtubeFragment.initialize(DeveloperKey.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-//                @Override
-//                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
-//                    youTubePlayer.cueVideo(Helper.trimYoutubeId(Helper.getYoutubeVideo()));
-//                }
-//
-//                @Override
-//                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//                    Log.d(TAG, "onInitializationFailure: YoutubePlayer failed to initialize!");
-//
-//                }
-//            });
-//            this.getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
-//            Log.d(TAG, "Youtube Video: " + Helper.getYoutubeVideo());
-//            Log.d(TAG, "Youtube Video ID: " + Helper.trimYoutubeId(Helper.getYoutubeVideo()));
-//        }
-//    }
 }

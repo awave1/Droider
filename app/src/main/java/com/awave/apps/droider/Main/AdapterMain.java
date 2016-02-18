@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -21,8 +20,8 @@ import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.FeedItem;
-import com.awave.apps.droider.Utils.Utils.Helper;
+import com.awave.apps.droider.Utils.FeedItem;
+import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -77,21 +76,6 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    public static String getShareUrl() {
-        return shareUrl;
-    }
-
-    public static void setShareUrl(String shareUrl) {
-        AdapterMain.shareUrl = shareUrl;
-    }
-
-    public static String getShareTitle() {
-        return shareTitle;
-    }
-
-    public static void setShareTitle(String shareTitle) {
-        AdapterMain.shareTitle = shareTitle;
-    }
 
     public static String getHeadImage() {
         return headImage;
@@ -128,10 +112,9 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     Intent article = new Intent(activity, ArticleActivity.class);
                     article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
-
+                    article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
-                    setShareUrl(url);
-                    setShareTitle(item.getTitle());
+
                     setHeaderImg(viewHolder.cardImage.getDrawable());
                     setHeadImage(item.getImg());
                 } catch (Exception e) {

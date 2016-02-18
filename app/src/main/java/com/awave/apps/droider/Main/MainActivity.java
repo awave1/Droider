@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,7 +22,7 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
 
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.Helper;
+import com.awave.apps.droider.Utils.Helper;
 
 
 
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemTextColor(ColorStateList.valueOf(getColor(R.color.textColor_light)));
+        navigationView.setItemTextColor(ColorStateList.valueOf(ContextCompat.getColor(this,R.color.textColor_light)));
 
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 

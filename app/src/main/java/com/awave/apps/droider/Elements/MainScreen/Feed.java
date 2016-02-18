@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
-import com.awave.apps.droider.Utils.Utils.Feed.OnTaskCompleted;
-import com.awave.apps.droider.Utils.Utils.Feed.Orientation;
-import com.awave.apps.droider.Utils.Utils.FeedItem;
-import com.awave.apps.droider.Utils.Utils.Helper;
+import com.awave.apps.droider.Utils.Feed.FeedParser;
+import com.awave.apps.droider.Utils.Feed.OnTaskCompleted;
+import com.awave.apps.droider.Utils.Feed.Orientation;
+import com.awave.apps.droider.Utils.FeedItem;
+import com.awave.apps.droider.Utils.Helper;
 
 import java.util.ArrayList;
 
