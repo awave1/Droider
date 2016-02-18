@@ -102,8 +102,8 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
             item.setDescription(description.get(i));
 
             if (youTubeLink.get(i).contains("youtube")){
+                Log.d(TAG, "onPostExecute: WAS HERE");
                 item.setImg(Helper.getYoutubeImg(youTubeLink.get(i)));
-                Helper.setYoutubeVideo(youTubeLink.get(i));
             }
             else if (img.get(i).contains("\u0060")) {
                 item.setImg(img.get(i).replace("\u0060", "%60"));

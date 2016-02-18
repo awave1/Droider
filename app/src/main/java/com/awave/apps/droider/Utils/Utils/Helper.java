@@ -25,7 +25,6 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
  * Created by awave on 2016-01-23.
  */
 public class Helper {
-    private static final String TAG = "Helper";
 
     public static final String HOME_URL = "http://droider.ru/page/";
     public static final String NEWS_URL = "http://droider.ru/category/news/page/";
@@ -35,8 +34,8 @@ public class Helper {
 
     public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
     public static final String EXTRA_FEED_URL = "com.awave.apps.droider.Elements.EXTRA_FEED_URL";
-    public static final String EXTRA_HEADER_IMAGE = "com.awave.apps.droider.Elements.EXTRA_HEADER_IMAGE";
     public static final String EXTRA_SHORT_DESCRIPTION = "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
+    private static final String TAG = "Helper";
 
     public static String youtubeVideo;
 
@@ -46,9 +45,14 @@ public class Helper {
         }
 
         int i = src.length();
-        while (i-- >= 0 && Character.isWhitespace(src.charAt(i))){
+        try {
+            while (i-- >= 0 && Character.isWhitespace(src.charAt(i))){
 
+            }
+        } catch (StringIndexOutOfBoundsException e) {
+            Log.d(TAG, "trimWhiteSpace: not needed to trim");
         }
+
         return src.subSequence(0, i+1);
     }
 
@@ -62,15 +66,7 @@ public class Helper {
     }
 
     public static String trimYoutubeId(String src){
-        return src.substring(src.indexOf("embed/") + 6);
-    }
-
-    public static void setYoutubeVideo(String src){
-        youtubeVideo = src;
-    }
-
-    public static String getYoutubeVideo(){
-        return youtubeVideo;
+        return src.substring(30);
     }
 
     public static boolean isOnline(Context context) {
