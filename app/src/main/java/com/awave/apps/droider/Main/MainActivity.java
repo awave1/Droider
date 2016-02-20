@@ -25,7 +25,6 @@ import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 
 
-
 @SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = MainActivity.class.getSimpleName();

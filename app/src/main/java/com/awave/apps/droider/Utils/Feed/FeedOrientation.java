@@ -1,0 +1,102 @@
+package com.awave.apps.droider.Utils.Feed;
+
+import android.app.Activity;
+import android.content.res.Configuration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
+import com.awave.apps.droider.Elements.MainScreen.Feed;
+
+
+public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
+    private static final String TAG = "FeedOrientation";
+
+    private Activity mActivity;
+
+    // Portrait
+    private int previousTotal_portrait = 0;
+    private byte visibleThreshold_portrait = 5;
+    private byte firstVisibleItem_portrait;
+    private byte visibleItemCount_portrait;
+    private byte totalItemCount_portrait;
+    public static short nextPage_portrait = 1;
+    private boolean isLoading_portrait = true;
+
+    // Landscape
+    private int previousTotal_landscape = 0;
+    private byte visibleThreshold_landscape = 4; // 3
+    private byte firstVisibleItem_landscape;
+    private byte visibleItemCount_landscape;
+    private byte totalItemCount_landscape;
+    public static short nextPage_landscape = 1;
+    private boolean isLoading_landscape;
+
+    public FeedOrientation(Activity a){
+        this.mActivity = a;
+    }
+
+    public abstract void loadNextPage();
+
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        if (newState == 0){
+            if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+                portraitOrientation(mActivity, recyclerView, Feed.mLayoutManager);
+            }
+            else if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                landscapeOrientation(mActivity, recyclerView, Feed.mGridLayoutManager);
+            }
+        }
+    }
+
+    public void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager){
+        this.mActivity = activity;
+        visibleItemCount_portrait = (byte) recyclerView.getChildCount();
+        totalItemCount_portrait = (byte) layoutManager.getItemCount();
+
+        Log.d(TAG, "portraitOrientation: totalItemCount_portrait = " + totalItemCount_portrait);
+
+        firstVisibleItem_portrait = (byte) layoutManager.findFirstVisibleItemPosition();
+
+        Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait = " + firstVisibleItem_portrait);
+
+        if (isLoading_portrait && totalItemCount_portrait > previousTotal_portrait){
+            isLoading_portrait = false;
+            previousTotal_portrait = totalItemCount_portrait;
+        }
+
+        if (!isLoading_portrait &&
+                (totalItemCount_portrait - visibleItemCount_portrait) <= (firstVisibleItem_portrait + visibleThreshold_portrait)){
+            Log.d(TAG, "portraitOrientation: end has been reached, loading next page");
+            nextPage_portrait++;
+            loadNextPage();
+            isLoading_portrait = true;
+        }
+    }
+
+    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, GridLayoutManager gridLayoutManager){
+        this.mActivity = activity;
+        visibleItemCount_landscape = (byte) recyclerView.getChildCount();
+        totalItemCount_landscape = (byte) gridLayoutManager.getItemCount();
+
+        Log.d(TAG, "landscapeOrientation: totalItemCount_landscape = " + totalItemCount_landscape);
+
+        firstVisibleItem_landscape = (byte) gridLayoutManager.findFirstVisibleItemPosition();
+
+        Log.d(TAG, "landscapeOrientation: firstVisibleItem_landscape = " + firstVisibleItem_landscape);
+
+        if (isLoading_landscape && totalItemCount_landscape > previousTotal_landscape) {
+            isLoading_landscape = false;
+            previousTotal_landscape = totalItemCount_landscape;
+        }
+
+        if (!isLoading_landscape &&
+                (totalItemCount_landscape - visibleItemCount_landscape) <= (firstVisibleItem_landscape + visibleThreshold_landscape)){
+            nextPage_landscape++;
+            loadNextPage();
+            isLoading_landscape = true;
+        }
+    }
+}

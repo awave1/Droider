@@ -9,8 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,12 +49,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
-    private RelativeLayout headerImage;
+    public static ImageView headerImage;
     private LinearLayout articleRelLayout;
+    private CoordinatorLayout mCoordinatorLayout;
     private TextView articleHeader;
     private static WebView article;
     private TextView articleShortDescription;
     private static DisplayMetrics metrics;
+
     private String title;
     private String shortDescr;
     private Bundle extras;
@@ -110,13 +115,24 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         article = (WebView) findViewById(R.id.article);
         this.setupArticleWebView(article);
 
-        headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
+        headerImage = (ImageView) findViewById(R.id.article_header_content);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
             headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
         else
             headerImage.setBackground(AdapterMain.getHeaderImage());
 
+        /** Test **/
+//        Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
+//
+//        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.articleCoordinator);
+//        try {
+//            mCoordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
+//        }
+//        catch (NullPointerException e){
+//            mCoordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
+//            Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
+//        }
     }
 
     @Override
@@ -147,9 +163,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         protected String doInBackground(String... strings) {
             try {
                 Document document = Jsoup.connect(strings[0]).get();
-                Elements elements = document.select("div.entry p");
-                Elements imgs = document.select("div.entry img");
-                Elements iframe = document.select("div.entry iframe");
+                Elements elements = document.select(".entry p");
+                Elements imgs = document.select(".entry img");
+                Elements iframe = document.select(".entry iframe");
 
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");

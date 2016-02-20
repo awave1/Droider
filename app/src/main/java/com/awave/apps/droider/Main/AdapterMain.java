@@ -1,6 +1,7 @@
 package com.awave.apps.droider.Main;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.FeedItem;
+import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
 
@@ -95,13 +97,13 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         final FeedItem item = data.get(i);
         viewHolder.articleTitle.setText(item.getTitle());
         viewHolder.description.setText(item.getDescription());
-        viewHolder.siteUrl.setText(item.getLink());
+        viewHolder.siteUrl.setText(item.getUrl());
 
         if (viewHolder.cardImage != null){
-            Glide.with(activity).load(item.getImg()).into(viewHolder.cardImage);
+            Glide.with(activity).load(item.getImgUrl()).into(viewHolder.cardImage);
         }
 
-        final String url = item.getLink();
+        final String url = item.getUrl();
 
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -114,16 +116,15 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
                     article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
-
                     setHeaderImg(viewHolder.cardImage.getDrawable());
-                    setHeadImage(item.getImg());
+                    setHeadImage(item.getImgUrl());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException
                     // на article в ArticleActivity. Я закомментил
                     // после этого ничего не открывалось
                     Toast.makeText(activity, "Произошла ошибка при открытии статьи!", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "onClick: Failed to open ArticleActivity!");
+                    Log.e(TAG, "onClick: Failed to open ArticleActivity!", e.getCause());
                 }
             }
         });
@@ -133,7 +134,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             public boolean onLongClick(View view) {
                 Log.d(TAG, "onLingClick cardview");
                 ClipboardManager clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData copyLink = ClipData.newPlainText("", item.getLink());
+                ClipData copyLink = ClipData.newPlainText("", item.getUrl());
                 clipboardManager.setPrimaryClip(copyLink);
                 Snackbar.make(view, "Ссылка скопирована", Snackbar.LENGTH_SHORT).show();
                 return true;
