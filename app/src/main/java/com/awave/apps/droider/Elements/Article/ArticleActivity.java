@@ -9,10 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -24,11 +22,9 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
@@ -49,16 +45,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private CollapsingToolbarLayout collapsingToolbar;
     private ShareActionProvider mShareActionProvider;
     private Intent share = getIntent();
-    public static ImageView headerImage;
+    public static RelativeLayout headerImage;
     private LinearLayout articleRelLayout;
-    private CoordinatorLayout mCoordinatorLayout;
+
     private TextView articleHeader;
     private static WebView article;
     private TextView articleShortDescription;
     private static DisplayMetrics metrics;
-
-    private String title;
-    private String shortDescr;
+    private static boolean outIntent = false;
+    private static String title;
+    private static String shortDescr;
     private Bundle extras;
 
     @Override
@@ -66,12 +62,29 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article);
 
+        final Intent intent = getIntent();
+        final String action = intent.getAction();
+
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            String data = intent.getData().toString();
+            new ArticleActivity.Parser().execute(data);
+        }
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         appBarLayout.addOnOffsetChangedListener(this);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
+        headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
+        articleHeader = (TextView) findViewById(R.id.article_header);
+        articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
+
         extras = getIntent().getExtras();
         title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
         shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+            headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
+        else
+                headerImage.setBackground(AdapterMain.getHeaderImage());
 
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -92,11 +105,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         });
 
-        articleHeader = (TextView) findViewById(R.id.article_header);
+
         articleHeader.setText(title);
         articleHeader.setTypeface(Helper.getRobotoFont("Light", false, this));
 
-        articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
+
         articleShortDescription.setText(shortDescr);
         articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
@@ -115,12 +128,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         article = (WebView) findViewById(R.id.article);
         this.setupArticleWebView(article);
 
-        headerImage = (ImageView) findViewById(R.id.article_header_content);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-            headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
-        else
-            headerImage.setBackground(AdapterMain.getHeaderImage());
 
         /** Test **/
 //        Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
@@ -133,6 +141,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 //            mCoordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
 //            Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
 //        }
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override

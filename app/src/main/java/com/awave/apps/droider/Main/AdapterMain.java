@@ -1,7 +1,6 @@
 package com.awave.apps.droider.Main;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -10,9 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,16 +32,12 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
 
     private static Activity activity;
 
-    private static String shareUrl;
-    private static String shareTitle;
     private static String headImage;
     private static Drawable headerImg;
-    private static DisplayMetrics mMetrics;
 
-    public AdapterMain(Activity activity, ArrayList<FeedItem> data, DisplayMetrics metrics) {
+    public AdapterMain(Activity activity, ArrayList<FeedItem> data) {
         this.activity = activity;
         AdapterMain.data = data;
-        AdapterMain.mMetrics = metrics;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -8,9 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
-import android.transition.Transition;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +18,8 @@ import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Feed.FeedOrientation;
 import com.awave.apps.droider.Utils.Feed.FeedParser;
-import com.awave.apps.droider.Utils.Helper;
 import com.awave.apps.droider.Utils.Feed.OnTaskCompleted;
-
+import com.awave.apps.droider.Utils.Helper;
 
 import java.util.ArrayList;
 
@@ -39,7 +35,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     public static LinearLayoutManager mLayoutManager;
     public static GridLayoutManager mGridLayoutManager;
     private AdapterMain adapter;
-    private DisplayMetrics metrics;
     private static ArrayList<FeedItem> items = new ArrayList<>();
 
     public static boolean isRefreshing;
@@ -62,11 +57,9 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
-        adapter = new AdapterMain(getActivity(), items, metrics);
+        adapter = new AdapterMain(getActivity(), items);
         mRecyclerView.setHasFixedSize(true);
 
-        metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         initLayoutManager();
 
         return v;

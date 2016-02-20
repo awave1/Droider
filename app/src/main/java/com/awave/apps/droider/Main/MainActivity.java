@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
-
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 

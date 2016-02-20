@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.awave.apps.droider">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,9 +27,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:label="Droider1"
             android:name=".Elements.Article.ArticleActivity"
             android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true">
+            android:hardwareAccelerated="true"
+            tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="droider.ru" />
+                <data android:scheme="http" android:host="www.droider.ru" android:pathPattern="/.*" />
+            </intent-filter>
         </activity>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -38,17 +48,6 @@
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
 
-        <receiver
-            android:name=".Util.DroiderPostsReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.awave.apps.droider.Utils.DroiderPostsReceiver" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="http" />
-            </intent-filter>
-        </receiver>
-    </application>
 
+    </application>
 </manifest>
