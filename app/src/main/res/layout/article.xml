@@ -32,11 +32,19 @@
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/article_header_img"
+                    android:orientation="vertical"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.7" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/articleHeadImage_tint"
-                    android:background="@drawable/title_tint"/>
+                    android:background="@drawable/card_image_tint"/>
 
                 <TextView
                     android:layout_width="match_parent"

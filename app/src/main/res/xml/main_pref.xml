@@ -17,15 +17,15 @@
         </ListPreference>
     </PreferenceCategory>
 
-    <!--<PreferenceCategory-->
-        <!--android:title="Тема">-->
-        <!--<ListPreference-->
-            <!--android:entries="@array/theme_values"-->
-            <!--android:entryValues="@array/theme_values"-->
-            <!--android:key="theme"-->
-            <!--android:summary="@string/theme_summary"-->
-            <!--android:title="@string/theme_title">-->
-        <!--</ListPreference>-->
-    <!--</PreferenceCategory>-->
+    <PreferenceCategory
+        android:title="Тема">
+        <ListPreference
+            android:entries="@array/theme_values"
+            android:entryValues="@array/theme_values"
+            android:key="theme"
+            android:summary="@string/theme_summary"
+            android:title="@string/theme_title">
+        </ListPreference>
+    </PreferenceCategory>
 
 </PreferenceScreen>

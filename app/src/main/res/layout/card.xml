@@ -11,12 +11,12 @@
     android:layout_marginLeft="4dp"
     android:layout_marginEnd="4dp"
     android:layout_marginRight="4dp"
-    card_view:cardBackgroundColor="?attr/cardBackgroundColor"
     card_view:cardCornerRadius="2dp"
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="2dp">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,15 +54,17 @@
             android:gravity="bottom|start"
             android:layout_alignBottom="@+id/card_image"
             tools:text="Title!"/>
+
         <LinearLayout
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="?attr/cardBackgroundColor">
 
             <TextView
-                android:id="@+id/articleDescription"
+                android:background="?attr/cardBackgroundColor"                android:id="@+id/articleDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -72,7 +74,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
-                android:textColor="?android:attr/textColor"
+                android:textColor="?android:attr/textColorPrimary"
                 tools:text="Description!"/>
         </LinearLayout>
     </RelativeLayout>

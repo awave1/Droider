@@ -2,7 +2,6 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -16,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
 import com.awave.apps.droider.Elements.MainScreen.Feed;
@@ -44,8 +45,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+        /** Проверяем какая тема выбрана в настройках **/
+        String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
+        if (themeName.equals("Светлая")) {
+            theme = R.style.LightTheme;
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_light));
+        } else if (themeName.equals("Тёмная")) {
+            theme = R.style.DarkTheme;
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_dark));
+        }
         super.onCreate(savedInstanceState);
+        /** Затем "включаем" нужную тему **/
+        setTheme(theme);
+
         setContentView(R.layout.main);
 
         MainActivity.mainOrientation = this.getResources().getConfiguration().orientation;
@@ -56,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(mTitle);
-            getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -70,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemTextColor(ColorStateList.valueOf(ContextCompat.getColor(this,R.color.textColor_light)));
 
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
 

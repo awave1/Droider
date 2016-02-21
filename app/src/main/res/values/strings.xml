@@ -14,7 +14,13 @@
     <string name="drawer_item_section_header">Прочее</string>
 
     <string name="description">Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной системе Android, в частности. Наша цель – интересно, оперативно и доступно рассказывать поклонникам технологий о новых устройствах, приложениях и играх.</string>
-
+    <string name="vedenskiy_about">Борис Веденский\nАвтор Droider Show, ОффТОП Шоу и #КакОно. Главред Droider.ru.</string>
+    <string name="istishev_about">Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast</string>
+    <string name="art_about">Артем Головин\nПрограммист, студент MRU</string>
+    <string name="alex_about">Александр Гузенко\nПрограммист, студент МЭИ</string>
+    <string name="devs_about">Разработчки</string>
+    <string name="authors_about">Авторы</string>
+    <string name="shortInformation_about">Основное</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
 

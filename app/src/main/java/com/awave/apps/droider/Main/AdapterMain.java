@@ -55,7 +55,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
 
             articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
-            articleTitle.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
+            articleTitle.setTypeface(Helper.getRobotoFont("Medium", true, AdapterMain.activity));
 
             description = (TextView) holderView.findViewById(R.id.articleDescription);
             description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));

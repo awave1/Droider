@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="Droider1"
+            android:label="Droider"
             android:name=".Elements.Article.ArticleActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
@@ -47,7 +47,6 @@
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
-
 
     </application>
 </manifest>

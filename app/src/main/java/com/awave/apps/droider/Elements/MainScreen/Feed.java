@@ -65,11 +65,11 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         return v;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
+//    }
 
     @Override
     public void onRefresh() {

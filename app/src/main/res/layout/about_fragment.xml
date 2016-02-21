@@ -12,9 +12,9 @@
             android:id="@+id/about_frag_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Основное"
+            android:text="@string/shortInformation_about"
             android:textStyle="bold"
-            android:textColor="@color/primary_header_text"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"/>
@@ -34,15 +34,16 @@
             android:textSize="18sp"
             android:textStyle="italic"
             android:layout_marginTop="10dp"
+            android:textColor="?android:attr/textColorSecondary"
             android:text="@string/description"/>
 
         <TextView
             android:id="@+id/about_frag_title3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Авторы"
+            android:text="@string/authors_about"
             android:textStyle="bold"
-            android:textColor="@color/primary_header_text"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             android:gravity="center_horizontal"
             android:layout_marginLeft="15dp"
@@ -55,7 +56,7 @@
             android:layout_height="1dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:background="@color/colorAccent_dark"
+            android:background="?attr/colorAccent"
             android:layout_marginTop = "10dp"/>
 
         <LinearLayout
@@ -80,7 +81,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="15dp"
-                android:text="Борис Веденский\nАвтор Droider Show, ОффТОП Шоу и #КакОно. Главред Droider.ru."
+                android:textColor="?android:attr/textColorSecondary"
+                android:text="@string/vedenskiy_about"
                 android:id="@+id/VedDescr"/>
         </LinearLayout>
 
@@ -106,7 +108,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="15dp"
-                android:text="Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast"
+                android:text="@string/istishev_about"
+                android:textColor="?android:attr/textColorSecondary"
                 android:id="@+id/IstDescr"/>
         </LinearLayout>
 
@@ -114,20 +117,20 @@
             android:id="@+id/about_frag_title2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Разработчки"
+            android:text="@string/devs_about"
             android:textStyle="bold"
-            android:textColor="@color/primary_header_text"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             android:gravity="center_horizontal"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp" />
 
         <View
             android:id="@+id/divider_line2"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="@color/colorAccent_dark"
+            android:background="?attr/colorAccent"
             android:layout_marginTop = "10dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
@@ -151,14 +154,13 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginTop="15dp"
-                android:layout_centerHorizontal="true"
-                android:text="Александр Гузенко\nПрограммист, студент МЭИ"
+                android:textColor="?android:attr/textColorSecondary"
+                android:text="@string/alex_about"
                 android:id="@+id/alex_descr"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/alex_linear"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="1">
@@ -175,7 +177,8 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginTop="15dp"
-                android:text="Артем Головин\nПрограммист, студент MRU"
+                android:textColor="?android:attr/textColorSecondary"
+                android:text="@string/art_about"
                 android:id="@+id/art_descr"/>
         </LinearLayout>
         <ImageView
@@ -184,5 +187,4 @@
             android:adjustViewBounds="true"
             android:src="@drawable/footer"/>
     </LinearLayout>
-
 </android.support.v4.widget.NestedScrollView>
