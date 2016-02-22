@@ -2,9 +2,9 @@ package com.awave.apps.droider.Utils.Feed;
 
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import com.awave.apps.droider.Elements.MainScreen.Feed;
@@ -27,7 +27,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     // Landscape
     private int previousTotal_landscape = 0;
     private byte visibleThreshold_landscape = 4; // 3
-    private byte firstVisibleItem_landscape;
+    private int[] firstVisibleItem_landscape;
     private byte visibleItemCount_landscape;
     private byte totalItemCount_landscape;
     public static short nextPage_landscape = 1;
@@ -43,10 +43,10 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         if (newState == 0){
             if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                portraitOrientation(mActivity, recyclerView, Feed.mLayoutManager);
+                portraitOrientation(mActivity, recyclerView, Feed.sLinearLayoutManager);
             }
             else if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                landscapeOrientation(mActivity, recyclerView, Feed.mGridLayoutManager);
+                landscapeOrientation(mActivity, recyclerView, Feed.sStaggeredGridLayoutManager);
             }
         }
     }
@@ -59,6 +59,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         Log.d(TAG, "portraitOrientation: totalItemCount_portrait = " + totalItemCount_portrait);
 
         firstVisibleItem_portrait = (byte) layoutManager.findFirstVisibleItemPosition();
+
 
         Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait = " + firstVisibleItem_portrait);
 
@@ -76,24 +77,30 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
     }
 
-    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, GridLayoutManager gridLayoutManager){
+    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager){
         this.mActivity = activity;
         visibleItemCount_landscape = (byte) recyclerView.getChildCount();
-        totalItemCount_landscape = (byte) gridLayoutManager.getItemCount();
+        totalItemCount_landscape = (byte) staggeredGridLayoutManager.getItemCount();
 
         Log.d(TAG, "landscapeOrientation: totalItemCount_landscape = " + totalItemCount_landscape);
 
-        firstVisibleItem_landscape = (byte) gridLayoutManager.findFirstVisibleItemPosition();
+        firstVisibleItem_landscape = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItem_landscape);
 
-        Log.d(TAG, "landscapeOrientation: firstVisibleItem_landscape = " + firstVisibleItem_landscape);
+        Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait (length) = " + firstVisibleItem_landscape.length);
+        Log.d(TAG, "landscapeOrientation: firstVisibleItem_landscape [0]/[1] = \n"
+                + firstVisibleItem_landscape[0] + "/" + firstVisibleItem_landscape[1]);
+
+        if (firstVisibleItem_landscape != null && firstVisibleItem_landscape.length > 0){
+            previousTotal_landscape = firstVisibleItem_landscape[0];
+        }
 
         if (isLoading_landscape && totalItemCount_landscape > previousTotal_landscape) {
             isLoading_landscape = false;
-            previousTotal_landscape = totalItemCount_landscape;
+            previousTotal_landscape = firstVisibleItem_landscape[0];
         }
 
         if (!isLoading_landscape &&
-                (totalItemCount_landscape - visibleItemCount_landscape) <= (firstVisibleItem_landscape + visibleThreshold_landscape)){
+                (totalItemCount_landscape - visibleItemCount_landscape) <= (previousTotal_landscape + visibleThreshold_landscape)){
             nextPage_landscape++;
             loadNextPage();
             isLoading_landscape = true;

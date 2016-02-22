@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                        Feed.sSwipeRefreshLayout.setRefreshing(true);
                     }
                 });
                 break;
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                        Feed.sSwipeRefreshLayout.setRefreshing(true);
                     }
                 });
                 break;
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                        Feed.sSwipeRefreshLayout.setRefreshing(true);
                     }
                 });
                 break;
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                        Feed.sSwipeRefreshLayout.setRefreshing(true);
                     }
                 });
                 break;
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Feed.mSwipeRefreshLayout.setRefreshing(true);
+                        Feed.sSwipeRefreshLayout.setRefreshing(true);
                     }
                 });
                 break;

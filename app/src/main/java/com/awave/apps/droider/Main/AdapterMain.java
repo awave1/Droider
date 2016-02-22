@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
+import com.awave.apps.droider.Utils.ArticleParser;
 import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
@@ -109,8 +110,8 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
                     article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
-                    setHeaderImg(viewHolder.cardImage.getDrawable());
-                    setHeadImage(item.getImgUrl());
+                    AdapterMain.setHeaderImg(viewHolder.cardImage.getDrawable());
+                    AdapterMain.setHeadImage(item.getImgUrl());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException

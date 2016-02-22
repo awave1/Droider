@@ -136,7 +136,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         /** Пробовал через темы, но чёт не ставится, хотя там есть такое "homeAsUpIndicator"
          * и ещё, не очень красиво выглядит, когда цвет индиктора белый, а тайтла чёрный
-          */
+         */
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         upArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -209,7 +209,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPreExecute() {
-           //тут добавить анимацию загрузки статьи, на подобии конкуретнов
+            //тут добавить анимацию загрузки статьи, на подобии конкуретнов
             super.onPreExecute();
         }
 
