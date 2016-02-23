@@ -128,10 +128,6 @@ public class Helper {
         }
     }
 
-    public static Typeface getLobsterFont(Activity a){
-        return Typeface.createFromAsset(a.getAssets(), "fonts/Lobster-Regular.ttf");
-    }
-
     public static Bitmap drawableToBitmap(Drawable d){
         Bitmap b;
         if (d instanceof BitmapDrawable){
@@ -182,8 +178,41 @@ public class Helper {
         blur.setRadius(11.5f);
         blur.setInput(in);
         blur.forEach(out);
+
         out.copyTo(outBitmap);
+        renderScript.destroy();
 
         return new BitmapDrawable(context.getResources(), outBitmap);
+    }
+
+    public static Bitmap applyBlur(Bitmap bitmap, Context context){
+        RenderScript rs = RenderScript.create(context);
+        Bitmap bitmapCopy;
+        int width = Math.round(bitmap.getWidth() * 0.4f);
+        int height = Math.round(bitmap.getHeight() * 0.4f);
+
+        if(bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
+            bitmapCopy = bitmap;
+        }
+        else {
+            bitmapCopy = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        }
+
+        Bitmap outBitmap = Bitmap.createBitmap(width, height, bitmapCopy.getConfig());
+
+        Allocation in = Allocation.createFromBitmap(rs, bitmapCopy,
+                Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+        Allocation out = Allocation.createTyped(rs, in.getType());
+
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, out.getElement());
+        blur.setRadius(11.5f);
+        blur.setInput(in);
+        blur.forEach(out);
+
+        out.copyTo(bitmap);
+        rs.destroy();
+
+        return outBitmap;
     }
 }

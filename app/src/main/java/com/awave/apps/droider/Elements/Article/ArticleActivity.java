@@ -3,20 +3,22 @@ package com.awave.apps.droider.Elements.Article;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -26,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -34,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.awave.apps.droider.Main.AdapterMain;
@@ -44,10 +44,10 @@ import com.bumptech.glide.Glide;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
@@ -65,8 +65,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     protected static TextView articleShortDescription;
     protected static ImageView articleImg;
     private ProgressBar mProgressBar;
-    private static DisplayMetrics metrics;
-    private static boolean outIntent = false;
     private static String title;
     private static String shortDescr;
     private Bundle extras;
@@ -75,9 +73,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static String webViewTextColor;
     private int theme;
 
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        final Drawable browseIcon = getResources().getDrawable(R.drawable.ic_explore);
 
         /** Проверяем какая тема выбрана в настройках **/
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
@@ -89,6 +90,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
             webViewBackgroundColor = R.color.cardBackgroundColor_light;
             webViewTextColor = "black";
+            try {
+                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(backArrow);
+            }
+            catch (NullPointerException e){
+                Log.e(TAG, "onCreate: unable to set color of back arrow", e.getCause());
+            }
+
         } else if (themeName.equals("Тёмная")) {
             theme = R.style.DarkTheme;
             Window window = getWindow();
@@ -97,8 +107,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
             webViewBackgroundColor = R.color.cardBackgroundColor_dark;
             webViewTextColor = "white";
+            try {
+                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
+                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(backArrow);
+            }
+            catch (NullPointerException e){
+                Log.e(TAG, "onCreate: unable to set color of back arrow", e.getCause());
+            }
         }
         super.onCreate(savedInstanceState);
+
         /** Затем "включаем" нужную тему **/
         setTheme(theme);
 
@@ -106,6 +125,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         /** Обнаружение всех View **/
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.articleCoordinator);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
         articleHeader = (TextView) findViewById(R.id.article_header);
@@ -115,21 +135,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         article = (WebView) findViewById(R.id.article);
         articleImg = (ImageView)findViewById(R.id.article_header_img);
-        Parser parser = new Parser(this);
-        /** Проверка как мы попали в статью **/
 
+        /** Проверка как мы попали в статью **/
+        Parser parser = new Parser(this);
         extras = getIntent().getExtras();
         //Проверят можно в статье про ремикс ос 2 (через категорию видео легко найти)
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            outIntent = true;
-            parser.isOutIntent(outIntent);
-            String data = getIntent().getData().toString();
-            parser.execute(data);
-//            Log.d(TAG, "onCreate: url from browser. img = " + Parser.img);
-//            Glide.with(this).load(Parser.img).into(articleImg);
+            parser.isOutIntent(true);
+            String outsideUrl = getIntent().getData().toString();
+            parser.execute(outsideUrl);
         }
         else {
-
             title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
             shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
@@ -147,18 +163,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleShortDescription.setText(shortDescr);
         articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
-
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        /** Пробовал через темы, но чёт не ставится, хотя там есть такое "homeAsUpIndicator"
-         * и ещё, не очень красиво выглядит, когда цвет индиктора белый, а тайтла чёрный
-         */
-        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        upArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,40 +174,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 finish();
             }
         });
-
-        /** не плохо бы вынести в отдельный метод */
-
-        metrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int screenHeight = metrics.heightPixels;
-
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
-
         appBarLayout.addOnOffsetChangedListener(this);
+
+        this.calculateMinimumHeight();
         this.setupArticleWebView(article);
 
-
-
-
         /** Test **/
-//        Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
-//
-//        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.articleCoordinator);
-//        try {
-//            mCoordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
-//        }
-//        catch (NullPointerException e){
-//            mCoordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
-//            Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
-//        }
-
-
+        this.setupPaletteBackground(false, coordinatorLayout);
     }
 
     @Override
@@ -233,9 +214,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         private String title = "";
         private String descr = "";
+        private Drawable drawable = null;
+        private Bitmap bitmap = null;
 //        private int progress = 0;
 //        private Handler mHandler = new Handler();
 
+        public Parser(Activity a){
+            this.activity = a;
+        }
 
         public void setProgressBar(ProgressBar progressBar) {
             this.progressBar = progressBar;
@@ -245,18 +231,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             this.outIntent = isOut;
         }
 
-        public Parser(Activity a){
-            this.activity = a;
-        }
-
-        /**
-         * Runs on the UI thread after {@link #publishProgress} is invoked.
-         * The specified values are the values passed to {@link #publishProgress}.
-         *
-         * @param values The values indicating progress.
-         * @see #publishProgress
-         * @see #doInBackground
-         */
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
@@ -275,34 +249,30 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
 
+                boolean isYoutube = elements.get(1).html().contains("iframe");
 
                 if (outIntent) {
-                    Log.d(TAG, "doInBackground: OUTINTENT");
-                    title = titleDiv.text();
-                    img = elements.get(1).select(".article_image img").attr("src");
-                    Log.d(TAG, "doInBackground: title from element = " + titleDiv.text());
-                    Log.d(TAG, "doInBackground: elem1 = " + img);
-                    descr = elements.get(0).text() + " " + elements.get(1).text();
-//                    Log.d(TAG, "doInBackground: shortDescr = " + shortDescr.toString());
+                    Log.d(TAG, "doInBackground: out intent");
+                    this.title = titleDiv.text();
+                    if (isYoutube){
+                        img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
+                    }
+                    else {
+                        img = elements.get(1).select(".article_image img").attr("src");
+                    }
+                    descr = elements.get(0).text() + " " + elements.get(2).text();
+                    try {
+                        bitmap = Glide.with(activity).load(img).asBitmap().into(-1, -1).get(); // -1, -1 дает возможность загрузить фулл сайз.
+                    }
+                    catch (InterruptedException | ExecutionException e){
+                        Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )", e.getCause());
+                    }
                 }
-
-                //хрен знает почему, но заходит он сюда 1 раз только, а может вообще не зайти
-//                for (Element e : imgs) {
-//                    if (e.attr("src").equals(AdapterMain.getHeadImage())) {
-//                        img = e.attr("src");
-//                        Log.d(TAG, "doInBackground: IMG" + img);
-//                        e.remove();
-//                        break;
-//                    }
-//                }
-
 
                 elements.remove(0);
                 elements.remove(1);
 
                 html = setupHtml(elements.toString());
-
-                Log.d(TAG, "doInBackground: html content = " + html);
             } catch (IOException e) {
                 Log.d(TAG, "Failed");
             }
@@ -312,16 +282,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             if (outIntent){
-                Glide.with(activity).load(img).into(articleImg);
-                articleImg.setImageDrawable(Helper.applyBlur(articleImg.getDrawable(), activity));
-                articleHeader.setText(title);
-                articleShortDescription.setText(descr);
+                articleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+                articleHeader.setText(this.title);
+                ArticleActivity.title = this.title;
+                articleShortDescription.setText(this.descr);
             }
 
             try {
                 article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
             } catch (StringIndexOutOfBoundsException e) {
-                e.printStackTrace();
+                Log.e(TAG, "onPostExecute: Error loading html content", e.getCause());
             }
         }
 
@@ -393,5 +363,31 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+    }
+
+    private void calculateMinimumHeight(){
+        DisplayMetrics metrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenHeight = metrics.heightPixels;
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
+    }
+
+    private void setupPaletteBackground(boolean isEnabled, CoordinatorLayout coordinatorLayout){
+        if (isEnabled){
+            Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
+            try {
+                coordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
+            }
+            catch (NullPointerException e){
+                coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
+                Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
+            }
+        }
     }
 }

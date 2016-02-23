@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.ArticleParser;
 import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
@@ -37,7 +36,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     private static Drawable headerImg;
 
     public AdapterMain(Activity activity, ArrayList<FeedItem> data) {
-        this.activity = activity;
+        AdapterMain.activity = activity;
         AdapterMain.data = data;
     }
 
