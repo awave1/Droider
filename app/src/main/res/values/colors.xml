@@ -6,7 +6,7 @@
     <!--DarkTheme-->
     <color name="colorPrimary_dark">#212121</color>
     <color name="colorPrimaryDark_dark">#000000</color>
-    <color name="colorAccent_dark">#FF80CBC4</color>
+    <color name="colorAccent_dark">#FF009688</color>
     <color name="colorBackground_dark">#303030</color>
     <color name="colorForeground_dark">#212121</color>
     <color name="colorNavigationBar_dark">#212121</color>
@@ -21,7 +21,7 @@
 
     <!--LightTheme-->
     <color name="colorPrimary_light">#BDBDBD</color>
-    <color name="colorPrimaryDark_light">#757575</color>
+    <color name="colorPrimaryDark_light">#424242</color>
     <color name="colorAccent_light">#FF009688</color>
     <color name="colorBackground_light">#fafafa</color>
     <color name="colorForeground_light">#FF000000</color>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
@@ -28,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -64,7 +68,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     protected static WebView article;
     protected static TextView articleShortDescription;
     protected static ImageView articleImg;
-    private ProgressBar mProgressBar;
+    protected static ProgressBar mProgressBar;
     private static String title;
     private static String shortDescr;
     private Bundle extras;
@@ -86,7 +90,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             theme = R.style.LightTheme;
             Window window = getWindow();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_light));
+                window.setStatusBarColor(Color.TRANSPARENT);
             }
             webViewBackgroundColor = R.color.cardBackgroundColor_light;
             webViewTextColor = "black";
@@ -103,7 +107,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             theme = R.style.DarkTheme;
             Window window = getWindow();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_dark));
+                window.setStatusBarColor(Color.TRANSPARENT);
             }
             webViewBackgroundColor = R.color.cardBackgroundColor_dark;
             webViewTextColor = "white";
@@ -135,9 +139,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         article = (WebView) findViewById(R.id.article);
         articleImg = (ImageView)findViewById(R.id.article_header_img);
+        mProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
+
+        Parser parser = new Parser(this);
 
         /** Проверка как мы попали в статью **/
-        Parser parser = new Parser(this);
         extras = getIntent().getExtras();
         //Проверят можно в статье про ремикс ос 2 (через категорию видео легко найти)
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
@@ -192,7 +198,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-        } else {
+        }
+        else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
@@ -204,37 +211,24 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
 
     public static class Parser extends AsyncTask<String, Integer, String> {
-        // todo Needs Refactoring + support for youtube screenshots + progress bar
+        // todo: add support for progress bar
+        private Activity activity;
 
         private String html = "";
         private String img = "";
-        private ProgressBar progressBar;
-        private boolean outIntent;
-        private Activity activity;
-
         private String title = "";
         private String descr = "";
-        private Drawable drawable = null;
         private Bitmap bitmap = null;
-//        private int progress = 0;
-//        private Handler mHandler = new Handler();
+        private boolean outIntent;
+
+        private int count = 0;
 
         public Parser(Activity a){
             this.activity = a;
         }
 
-        public void setProgressBar(ProgressBar progressBar) {
-            this.progressBar = progressBar;
-        }
-
         public void isOutIntent(boolean isOut){
             this.outIntent = isOut;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            Log.d(TAG, "onProgressUpdate: values = " + values[0].toString());
         }
 
         @Override
@@ -254,13 +248,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 if (outIntent) {
                     Log.d(TAG, "doInBackground: out intent");
                     this.title = titleDiv.text();
+
                     if (isYoutube){
                         img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
                     }
                     else {
                         img = elements.get(1).select(".article_image img").attr("src");
                     }
+
                     descr = elements.get(0).text() + " " + elements.get(2).text();
+
                     try {
                         bitmap = Glide.with(activity).load(img).asBitmap().into(-1, -1).get(); // -1, -1 дает возможность загрузить фулл сайз.
                     }
@@ -281,6 +278,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPostExecute(String aVoid) {
+            mProgressBar.setVisibility(View.GONE);
             if (outIntent){
                 articleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
                 articleHeader.setText(this.title);
@@ -358,6 +356,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private void setupArticleWebView(WebView w) {
         w.setBackgroundColor(getResources().getColor(webViewBackgroundColor));
         WebChromeClient client = new WebChromeClient();
+
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
         settings.setJavaScriptEnabled(true);
