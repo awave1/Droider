@@ -2,5 +2,6 @@
 <resources>
     <attr name="textShadowColor" format="string"/>
     <attr name="cardTitleTint" format="string"/>
+    <attr name="cardTitleTextColor" format="string"/>
     <attr name="navDrawerBackgroundColor" format="string"/>
 </resources>

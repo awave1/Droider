@@ -2,6 +2,7 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -51,13 +52,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (themeName.equals("Светлая")) {
             theme = R.style.LightTheme;
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_light));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_light));
+            }
+
         } else if (themeName.equals("Тёмная")) {
             theme = R.style.DarkTheme;
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_dark));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_dark));
+            }
         }
         super.onCreate(savedInstanceState);
         /** Затем "включаем" нужную тему **/

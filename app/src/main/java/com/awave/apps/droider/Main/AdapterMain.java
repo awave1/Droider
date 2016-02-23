@@ -56,7 +56,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
 
             articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
-            articleTitle.setTypeface(Helper.getRobotoFont("Medium", true, AdapterMain.activity));
+            articleTitle.setTypeface(Helper.getRobotoFont("Light", true, AdapterMain.activity));
 
             description = (TextView) holderView.findViewById(R.id.articleDescription);
             description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
@@ -104,7 +104,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             @Override
             public void onClick(View v) {
                 try {
-                    new ArticleActivity.Parser().execute(url);
+                    new ArticleActivity.Parser(activity).execute(url);
                     Intent article = new Intent(activity, ArticleActivity.class);
                     article.putExtra(Helper.EXTRA_ARTICLE_TITLE, viewHolder.articleTitle.getText().toString());
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());

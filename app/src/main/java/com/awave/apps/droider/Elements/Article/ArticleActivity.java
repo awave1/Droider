@@ -1,13 +1,16 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -29,7 +32,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.awave.apps.droider.Main.AdapterMain;
@@ -55,14 +60,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public static RelativeLayout headerImage;
     private LinearLayout articleRelLayout;
 
-    private TextView articleHeader;
-    private static WebView article;
-    private TextView articleShortDescription;
+    protected static TextView articleHeader;
+    protected static WebView article;
+    protected static TextView articleShortDescription;
+    protected static ImageView articleImg;
+    private ProgressBar mProgressBar;
     private static DisplayMetrics metrics;
     private static boolean outIntent = false;
     private static String title;
     private static String shortDescr;
     private Bundle extras;
+
+    private int webViewBackgroundColor;
+    private static String webViewTextColor;
     private int theme;
 
     @SuppressLint("NewApi")
@@ -74,13 +84,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         if (themeName.equals("Светлая")) {
             theme = R.style.LightTheme;
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_light));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+                window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_light));
+            }
+            webViewBackgroundColor = R.color.cardBackgroundColor_light;
+            webViewTextColor = "black";
         } else if (themeName.equals("Тёмная")) {
             theme = R.style.DarkTheme;
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark_dark));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_dark));
+            }
+            webViewBackgroundColor = R.color.cardBackgroundColor_dark;
+            webViewTextColor = "white";
         }
         super.onCreate(savedInstanceState);
         /** Затем "включаем" нужную тему **/
@@ -98,32 +114,35 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         article = (WebView) findViewById(R.id.article);
-        ImageView articleImg = (ImageView)findViewById(R.id.article_header_img);
-
+        articleImg = (ImageView)findViewById(R.id.article_header_img);
+        Parser parser = new Parser(this);
         /** Проверка как мы попали в статью **/
 
         extras = getIntent().getExtras();
         //Проверят можно в статье про ремикс ос 2 (через категорию видео легко найти)
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             outIntent = true;
+            parser.isOutIntent(outIntent);
             String data = getIntent().getData().toString();
-            new ArticleActivity.Parser().execute(data);
-            Glide.with(this).load(Parser.img).into(articleImg);
+            parser.execute(data);
+//            Log.d(TAG, "onCreate: url from browser. img = " + Parser.img);
+//            Glide.with(this).load(Parser.img).into(articleImg);
         }
         else {
 
             title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
             shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-                headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
-            else
-                headerImage.setBackground(AdapterMain.getHeaderImage());
-
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
+                headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+            }
+            else {
+                headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+            }
         }
 
         articleHeader.setText(title);
-        articleHeader.setTypeface(Helper.getRobotoFont("Regular", false, this));
+        articleHeader.setTypeface(Helper.getRobotoFont("Light", true, this));
 
         articleShortDescription.setText(shortDescr);
         articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
@@ -148,7 +167,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         });
 
-
         /** не плохо бы вынести в отдельный метод */
 
         metrics = new DisplayMetrics();
@@ -165,6 +183,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         appBarLayout.addOnOffsetChangedListener(this);
         this.setupArticleWebView(article);
+
 
 
 
@@ -203,14 +222,45 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
 
-    public static class Parser extends AsyncTask<String, String, String> {
-        private String html = "";
-        private static String img = "";
+    public static class Parser extends AsyncTask<String, Integer, String> {
+        // todo Needs Refactoring + support for youtube screenshots + progress bar
 
+        private String html = "";
+        private String img = "";
+        private ProgressBar progressBar;
+        private boolean outIntent;
+        private Activity activity;
+
+        private String title = "";
+        private String descr = "";
+//        private int progress = 0;
+//        private Handler mHandler = new Handler();
+
+
+        public void setProgressBar(ProgressBar progressBar) {
+            this.progressBar = progressBar;
+        }
+
+        public void isOutIntent(boolean isOut){
+            this.outIntent = isOut;
+        }
+
+        public Parser(Activity a){
+            this.activity = a;
+        }
+
+        /**
+         * Runs on the UI thread after {@link #publishProgress} is invoked.
+         * The specified values are the values passed to {@link #publishProgress}.
+         *
+         * @param values The values indicating progress.
+         * @see #publishProgress
+         * @see #doInBackground
+         */
         @Override
-        protected void onPreExecute() {
-            //тут добавить анимацию загрузки статьи, на подобии конкуретнов
-            super.onPreExecute();
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d(TAG, "onProgressUpdate: values = " + values[0].toString());
         }
 
         @Override
@@ -228,19 +278,23 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
                 if (outIntent) {
                     Log.d(TAG, "doInBackground: OUTINTENT");
-                    title = titleDiv.attr("title") + "\n";
-                    shortDescr = elements.get(0).text() + "\n" + elements.get(1).text() + "\n" + elements.get(2).text();
+                    title = titleDiv.text();
+                    img = elements.get(1).select(".article_image img").attr("src");
+                    Log.d(TAG, "doInBackground: title from element = " + titleDiv.text());
+                    Log.d(TAG, "doInBackground: elem1 = " + img);
+                    descr = elements.get(0).text() + " " + elements.get(1).text();
+//                    Log.d(TAG, "doInBackground: shortDescr = " + shortDescr.toString());
                 }
 
                 //хрен знает почему, но заходит он сюда 1 раз только, а может вообще не зайти
-                for (Element e : imgs) {
-                    if (e.attr("src").equals(AdapterMain.getHeadImage())) {
-                        img = e.attr("src");
-                        Log.d(TAG, "doInBackground: IMG" + img);
-                        e.remove();
-                        break;
-                    }
-                }
+//                for (Element e : imgs) {
+//                    if (e.attr("src").equals(AdapterMain.getHeadImage())) {
+//                        img = e.attr("src");
+//                        Log.d(TAG, "doInBackground: IMG" + img);
+//                        e.remove();
+//                        break;
+//                    }
+//                }
 
 
                 elements.remove(0);
@@ -257,9 +311,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPostExecute(String aVoid) {
+            if (outIntent){
+                Glide.with(activity).load(img).into(articleImg);
+                articleImg.setImageDrawable(Helper.applyBlur(articleImg.getDrawable(), activity));
+                articleHeader.setText(title);
+                articleShortDescription.setText(descr);
+            }
+
             try {
                 article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
-
             } catch (StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
@@ -269,7 +329,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             String head = "<head>" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
-                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;}" +
+                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:"+webViewTextColor+"}" +
                     ".container{padding-left:16px;padding-right:16px; padding-bottom:16px}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
@@ -326,7 +386,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
     private void setupArticleWebView(WebView w) {
-        w.setBackgroundColor(getResources().getColor(R.color.cardBackgroundColor_light));
+        w.setBackgroundColor(getResources().getColor(webViewBackgroundColor));
         WebChromeClient client = new WebChromeClient();
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);

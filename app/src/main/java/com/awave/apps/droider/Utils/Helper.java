@@ -13,6 +13,10 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -124,6 +128,10 @@ public class Helper {
         }
     }
 
+    public static Typeface getLobsterFont(Activity a){
+        return Typeface.createFromAsset(a.getAssets(), "fonts/Lobster-Regular.ttf");
+    }
+
     public static Bitmap drawableToBitmap(Drawable d){
         Bitmap b;
         if (d instanceof BitmapDrawable){
@@ -155,5 +163,27 @@ public class Helper {
             a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
+    }
+
+    public static Drawable applyBlur(Drawable drawable, Context context){
+        Bitmap fromDrawable = drawableToBitmap(drawable);
+        int width = Math.round(fromDrawable.getWidth() * 0.4f);
+        int height = Math.round(fromDrawable.getHeight() * 0.4f);
+
+        Bitmap inBitmap = Bitmap.createScaledBitmap(fromDrawable, width, height, false);
+        Bitmap outBitmap = Bitmap.createBitmap(inBitmap);
+
+        RenderScript renderScript = RenderScript.create(context);
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+
+        Allocation in = Allocation.createFromBitmap(renderScript, inBitmap);
+        Allocation out = Allocation.createFromBitmap(renderScript, outBitmap);
+
+        blur.setRadius(11.5f);
+        blur.setInput(in);
+        blur.forEach(out);
+        out.copyTo(outBitmap);
+
+        return new BitmapDrawable(context.getResources(), outBitmap);
     }
 }

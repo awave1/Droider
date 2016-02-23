@@ -4,6 +4,7 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBarOverlay">false</item>
+        <item name="android:windowActivityTransitions">true</item>
 
         <item name="colorPrimary">@color/colorPrimary_dark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
@@ -11,7 +12,6 @@
         <item name="android:colorBackground">@color/colorBackground_dark</item>
         <item name="android:colorForeground">@color/colorForeground_dark</item>
         <item name="android:navigationBarColor">@color/colorNavigationBar_dark</item>
-        <item name="android:statusBarColor">@color/colorStatusBar_dark</item>
         <item name="android:textColorPrimary">@color/textColorPrimary_dark</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_dark</item>
         <item name="cardBackgroundColor">@color/cardBackgroundColor_dark</item>
@@ -30,9 +30,9 @@
         <item name="android:colorBackground">@color/colorBackground_light</item>
         <item name="android:colorForeground">@color/colorForeground_light</item>
         <item name="android:navigationBarColor">@color/colorNavigationBar_light</item>
-        <item name="android:statusBarColor">@color/colorStatusBar_light</item>
         <item name="android:textColorPrimary">@color/textColorPrimary_light</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
+        <item name="cardTitleTextColor">@color/cardTitleTextColor_light</item>
 
         <item name="cardTitleTint">@color/cardTitleTint_light</item>
         <item name="cardBackgroundColor">@color/cardBackgroundColor_light</item>
