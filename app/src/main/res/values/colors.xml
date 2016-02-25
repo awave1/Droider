@@ -16,7 +16,7 @@
     <color name="cardBackgroundColor_dark">#424242</color>
     <color name="cardTitleTint_dark">#53f5f5f5</color>
 
-    <color name="navDrawerBackgroundColor_dark">#e0e0e0</color>
+    <color name="navDrawerBackgroundColor_dark">#212121</color>
     <color name="colorControlNormal_dark">#ffffff</color>
 
     <!--LightTheme-->

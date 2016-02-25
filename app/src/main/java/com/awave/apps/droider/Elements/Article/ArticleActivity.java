@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,8 +17,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
@@ -31,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -64,11 +60,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public static RelativeLayout headerImage;
     private LinearLayout articleRelLayout;
 
-    protected static TextView articleHeader;
-    protected static WebView article;
-    protected static TextView articleShortDescription;
-    protected static ImageView articleImg;
-    protected static ProgressBar mProgressBar;
+    protected static TextView sArticleHeader;
+    protected static WebView sArticle;
+    protected static TextView sArticleShortDescription;
+    protected static ImageView sArticleImg;
+    protected static ProgressBar sProgressBar;
+    protected static Menu sMenu;
     private static String title;
     private static String shortDescr;
     private Bundle extras;
@@ -76,13 +73,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private int webViewBackgroundColor;
     private static String webViewTextColor;
     private int theme;
-
+    private boolean setGroupVisible = true;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        @SuppressLint("PrivateResource")
         final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         final Drawable browseIcon = getResources().getDrawable(R.drawable.ic_explore);
+        final Drawable shareIcon = getResources().getDrawable(R.drawable.ic_share);
 
         /** Проверяем какая тема выбрана в настройках **/
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
@@ -95,6 +94,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             webViewBackgroundColor = R.color.cardBackgroundColor_light;
             webViewTextColor = "black";
             try {
+                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
                 browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
                 backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
                 getSupportActionBar().setHomeAsUpIndicator(backArrow);
@@ -112,6 +112,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             webViewBackgroundColor = R.color.cardBackgroundColor_dark;
             webViewTextColor = "white";
             try {
+                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
                 browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
                 backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
                 getSupportActionBar().setHomeAsUpIndicator(backArrow);
@@ -132,14 +133,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.articleCoordinator);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
-        articleHeader = (TextView) findViewById(R.id.article_header);
-        articleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
+        sArticleHeader = (TextView) findViewById(R.id.article_header);
+        sArticleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
-        article = (WebView) findViewById(R.id.article);
-        articleImg = (ImageView)findViewById(R.id.article_header_img);
-        mProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
+        sArticle = (WebView) findViewById(R.id.article);
+        sArticleImg = (ImageView)findViewById(R.id.article_header_img);
+        sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
 
         Parser parser = new Parser(this);
 
@@ -163,11 +164,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         }
 
-        articleHeader.setText(title);
-        articleHeader.setTypeface(Helper.getRobotoFont("Light", true, this));
+        sArticleHeader.setText(title);
+        sArticleHeader.setTypeface(Helper.getRobotoFont("Light", true, this));
 
-        articleShortDescription.setText(shortDescr);
-        articleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
+        sArticleShortDescription.setText(shortDescr);
+        sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -183,7 +184,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         appBarLayout.addOnOffsetChangedListener(this);
 
         this.calculateMinimumHeight();
-        this.setupArticleWebView(article);
+        this.setupArticleWebView(sArticle);
 
         /** Test **/
         this.setupPaletteBackground(false, coordinatorLayout);
@@ -211,7 +212,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
 
     public static class Parser extends AsyncTask<String, Integer, String> {
-        // todo: add support for progress bar
         private Activity activity;
 
         private String html = "";
@@ -278,16 +278,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         @Override
         protected void onPostExecute(String aVoid) {
-            mProgressBar.setVisibility(View.GONE);
+            sProgressBar.setVisibility(View.GONE);
             if (outIntent){
-                articleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
-                articleHeader.setText(this.title);
+                sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+                sArticleHeader.setText(this.title);
                 ArticleActivity.title = this.title;
-                articleShortDescription.setText(this.descr);
+                sArticleShortDescription.setText(this.descr);
             }
 
             try {
-                article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
+                sArticle.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
             } catch (StringIndexOutOfBoundsException e) {
                 Log.e(TAG, "onPostExecute: Error loading html content", e.getCause());
             }
@@ -324,6 +324,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         mShareActionProvider = (ShareActionProvider)
                 MenuItemCompat.getActionProvider(shareItem);
         // Set up ShareActionProvider's default share intent
+        mShareActionProvider.setShareIntent(shareIntent());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -335,10 +336,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
-            case R.id.action_share:
-                mShareActionProvider.setShareIntent(shareIntent());
-                shareIntent();
-                break;
             case R.id.action_open_in_browser:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
                 break;
@@ -353,6 +350,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         return share;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupArticleWebView(WebView w) {
         w.setBackgroundColor(getResources().getColor(webViewBackgroundColor));
         WebChromeClient client = new WebChromeClient();

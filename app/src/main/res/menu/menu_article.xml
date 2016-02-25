@@ -3,21 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ArticleActivity">
+        <item
+            android:id="@+id/action_open_in_browser"
+            android:title="@string/open_in_browser"
+            android:icon="@drawable/ic_explore"
+            android:orderInCategory="100"
+            app:showAsAction="always"
+            />
 
-    <item
-        android:id="@+id/action_open_in_browser"
-        android:title="@string/open_in_browser"
-        android:icon="@drawable/ic_explore"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        />
-
-    <item
-        android:id="@+id/action_share"
-        android:title="@string/share"
-        android:icon="@android:drawable/ic_menu_share"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
-
+        <item
+            android:id="@+id/action_share"
+            android:title="@string/share"
+            android:icon="@drawable/ic_share"
+            android:orderInCategory="100"
+            app:showAsAction="always"
+            android:enabled="true"
+            app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
 </menu>

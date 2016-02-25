@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -37,8 +36,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
     private AdapterMain adapter;
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
-
-    public static boolean isRefreshing;
 
     @Nullable
     @Override
@@ -161,6 +158,8 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
         }
     }
+
+
 
     public static Feed instance(String feedUrl){
         Feed feed = new Feed();
