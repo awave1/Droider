@@ -31,6 +31,7 @@ import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -74,52 +75,33 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static String webViewTextColor;
     private int theme;
     private boolean setGroupVisible = true;
-
-    @SuppressLint("NewApi")
+     Drawable browseIcon = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        @SuppressLint("PrivateResource")
-        final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        final Drawable browseIcon = getResources().getDrawable(R.drawable.ic_explore);
-        final Drawable shareIcon = getResources().getDrawable(R.drawable.ic_share);
+        final Drawable backArrow = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow);
+                     browseIcon = ContextCompat.getDrawable(this, R.drawable.ic_browser);
+        final Drawable shareIcon = ContextCompat.getDrawable(this, R.drawable.ic_share);
 
         /** Проверяем какая тема выбрана в настройках **/
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
+
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+
         if (themeName.equals("Светлая")) {
             theme = R.style.LightTheme;
-            Window window = getWindow();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                window.setStatusBarColor(Color.TRANSPARENT);
-            }
+
             webViewBackgroundColor = R.color.cardBackgroundColor_light;
             webViewTextColor = "black";
-            try {
-                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(backArrow);
-            }
-            catch (NullPointerException e){
-                Log.e(TAG, "onCreate: unable to set color of back arrow", e.getCause());
-            }
 
         } else if (themeName.equals("Тёмная")) {
             theme = R.style.DarkTheme;
-            Window window = getWindow();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                window.setStatusBarColor(Color.TRANSPARENT);
-            }
+
             webViewBackgroundColor = R.color.cardBackgroundColor_dark;
             webViewTextColor = "white";
-            try {
-                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(backArrow);
-            }
-            catch (NullPointerException e){
-                Log.e(TAG, "onCreate: unable to set color of back arrow", e.getCause());
-            }
+
         }
         super.onCreate(savedInstanceState);
 
@@ -142,6 +124,33 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         sArticleImg = (ImageView)findViewById(R.id.article_header_img);
         sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
 
+        setSupportActionBar(toolbar);
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        /**Кидался нуллпоинтер в стрелочке назад, потому что ещё не было создано вью, которое надо менять! **/
+        switch(theme){
+            case R.style.DarkTheme:
+                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
+                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
+                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(backArrow);
+                break;
+            case R.style.LightTheme:
+                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+                backArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(backArrow);
+                break;
+        }
         Parser parser = new Parser(this);
 
         /** Проверка как мы попали в статью **/
@@ -170,17 +179,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
-        setSupportActionBar(toolbar);
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         appBarLayout.addOnOffsetChangedListener(this);
 
         this.calculateMinimumHeight();
@@ -190,10 +189,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         this.setupPaletteBackground(false, coordinatorLayout);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -210,6 +205,49 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
     }
 
+    public void restoreActionBar() {
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Only show items in the action bar relevant to this screen
+        // if the drawer is not showing. Otherwise, let the drawer
+        // decide what to show in the action bar.
+        getMenuInflater().inflate(R.menu.menu_article, menu);
+        restoreActionBar();
+        menu.getItem(0).setIcon(browseIcon);
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        mShareActionProvider = (ShareActionProvider)
+                MenuItemCompat.getActionProvider(shareItem);
+        // Set up ShareActionProvider's default share intent
+        mShareActionProvider.setShareIntent(shareIntent());
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()) {
+            case R.id.action_open_in_browser:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
+                break;
+        }
+        return true;
+    }
+
+    private Intent shareIntent() {
+        share = new Intent(Intent.ACTION_SEND);
+        share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
+        share.setType("text/plain");
+        return share;
+    }
+
 
     public static class Parser extends AsyncTask<String, Integer, String> {
         private Activity activity;
@@ -221,7 +259,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         private Bitmap bitmap = null;
         private boolean outIntent;
 
-        private int count = 0;
+
 
         public Parser(Activity a){
             this.activity = a;
@@ -308,47 +346,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
     }
 
-    public void restoreActionBar() {
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Only show items in the action bar relevant to this screen
-        // if the drawer is not showing. Otherwise, let the drawer
-        // decide what to show in the action bar.
-        getMenuInflater().inflate(R.menu.menu_article, menu);
-        restoreActionBar();
-        MenuItem shareItem = menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider)
-                MenuItemCompat.getActionProvider(shareItem);
-        // Set up ShareActionProvider's default share intent
-        mShareActionProvider.setShareIntent(shareIntent());
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        switch (item.getItemId()) {
-            case R.id.action_open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
-                break;
-        }
-        return true;
-    }
-
-    private Intent shareIntent() {
-        share = new Intent(Intent.ACTION_SEND);
-        share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
-        share.setType("text/plain");
-        return share;
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setupArticleWebView(WebView w) {
@@ -360,6 +357,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setAppCacheEnabled(true);
+        settings.setSaveFormData(true);
+
     }
 
     private void calculateMinimumHeight(){

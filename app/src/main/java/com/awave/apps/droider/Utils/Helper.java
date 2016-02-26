@@ -36,7 +36,6 @@ public class Helper {
     public static final String EXTRA_SHORT_DESCRIPTION = "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
     private static final String TAG = "Helper";
 
-    public static String youtubeVideo;
 
     public static CharSequence trimWhiteSpace(CharSequence src){
         if (src == null){
@@ -62,10 +61,6 @@ public class Helper {
             return img;
         }
         return img;
-    }
-
-    public static String trimYoutubeId(String src){
-        return src.substring(30);
     }
 
     public static boolean isOnline(Context context) {

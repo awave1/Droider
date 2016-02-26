@@ -6,16 +6,17 @@
         <item
             android:id="@+id/action_open_in_browser"
             android:title="@string/open_in_browser"
-            android:icon="@drawable/ic_explore"
-            android:orderInCategory="100"
-            app:showAsAction="always"
+            android:orderInCategory="1"
+            app:showAsAction="ifRoom"
+            android:enabled="true"
+
             />
 
         <item
             android:id="@+id/action_share"
             android:title="@string/share"
             android:icon="@drawable/ic_share"
-            android:orderInCategory="100"
+            android:orderInCategory="2"
             app:showAsAction="always"
             android:enabled="true"
             app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />

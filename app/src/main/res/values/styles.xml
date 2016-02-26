@@ -12,7 +12,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary_dark</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_dark</item>
         <item name="cardTitleTextColor">@color/cardTitleTextColor_dark</item>
-
+        <item name="android:homeAsUpIndicator">@color/colorControlNormal_dark</item>
         <item name="cardTitleTint">@color/cardTitleTint_dark</item>
         <item name="cardBackgroundColor">@color/cardBackgroundColor_dark</item>
         <item name="navDrawerBackgroundColor">@color/navDrawerBackgroundColor_dark</item>
@@ -30,7 +30,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary_light</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
         <item name="cardTitleTextColor">@color/cardTitleTextColor_light</item>
-
+        <item name="android:homeAsUpIndicator">@color/colorControlNormal_light</item>
         <item name="cardTitleTint">@color/cardTitleTint_light</item>
         <item name="cardBackgroundColor">@color/cardBackgroundColor_light</item>
         <item name="navDrawerBackgroundColor">@color/navDrawerBackgroundColor_light</item>
