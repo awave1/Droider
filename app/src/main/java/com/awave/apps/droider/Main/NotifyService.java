@@ -40,10 +40,9 @@ public class NotifyService extends Service {
                     public void run() {
                         Notify();
                     }
-                },NewPush(Interval()), NewPush(Interval()));
+                }, NewPush(Interval()), NewPush(Interval()));
                 Log.d("NOTIFY", "Repeat in " + Interval() + "hour");
-            }
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }
@@ -66,7 +65,7 @@ public class NotifyService extends Service {
         if (Byte.parseByte(sp.getString("interval", "3")) == 3)
             return 3;
         else if (Byte.parseByte(sp.getString("interval", "6")) == 6)
-            return  6;
+            return 6;
         else if (Byte.parseByte(sp.getString("interval", "12")) == 12)
             return 12;
         else if (Byte.parseByte(sp.getString("interval", "24")) == 24)
@@ -78,12 +77,13 @@ public class NotifyService extends Service {
     public boolean isPushEnabled() {
         return sp.getBoolean("notify", true);
     }
+
     public long NewPush(long time) {
-        return  (time*1000*60*60);
+        return (time * 1000 * 60 * 60);
     }
 
-    private long minutePush(long time){
-        return time * 1000*60;
+    private long minutePush(long time) {
+        return time * 1000 * 60;
     }
 
     public void Notify() {
@@ -104,11 +104,9 @@ public class NotifyService extends Service {
                 .setDefaults(Notification.FLAG_SHOW_LIGHTS);
 
 
-
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            notification  = builder.getNotification();
-        }
-        else {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            notification = builder.getNotification();
+        } else {
             Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
             inboxStyle.setBigContentTitle("Новые статьи");

@@ -31,11 +31,25 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     private static final String TAG = "Feed";
 
     public static SwipeRefreshLayout sSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
     public static LinearLayoutManager sLinearLayoutManager;
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
-    private AdapterMain adapter;
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private AdapterMain adapter;
+
+    public static Feed instance(String feedUrl) {
+        Feed feed = new Feed();
+        Bundle bundle = new Bundle();
+        bundle.putString(Helper.EXTRA_ARTICLE_URL, feedUrl);
+        feed.setArguments(bundle);
+        return feed;
+    }
+
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
+//    }
 
     @Nullable
     @Override
@@ -63,12 +77,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         return v;
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
-//    }
-
     @Override
     public void onRefresh() {
         new Handler().post(new Runnable() {
@@ -76,8 +84,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             public void run() {
                 if (Helper.isOnline(getActivity())) {
                     getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
-                }
-                else {
+                } else {
                     Helper.initInternetConnectionDialog(getActivity());
                 }
             }
@@ -159,17 +166,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         }
     }
 
-
-
-    public static Feed instance(String feedUrl){
-        Feed feed = new Feed();
-        Bundle bundle = new Bundle();
-        bundle.putString(Helper.EXTRA_ARTICLE_URL, feedUrl);
-        feed.setArguments(bundle);
-        return feed;
-    }
-
-    public  void loadMore(String url) {
+    public void loadMore(String url) {
         new FeedParser(sFeedItems, sSwipeRefreshLayout, getActivity(), this).execute(url);
     }
 

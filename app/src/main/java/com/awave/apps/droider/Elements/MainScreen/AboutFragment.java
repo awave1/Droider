@@ -18,7 +18,7 @@ public class AboutFragment extends android.app.Fragment {
 
         View v = inflater.inflate(R.layout.about_fragment, container, false);
 
-        ImageView ArtIm = (ImageView)v.findViewById(R.id.ArtIm);
+        ImageView ArtIm = (ImageView) v.findViewById(R.id.ArtIm);
 
         ArtIm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,7 +27,7 @@ public class AboutFragment extends android.app.Fragment {
             }
         });
 
-        ImageView AlexIm = (ImageView)v.findViewById(R.id.AlexIm);
+        ImageView AlexIm = (ImageView) v.findViewById(R.id.AlexIm);
         AlexIm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,7 +35,7 @@ public class AboutFragment extends android.app.Fragment {
             }
         });
 
-        ImageView IstIm = (ImageView)v.findViewById(R.id.IstIm);
+        ImageView IstIm = (ImageView) v.findViewById(R.id.IstIm);
 
         IstIm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +45,7 @@ public class AboutFragment extends android.app.Fragment {
         });
 
 
-        ImageView VedIm = (ImageView)v.findViewById(R.id.VedIm);
+        ImageView VedIm = (ImageView) v.findViewById(R.id.VedIm);
 
         VedIm.setOnClickListener(new View.OnClickListener() {
             @Override

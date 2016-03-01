@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="textShadowColor" format="string"/>
-    <attr name="cardTitleTint" format="string"/>
-    <attr name="cardTitleTextColor" format="string"/>
-    <attr name="navDrawerBackgroundColor" format="string"/>
+    <attr name="textShadowColor" format="string" />
+    <attr name="cardTitleTint" format="string" />
+    <attr name="colorIcons" format="string" />
 </resources>

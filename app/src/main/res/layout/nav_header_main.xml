@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:orientation="vertical"
-    android:gravity="bottom">
+    android:gravity="bottom"
+    android:orientation="vertical">
+
     <ImageView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_drawer_account_header_height"
-        android:paddingBottom="60dp"
         android:adjustViewBounds="true"
         android:orientation="vertical"
+        android:paddingBottom="60dp"
         android:scaleType="centerCrop"
         android:src="@drawable/footer"
-        tools:ignore="ContentDescription">
-    </ImageView>
+        tools:ignore="ContentDescription"/>
 </LinearLayout>

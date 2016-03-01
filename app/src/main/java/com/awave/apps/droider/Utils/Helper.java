@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
@@ -37,26 +38,26 @@ public class Helper {
     private static final String TAG = "Helper";
 
 
-    public static CharSequence trimWhiteSpace(CharSequence src){
-        if (src == null){
+    public static CharSequence trimWhiteSpace(CharSequence src) {
+        if (src == null) {
             return "";
         }
 
         int i = src.length();
         try {
-            while (i-- >= 0 && Character.isWhitespace(src.charAt(i))){
+            while (i-- >= 0 && Character.isWhitespace(src.charAt(i))) {
 
             }
         } catch (StringIndexOutOfBoundsException e) {
             Log.d(TAG, "trimWhiteSpace: not needed to trim");
         }
 
-        return src.subSequence(0, i+1);
+        return src.subSequence(0, i + 1);
     }
 
-    public static String getYoutubeImg(String src){
+    public static String getYoutubeImg(String src) {
         String img = "";
-        if(!src.equals("")) {
+        if (!src.equals("")) {
             img = "http://img.youtube.com/vi/" + src.substring(src.indexOf("embed/") + 6) + "/0.jpg";
             return img;
         }
@@ -70,6 +71,7 @@ public class Helper {
     }
 
     public static void initInternetConnectionDialog(final Context context) {
+
         new AlertDialog.Builder(context).setTitle("Соединение прервано").setMessage("Проверьте своё соединение с интернетом")
                 .setNeutralButton("Включить Wi-Fi?", new DialogInterface.OnClickListener() {
                     @Override
@@ -84,15 +86,15 @@ public class Helper {
                 }).create().show();
     }
 
-    public static void enableWiFi(Context c, boolean wifi){
+    public static void enableWiFi(Context c, boolean wifi) {
         WifiManager wifiConfiguration = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
         wifiConfiguration.setWifiEnabled(wifi);
     }
 
 
-    public static Typeface getRobotoFont(String type, boolean isItalic, Activity a){
-        if (!isItalic){
-            switch (type){
+    public static Typeface getRobotoFont(String type, boolean isItalic, Activity a) {
+        if (!isItalic) {
+            switch (type) {
                 case "Thin":
                     return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Thin.ttf");
                 case "Light":
@@ -106,9 +108,8 @@ public class Helper {
                 default:
                     return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-Regular");
             }
-        }
-        else {
-            switch (type){
+        } else {
+            switch (type) {
                 case "Thin":
                     return Typeface.createFromAsset(a.getAssets(), "fonts/Roboto-ThinItalic.ttf");
                 case "Light":
@@ -123,19 +124,18 @@ public class Helper {
         }
     }
 
-    public static Bitmap drawableToBitmap(Drawable d){
+    public static Bitmap drawableToBitmap(Drawable d) {
         Bitmap b;
-        if (d instanceof BitmapDrawable){
+        if (d instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) d;
-            if (bitmapDrawable.getBitmap() != null){
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
 
-        if (d.getIntrinsicWidth() <= 0 || d.getIntrinsicHeight() <= 0){
+        if (d.getIntrinsicWidth() <= 0 || d.getIntrinsicHeight() <= 0) {
             b = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        }
-        else {
+        } else {
             b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         }
 
@@ -145,18 +145,17 @@ public class Helper {
         return b;
     }
 
-    public static void setTransparent(boolean isTransparent, Activity a){
-        if (isTransparent && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+    public static void setTransparent(boolean isTransparent, Activity a) {
+        if (isTransparent && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             a.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            a.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-        else {
+        } else {
             a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
 
-    public static Drawable applyBlur(Drawable drawable, Context context){
+    public static Drawable applyBlur(Drawable drawable, Context context) {
         Bitmap fromDrawable = drawableToBitmap(drawable);
         int width = Math.round(fromDrawable.getWidth() * 0.4f);
         int height = Math.round(fromDrawable.getHeight() * 0.4f);
@@ -180,16 +179,15 @@ public class Helper {
         return new BitmapDrawable(context.getResources(), outBitmap);
     }
 
-    public static Bitmap applyBlur(Bitmap bitmap, Context context){
+    public static Bitmap applyBlur(Bitmap bitmap, Context context) {
         RenderScript rs = RenderScript.create(context);
         Bitmap bitmapCopy;
         int width = Math.round(bitmap.getWidth() * 0.4f);
         int height = Math.round(bitmap.getHeight() * 0.4f);
 
-        if(bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
+        if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
             bitmapCopy = bitmap;
-        }
-        else {
+        } else {
             bitmapCopy = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         }
 

@@ -26,40 +26,31 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
-    private String TAG = AdapterMain.class.getSimpleName();
-
     public static ArrayList<FeedItem> data;
-
     private static Activity activity;
-
     private static String headImage;
     private static Drawable headerImg;
+    private String TAG = AdapterMain.class.getSimpleName();
 
     public AdapterMain(Activity activity, ArrayList<FeedItem> data) {
         AdapterMain.activity = activity;
         AdapterMain.data = data;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static String getHeadImage() {
+        return headImage;
+    }
 
-        private CardView cardView;
-        public ImageView cardImage;
-        private TextView siteUrl;
-        private TextView articleTitle;
-        private TextView description;
+    public static void setHeadImage(String mImage) {
+        AdapterMain.headImage = mImage;
+    }
 
-        public ViewHolder(View holderView) {
-            super(holderView);
-            cardView = (CardView) holderView.findViewById(R.id.card_view);
-            cardImage = (ImageView) holderView.findViewById(R.id.card_image);
-            siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
+    public static Drawable getHeaderImage() {
+        return headerImg;
+    }
 
-            articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
-            articleTitle.setTypeface(Helper.getRobotoFont("Light", true, AdapterMain.activity));
-
-            description = (TextView) holderView.findViewById(R.id.articleDescription);
-            description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
-        }
+    public static void setHeaderImg(Drawable mHeaderImg) {
+        AdapterMain.headerImg = mHeaderImg;
     }
 
     @Override
@@ -71,19 +62,6 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         return new ViewHolder(v);
     }
 
-
-    public static String getHeadImage() {
-        return headImage;
-    }
-
-    public static void setHeadImage (String mImage){
-        AdapterMain.headImage = mImage;
-    }
-
-    public static Drawable getHeaderImage() { return  headerImg; }
-
-    public static void setHeaderImg(Drawable mHeaderImg) { AdapterMain.headerImg = mHeaderImg; }
-
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
 
@@ -92,7 +70,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteUrl.setText(item.getUrl());
 
-        if (viewHolder.cardImage != null){
+        if (viewHolder.cardImage != null) {
             Glide.with(activity).load(item.getImgUrl()).into(viewHolder.cardImage);
         }
 
@@ -138,6 +116,28 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView cardImage;
+        private CardView cardView;
+        private TextView siteUrl;
+        private TextView articleTitle;
+        private TextView description;
+
+        public ViewHolder(View holderView) {
+            super(holderView);
+            cardView = (CardView) holderView.findViewById(R.id.card_view);
+            cardImage = (ImageView) holderView.findViewById(R.id.card_image);
+            siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
+
+            articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
+            articleTitle.setTypeface(Helper.getRobotoFont("Light", true, AdapterMain.activity));
+
+            description = (TextView) holderView.findViewById(R.id.articleDescription);
+            description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
+        }
     }
 
 }

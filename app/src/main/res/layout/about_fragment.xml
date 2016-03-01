@@ -1,54 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
+
     <LinearLayout
+        android:id="@+id/about_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/about_linearLayout">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/about_frag_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
             android:text="@string/shortInformation_about"
-            android:textStyle="bold"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"/>
+            android:textStyle="bold" />
+
         <View
             android:id="@+id/divider_line"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="?attr/colorAccent"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:background="?attr/colorAccent" />
+
         <TextView
             android:id="@+id/about_frag_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textStyle="italic"
             android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/description"
             android:textColor="?android:attr/textColorSecondary"
-            android:text="@string/description"/>
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/about_frag_title3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/authors_about"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="25sp"
-            android:gravity="center_horizontal"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/authors_about"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <View
             android:id="@+id/divider_line3"
@@ -56,135 +59,146 @@
             android:layout_height="1dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:background="?attr/colorAccent"
-            android:layout_marginTop = "10dp"/>
+            android:layout_marginTop="10dp"
+            android:background="?attr/colorAccent" />
 
         <LinearLayout
+            android:id="@+id/author1_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:id="@+id/author1_linear"
+            android:orientation="horizontal"
             android:weightSum="1">
+
             <ImageView
+                android:id="@+id/VedIm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/VedIm"
                 android:layout_margin="15dp"
-                android:src="@drawable/ic_vedenskiy"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp" />
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_vedenskiy" />
+
             <TextView
+                android:id="@+id/VedDescr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
-                android:textColor="?android:attr/textColorSecondary"
                 android:text="@string/vedenskiy_about"
-                android:id="@+id/VedDescr"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/author2_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:id="@+id/author2_linear"
+            android:orientation="horizontal"
             android:weightSum="1">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/IstIm"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_istishev"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp" />
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginRight="10dp"
+                android:layout_margin="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_istishev" />
+
+            <TextView
+                android:id="@+id/IstDescr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
                 android:text="@string/istishev_about"
-                android:textColor="?android:attr/textColorSecondary"
-                android:id="@+id/IstDescr"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/about_frag_title2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/devs_about"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="25sp"
-            android:gravity="center_horizontal"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/devs_about"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <View
             android:id="@+id/divider_line2"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="?attr/colorAccent"
-            android:layout_marginTop = "10dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal"
+            android:background="?attr/colorAccent" />
+
+        <LinearLayout
             android:id="@+id/alex_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:weightSum="1">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/AlexIm"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_alex"/>
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginRight="15dp"
+                android:layout_margin="15dp"
+                android:src="@drawable/ic_alex" />
+
+            <TextView
+                android:id="@+id/alex_descr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="15dp"
-                android:textColor="?android:attr/textColorSecondary"
                 android:text="@string/alex_about"
-                android:id="@+id/alex_descr"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="1">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/ArtIm"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_art"/>
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginRight="15dp"
+                android:layout_margin="15dp"
+                android:src="@drawable/ic_art" />
+
+            <TextView
+                android:id="@+id/art_descr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="15dp"
-                android:textColor="?android:attr/textColorSecondary"
                 android:text="@string/art_about"
-                android:id="@+id/art_descr"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:src="@drawable/footer"/>
+            android:src="@drawable/footer" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

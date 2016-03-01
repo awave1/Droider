@@ -3,10 +3,10 @@ package com.awave.apps.droider.Elements.Article;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,11 +16,12 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.support.v8.renderscript.RSIllegalArgumentException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,7 +32,6 @@ import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -53,56 +53,78 @@ import java.util.concurrent.ExecutionException;
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
     private static final String TAG = "ArticleActivity";
-
-    private static Toolbar toolbar;
-    private CollapsingToolbarLayout collapsingToolbar;
-    private ShareActionProvider mShareActionProvider;
-    private Intent share = getIntent();
     public static RelativeLayout headerImage;
-    private LinearLayout articleRelLayout;
-
     protected static TextView sArticleHeader;
     protected static WebView sArticle;
     protected static TextView sArticleShortDescription;
     protected static ImageView sArticleImg;
     protected static ProgressBar sProgressBar;
     protected static Menu sMenu;
+    private static Toolbar toolbar;
     private static String title;
     private static String shortDescr;
-    private Bundle extras;
-
-    private int webViewBackgroundColor;
     private static String webViewTextColor;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private ShareActionProvider mShareActionProvider;
+    private Intent share;
+    private LinearLayout articleRelLayout;
+    private Bundle extras;
+    private int webViewBackgroundColor;
     private int theme;
     private boolean setGroupVisible = true;
-     Drawable browseIcon = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Drawable backArrow = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow);
-                     browseIcon = ContextCompat.getDrawable(this, R.drawable.ic_browser);
-        final Drawable shareIcon = ContextCompat.getDrawable(this, R.drawable.ic_share);
 
         /** Проверяем какая тема выбрана в настройках **/
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
 
         Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.TRANSPARENT);
         }
 
-        if (themeName.equals("Светлая")) {
-            theme = R.style.LightTheme;
+        switch (themeName) {
+            case "Светлая":
 
-            webViewBackgroundColor = R.color.cardBackgroundColor_light;
-            webViewTextColor = "black";
+                theme = R.style.LightTheme;
 
-        } else if (themeName.equals("Тёмная")) {
-            theme = R.style.DarkTheme;
+                webViewBackgroundColor = R.color.cardBackgroundColor_light;
+                webViewTextColor = "black";
+                break;
 
-            webViewBackgroundColor = R.color.cardBackgroundColor_dark;
-            webViewTextColor = "white";
+            case "Тёмная":
 
+                theme = R.style.DarkTheme;
+
+                webViewBackgroundColor = R.color.cardBackgroundColor_dark;
+                webViewTextColor = "white";
+                break;
+
+            case "В зависимости от времени суток":
+
+                theme = R.style.DayNightAuto;
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+
+                int currentNightMode = getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK;
+                switch (currentNightMode) {
+                    case Configuration.UI_MODE_NIGHT_NO:
+                        Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
+                        webViewBackgroundColor = R.color.cardBackgroundColor_light;
+                        break;
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
+                        webViewBackgroundColor = R.color.cardBackgroundColor_dark;
+
+                        break;
+                    case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                        Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
+                        break;
+                }
+                break;
         }
+
         super.onCreate(savedInstanceState);
 
         /** Затем "включаем" нужную тему **/
@@ -121,13 +143,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         sArticle = (WebView) findViewById(R.id.article);
-        sArticleImg = (ImageView)findViewById(R.id.article_header_img);
+        sArticleImg = (ImageView) findViewById(R.id.article_header_img);
         sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,21 +159,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         });
 
-        /**Кидался нуллпоинтер в стрелочке назад, потому что ещё не было создано вью, которое надо менять! **/
-        switch(theme){
-            case R.style.DarkTheme:
-                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                backArrow.setColorFilter(ContextCompat.getColor(this,R.color.colorControlNormal_dark), PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(backArrow);
-                break;
-            case R.style.LightTheme:
-                shareIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                browseIcon.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                backArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorControlNormal_light), PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(backArrow);
-                break;
-        }
+
         Parser parser = new Parser(this);
 
         /** Проверка как мы попали в статью **/
@@ -160,16 +169,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             parser.isOutIntent(true);
             String outsideUrl = getIntent().getData().toString();
             parser.execute(outsideUrl);
-        }
-        else {
+        } else {
             title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
             shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
-            }
-            else {
-                headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+            } else {
+                try {
+                    headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                    headerImage.setBackground(AdapterMain.getHeaderImage());
+                }
+
             }
         }
 
@@ -178,12 +191,15 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
+        Log.d(TAG, "onCreate: getDrawingCacheBackgroundColor() " + articleRelLayout.getSolidColor());
+
 
 
         appBarLayout.addOnOffsetChangedListener(this);
 
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
+
 
         /** Test **/
         this.setupPaletteBackground(false, coordinatorLayout);
@@ -194,8 +210,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-        }
-        else {
+        } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
@@ -217,12 +232,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
         restoreActionBar();
-        menu.getItem(0).setIcon(browseIcon);
-        MenuItem shareItem = menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider)
-                MenuItemCompat.getActionProvider(shareItem);
-        // Set up ShareActionProvider's default share intent
-        mShareActionProvider.setShareIntent(shareIntent());
+//
+//        MenuItem shareItem = menu.findItem(R.id.action_share);
+//        mShareActionProvider = (ShareActionProvider)
+//                MenuItemCompat.getActionProvider(shareItem);
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -237,20 +251,60 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             case R.id.action_open_in_browser:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
                 break;
+            case R.id.action_share:
+                share = new Intent(Intent.ACTION_SEND);
+                share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
+                share.setType("text/plain");
+                startActivity(share);
         }
         return true;
     }
 
-    private Intent shareIntent() {
-        share = new Intent(Intent.ACTION_SEND);
-        share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
-        share.setType("text/plain");
-        return share;
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setupArticleWebView(WebView w) {
+        w.setBackgroundColor(ContextCompat.getColor(Parser.activity, webViewBackgroundColor));
+
+        WebChromeClient client = new WebChromeClient();
+
+        WebSettings settings = w.getSettings();
+        w.setWebChromeClient(client);
+        settings.setJavaScriptEnabled(true);
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
+        settings.setLoadWithOverviewMode(true);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setAppCacheEnabled(true);
+        settings.setSaveFormData(true);
+
     }
 
+    private void calculateMinimumHeight() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenHeight = metrics.heightPixels;
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
+    }
+
+    private void setupPaletteBackground(boolean isEnabled, CoordinatorLayout coordinatorLayout) {
+        if (isEnabled) {
+            Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
+            try {
+                coordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
+            } catch (NullPointerException e) {
+                coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
+                Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
+            }
+        }
+    }
 
     public static class Parser extends AsyncTask<String, Integer, String> {
-        private Activity activity;
+        private static Activity activity;
 
         private String html = "";
         private String img = "";
@@ -260,12 +314,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         private boolean outIntent;
 
 
-
-        public Parser(Activity a){
-            this.activity = a;
+        public Parser(Activity a) {
+            Parser.activity = a;
         }
 
-        public void isOutIntent(boolean isOut){
+        public void isOutIntent(boolean isOut) {
             this.outIntent = isOut;
         }
 
@@ -273,7 +326,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         protected String doInBackground(String... strings) {
             try {
                 Document document = Jsoup.connect(strings[0]).get();
-                Elements elements = document.select(".entry p");
+                Elements elements = document.select(".entry p, .entry ul li, .entry ol li");
+
                 Elements imgs = document.select(".entry img");
                 Elements iframe = document.select(".entry iframe");
                 Elements titleDiv = document.select(".title a");
@@ -287,10 +341,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     Log.d(TAG, "doInBackground: out intent");
                     this.title = titleDiv.text();
 
-                    if (isYoutube){
+                    if (isYoutube) {
                         img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
-                    }
-                    else {
+                    } else {
                         img = elements.get(1).select(".article_image img").attr("src");
                     }
 
@@ -298,8 +351,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
                     try {
                         bitmap = Glide.with(activity).load(img).asBitmap().into(-1, -1).get(); // -1, -1 дает возможность загрузить фулл сайз.
-                    }
-                    catch (InterruptedException | ExecutionException e){
+                    } catch (InterruptedException | ExecutionException e) {
                         Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )", e.getCause());
                     }
                 }
@@ -317,8 +369,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             sProgressBar.setVisibility(View.GONE);
-            if (outIntent){
-                sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+            if (outIntent) {
+                try {
+                    //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
+                    sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+                } catch (RSIllegalArgumentException rsie) {
+                    rsie.printStackTrace();
+                    sArticleImg.setImageBitmap(bitmap);
+                }
                 sArticleHeader.setText(this.title);
                 ArticleActivity.title = this.title;
                 sArticleShortDescription.setText(this.descr);
@@ -335,7 +393,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             String head = "<head>" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
-                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:"+webViewTextColor+"}" +
+                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:" + webViewTextColor + "}" +
                     ".container{padding-left:16px;padding-right:16px; padding-bottom:16px}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
@@ -343,48 +401,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     "img{max-width: 100%; width: auto; height: auto;}" +
                     "</style></head>";
             return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
-        }
-    }
-
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private void setupArticleWebView(WebView w) {
-        w.setBackgroundColor(getResources().getColor(webViewBackgroundColor));
-        WebChromeClient client = new WebChromeClient();
-
-        WebSettings settings = w.getSettings();
-        w.setWebChromeClient(client);
-        settings.setJavaScriptEnabled(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        settings.setAppCacheEnabled(true);
-        settings.setSaveFormData(true);
-
-    }
-
-    private void calculateMinimumHeight(){
-        DisplayMetrics metrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int screenHeight = metrics.heightPixels;
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
-    }
-
-    private void setupPaletteBackground(boolean isEnabled, CoordinatorLayout coordinatorLayout){
-        if (isEnabled){
-            Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
-            try {
-                coordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
-            }
-            catch (NullPointerException e){
-                coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
-                Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
-            }
         }
     }
 }

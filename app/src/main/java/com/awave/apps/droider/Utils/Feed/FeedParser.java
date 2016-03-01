@@ -3,8 +3,10 @@ package com.awave.apps.droider.Utils.Feed;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.awave.apps.droider.Utils.Helper;
 
@@ -36,7 +38,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
 
     private OnTaskCompleted mOnTaskCompleted;
 
-    public FeedParser(ArrayList<FeedItem> data, SwipeRefreshLayout refreshLayout, Context context, OnTaskCompleted onTaskCompleted){
+    public FeedParser(ArrayList<FeedItem> data, SwipeRefreshLayout refreshLayout, Context context, OnTaskCompleted onTaskCompleted) {
         this.mFeedItems = data;
         this.mSwipeRefreshLayout = refreshLayout;
         this.mContext = context;
@@ -50,7 +52,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
         synchronized (this) {
             try {
                 try {
-                    document[0] = Jsoup.connect(params[0]).get();
+                    document[0] = Jsoup.connect(params[0]).timeout(10000).get();
                 }
                 catch (SocketTimeoutException e) {
                     Log.e(TAG, "doInBackground: failed to connect/SocketTimeoutException. Running new Thread", e.getCause());
@@ -88,6 +90,7 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
         return null;
     }
 
+
     @Override
     protected void onPostExecute(Void aVoid) {
         for (int i = 0; i < count; i++) {
@@ -97,14 +100,12 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
             feedItem.setDescription(mDescrList.get(i));
             feedItem.setUrl(mUrlList.get(i));
 
-            if (mYoutubeUrlList.get(i).contains("youtube")){
+            if (mYoutubeUrlList.get(i).contains("youtube")) {
                 Log.d(TAG, "onPostExecute: set image from youtube");
                 feedItem.setImgUrl(Helper.getYoutubeImg(mYoutubeUrlList.get(i)));
-            }
-            else if (mImgUrlList.get(i).contains("\u0060")){
+            } else if (mImgUrlList.get(i).contains("\u0060")) {
                 feedItem.setImgUrl(mImgUrlList.get(i).replace("\u0060", "%60"));
-            }
-            else {
+            } else {
                 feedItem.setImgUrl(mImgUrlList.get(i));
             }
 

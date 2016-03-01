@@ -12,28 +12,25 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
 
 public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     private static final String TAG = "FeedOrientation";
-
+    public static short nextPage_portrait = 1;
+    public static short nextPage_landscape = 1;
     private Activity mActivity;
-
     // Portrait
     private int previousTotal_portrait = 0;
     private byte visibleThreshold_portrait = 5;
     private byte firstVisibleItem_portrait;
     private byte visibleItemCount_portrait;
     private byte totalItemCount_portrait;
-    public static short nextPage_portrait = 1;
     private boolean isLoading_portrait = true;
-
     // Landscape
     private int previousTotal_landscape = 0;
     private byte visibleThreshold_landscape = 4; // 3
     private int[] firstVisibleItem_landscape;
     private byte visibleItemCount_landscape;
     private byte totalItemCount_landscape;
-    public static short nextPage_landscape = 1;
     private boolean isLoading_landscape;
 
-    public FeedOrientation(Activity a){
+    public FeedOrientation(Activity a) {
         this.mActivity = a;
     }
 
@@ -41,17 +38,16 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        if (newState == 0){
-            if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (newState == 0) {
+            if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 portraitOrientation(mActivity, recyclerView, Feed.sLinearLayoutManager);
-            }
-            else if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            } else if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 landscapeOrientation(mActivity, recyclerView, Feed.sStaggeredGridLayoutManager);
             }
         }
     }
 
-    public void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager){
+    public void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
         this.mActivity = activity;
         visibleItemCount_portrait = (byte) recyclerView.getChildCount();
         totalItemCount_portrait = (byte) layoutManager.getItemCount();
@@ -63,13 +59,13 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
 
         Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait = " + firstVisibleItem_portrait);
 
-        if (isLoading_portrait && totalItemCount_portrait > previousTotal_portrait){
+        if (isLoading_portrait && totalItemCount_portrait > previousTotal_portrait) {
             isLoading_portrait = false;
             previousTotal_portrait = totalItemCount_portrait;
         }
 
         if (!isLoading_portrait &&
-                (totalItemCount_portrait - visibleItemCount_portrait) <= (firstVisibleItem_portrait + visibleThreshold_portrait)){
+                (totalItemCount_portrait - visibleItemCount_portrait) <= (firstVisibleItem_portrait + visibleThreshold_portrait)) {
             Log.d(TAG, "portraitOrientation: end has been reached, loading next page");
             nextPage_portrait++;
             loadNextPage();
@@ -77,7 +73,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
     }
 
-    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager){
+    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager) {
         this.mActivity = activity;
         visibleItemCount_landscape = (byte) recyclerView.getChildCount();
         totalItemCount_landscape = (byte) staggeredGridLayoutManager.getItemCount();
@@ -90,7 +86,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         Log.d(TAG, "landscapeOrientation: firstVisibleItem_landscape [0]/[1] = \n"
                 + firstVisibleItem_landscape[0] + "/" + firstVisibleItem_landscape[1]);
 
-        if (firstVisibleItem_landscape != null && firstVisibleItem_landscape.length > 0){
+        if (firstVisibleItem_landscape != null && firstVisibleItem_landscape.length > 0) {
             previousTotal_landscape = firstVisibleItem_landscape[0];
         }
 
@@ -100,7 +96,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
 
         if (!isLoading_landscape &&
-                (totalItemCount_landscape - visibleItemCount_landscape) <= (previousTotal_landscape + visibleThreshold_landscape)){
+                (totalItemCount_landscape - visibleItemCount_landscape) <= (previousTotal_landscape + visibleThreshold_landscape)) {
             nextPage_landscape++;
             loadNextPage();
             isLoading_landscape = true;
