@@ -24,11 +24,14 @@ public class NotifyService extends Service {
     Notification notification;
     SharedPreferences sp;
     Timer myTimer = new Timer();
+    NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate();
+        notificationManager = (NotificationManager) getApplicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -48,12 +51,6 @@ public class NotifyService extends Service {
         }
 
         return START_REDELIVER_INTENT;
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -79,48 +76,50 @@ public class NotifyService extends Service {
     }
 
     public long NewPush(long time) {
-        return (time * 1000 * 60 * 60);
-    }
+        return (time * 1000 * 10 );
+    }  //time * 1000 * 60 * 60
 
     private long minutePush(long time) {
         return time * 1000 * 60;
     }
 
     public void Notify() {
-        Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent contextIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent contextIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Resources res = getApplicationContext().getResources();
-        Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                Resources res = getApplicationContext().getResources();
+                Notification.Builder builder = new Notification.Builder(getApplicationContext());
 
-        builder.setContentIntent(contextIntent)
-                .setSmallIcon(R.drawable.ic_stat_dr)
-                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
-                .setTicker("Droider")
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
-                .setContentTitle("Droider")
-                .setContentText("Проверь, что нового?")
-                .setDefaults(Notification.FLAG_SHOW_LIGHTS);
+                builder.setContentIntent(contextIntent)
+                        .setSmallIcon(R.drawable.ic_stat_dr)
+                        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_large_notify))
+                        .setTicker("Droider")
+                        .setWhen(System.currentTimeMillis())
+                        .setAutoCancel(true)
+                        .setContentTitle("Новые статьи")
+                        .setContentText("Проверь, что нового?");
 
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    notification = builder.getNotification();
+                } else {
+                    Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            notification = builder.getNotification();
-        } else {
-            Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-
-            inboxStyle.setBigContentTitle("Новые статьи");
-            inboxStyle.addLine("Привет, не хочешь ли узнать, что нового");
-            inboxStyle.addLine(" в этом технологическом мире?");
+                    inboxStyle.setBigContentTitle("");
+                    inboxStyle.addLine("Привет, не хочешь ли узнать, что нового");
+                    inboxStyle.addLine(" в этом технологическом мире?");
 
 
-            builder.setStyle(inboxStyle);
-            notification = builder.build();
-        }
+                    builder.setStyle(inboxStyle);
+                    notification = builder.build();
+                }
+                notification.defaults = Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS;
 
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        Log.d("Notify ", "Сработало");
-        notificationManager.notify(NOTIFY_ID, notification);
+                Log.d("Notify ", "Сработало");
+                notificationManager.notify(NOTIFY_ID, notification);
+            }
+        }).start();
     }
 }

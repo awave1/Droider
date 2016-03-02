@@ -36,6 +36,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private AdapterMain adapter;
+    private static  String lastTitle;
 
     public static Feed instance(String feedUrl) {
         Feed feed = new Feed();
@@ -45,11 +46,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         return feed;
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
-//    }
 
     @Nullable
     @Override
@@ -73,8 +69,15 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         mRecyclerView.setHasFixedSize(true);
 
         initLayoutManager();
-
         return v;
+    }
+
+    @Override
+    public void onStop() {
+        lastTitle = sFeedItems.get(1).getTitle();
+        Log.d(TAG, "onCreateView: lastTitle " + lastTitle);
+        //а надо ли запариваться с обновлением через рсс?? вроде никто не просил пока, да и это ресурсо затратно думаю
+        super.onStop();
     }
 
     @Override
