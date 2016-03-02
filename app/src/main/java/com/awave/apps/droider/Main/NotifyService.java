@@ -72,11 +72,11 @@ public class NotifyService extends Service {
     }
 
     public boolean isPushEnabled() {
-        return sp.getBoolean("notify", true);
+        return sp.getBoolean("notify", false);
     }
 
     public long NewPush(long time) {
-        return (time * 1000 * 10 );
+        return (time * 1000 * 60 * 60);
     }  //time * 1000 * 60 * 60
 
     private long minutePush(long time) {

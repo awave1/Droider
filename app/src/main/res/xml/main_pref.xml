@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="Уведомления">
         <SwitchPreference
             android:textColor="?android:attr/textColorPrimary"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="notify"
             android:title="Включить уведомления" />
         <ListPreference
