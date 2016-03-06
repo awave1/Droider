@@ -74,8 +74,8 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
 
     @Override
     public void onStop() {
-        lastTitle = sFeedItems.get(1).getTitle();
-        Log.d(TAG, "onCreateView: lastTitle " + lastTitle);
+//        lastTitle = sFeedItems.get(1).getTitle();
+//        Log.d(TAG, "onCreateView: lastTitle " + lastTitle);
         //а надо ли запариваться с обновлением через рсс?? вроде никто не просил пока, да и это ресурсо затратно думаю
         super.onStop();
     }

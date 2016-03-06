@@ -191,7 +191,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
-        Log.d(TAG, "onCreate: getDrawingCacheBackgroundColor() " + articleRelLayout.getSolidColor());
 
 
 
@@ -200,9 +199,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
 
-
-        /** Test **/
-        this.setupPaletteBackground(false, coordinatorLayout);
     }
 
 
@@ -210,10 +206,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
+            setupPaletteBackground(true, toolbar, false);
         } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
+            setupPaletteBackground(true, toolbar, true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -291,13 +289,21 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
     }
 
-    private void setupPaletteBackground(boolean isEnabled, CoordinatorLayout coordinatorLayout) {
+    private void setupPaletteBackground(boolean isEnabled, Toolbar toolbar, boolean isTransparent) {
+        //isEnabled можно либо убрать либо вынести в настройки на предпочтение людей
         if (isEnabled) {
             Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
             try {
-                coordinatorLayout.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
+                if(p.getLightVibrantSwatch() != null && !isTransparent) {
+                    toolbar.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
+                    Log.e(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+                }
+                else {
+                    toolbar.setBackgroundColor(Color.TRANSPARENT);
+                    Log.e(TAG, "onCreate: else color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+                }
             } catch (NullPointerException e) {
-                coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
+//                toolbar.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
                 Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
             }
         }

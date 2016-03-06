@@ -1,6 +1,7 @@
 package com.awave.apps.droider.Utils.Feed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.awave.apps.droider.Utils.Helper;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -48,45 +50,35 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         final Document[] document = new Document[1];
-        final String [] parameters = params;
-        synchronized (this) {
-            try {
-                try {
-                    document[0] = Jsoup.connect(params[0]).timeout(10000).get();
-                }
-                catch (SocketTimeoutException e) {
-                    Log.e(TAG, "doInBackground: failed to connect/SocketTimeoutException. Running new Thread", e.getCause());
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                document[0] = Jsoup.connect(parameters[0]).get();
-                            } catch (IOException e) {
-                                Log.e(TAG, "run: failed to connect to the given url", e.getCause());
-                            }
-                        }
-                    }.run();
-
-                }
+        Connection.Response response = null;
+        int statusCode = 0;
+        try {
+            response = Jsoup.connect("http://droider.ru/").timeout(10000).execute();
+            statusCode = response.statusCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert response != null;
+        try {
+            if (statusCode == 200) {
+                document[0] = Jsoup.connect(params[0]).timeout(10000).ignoreHttpErrors(true).get();
                 Elements elements = document[0].select("div[id^=post]");
                 Elements entry = document[0].select("div.entry");
-
                 for (Element element : elements) {
                     mTitleList.add(element.getElementsByTag("a").attr("title"));
                     mUrlList.add(element.getElementsByTag("a").attr("href"));
                     mDescrList.add(element.getElementsByTag("p").text().substring(0, element.getElementsByTag("p").text().lastIndexOf(" ")));
                     mImgUrlList.add(element.getElementsByTag("img").attr("src"));
-
                     count++;
                 }
-
                 for (Element youtube : entry) {
                     mYoutubeUrlList.add(youtube.getElementsByTag("iframe").attr("src"));
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "doInBackground: Failed to load the feed", e.getCause());
-            }
         }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
