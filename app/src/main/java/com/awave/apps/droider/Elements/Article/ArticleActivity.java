@@ -314,7 +314,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         private String descr = "";
         private Bitmap bitmap = null;
         private boolean outIntent;
-
+        boolean isYoutube;
 
         public Parser(Activity a) {
             Parser.activity = a;
@@ -331,15 +331,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 Elements elements = document.select(".entry p, .entry ul li, .entry ol li");
 
                 Elements imgs = document.select(".entry img");
-                Elements iframe = document.select(".entry iframe");
+                Elements iframe = document.select(".entry iframe, .entry p iframe ");
                 Elements titleDiv = document.select(".title a");
 
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
 
-                boolean isYoutube = elements.get(1).html().contains("iframe");
+                isYoutube = elements.get(1).html().contains("iframe") || elements.get(2).html().contains("iframe") ;
+                Log.d(TAG, "doInBackground: " + isYoutube);
 
-                if (outIntent) {
+                if (outIntent || isYoutube) {
                     Log.d(TAG, "doInBackground: out intent");
                     this.title = titleDiv.text();
 
@@ -358,7 +359,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     }
                 }
 
+                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
+                if(elements.get(1).hasText())
                 elements.remove(1);
 
                 html = setupHtml(elements.toString());
@@ -371,12 +374,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             sProgressBar.setVisibility(View.GONE);
-            if (outIntent) {
+            if (outIntent || isYoutube) {
                 try {
                     //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
                     sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
-                } catch (RSIllegalArgumentException rsie) {
-                    rsie.printStackTrace();
+                } catch (NullPointerException | RSIllegalArgumentException npe)
+                {
+                    npe.printStackTrace();
                     sArticleImg.setImageBitmap(bitmap);
                 }
                 sArticleHeader.setText(this.title);
@@ -386,21 +390,22 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
             try {
                 sArticle.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
+                Log.d(TAG, "onPostExecute: "+ html);
             } catch (StringIndexOutOfBoundsException e) {
                 Log.e(TAG, "onPostExecute: Error loading html content", e.getCause());
             }
         }
 
-        private String setupHtml(String html) {
-            String head = "<head>" +
+        public String setupHtml(String html) {
+            String head = "<head>" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
                     "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:" + webViewTextColor + "}" +
-                    ".container{padding-left:16px;padding-right:16px; padding-bottom:36px}" +
+                    ".container{padding-left:16px;padding-right:16px; padding-bottom:36px;}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
-                    "iframe{max-width: 100%; width: 100%; height: 260px;}" +
-                    "img{max-width: 100%; width: auto; height: auto;}" +
+                    "iframe{max-width: 100%; width: 100%; height: 260px; allowfullscreen; }" +
+                    "img{max-width: 100%; width: 100vW; height: auto;}" +
                     "</style></head>";
             return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
         }

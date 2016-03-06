@@ -69,7 +69,7 @@
     <string-array name="theme_values">
         <item>Светлая</item>
         <item>Тёмная</item>
-        <item>В зависимости от времени суток</item>
+        <!--<item>В зависимости от времени суток</item>-->
     </string-array>
 
     <string name="theme_title">Выбрать тему</string>
