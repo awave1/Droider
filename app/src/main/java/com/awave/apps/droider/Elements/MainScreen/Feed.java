@@ -36,7 +36,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private AdapterMain adapter;
-    private static  String lastTitle;
 
     public static Feed instance(String feedUrl) {
         Feed feed = new Feed();
@@ -170,11 +169,11 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     }
 
     public void loadMore(String url) {
-        new FeedParser(sFeedItems, sSwipeRefreshLayout, getActivity(), this).execute(url);
+        new FeedParser(sFeedItems, sSwipeRefreshLayout, this).execute(url);
     }
 
     private void getFeeds(String url) {
         sFeedItems.clear();
-        new FeedParser(sFeedItems, sSwipeRefreshLayout, getActivity(), this).execute(url + 1);
+        new FeedParser(sFeedItems, sSwipeRefreshLayout,  this).execute(url + 1);
     }
 }

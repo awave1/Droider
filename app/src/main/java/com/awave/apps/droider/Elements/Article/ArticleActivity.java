@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,12 +13,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.support.v8.renderscript.RSIllegalArgumentException;
 import android.util.DisplayMetrics;
@@ -59,14 +56,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     protected static TextView sArticleShortDescription;
     protected static ImageView sArticleImg;
     protected static ProgressBar sProgressBar;
-    protected static Menu sMenu;
     private static Toolbar toolbar;
     private static String title;
     private static String shortDescr;
     private static String webViewTextColor;
     private CollapsingToolbarLayout collapsingToolbar;
-    private ShareActionProvider mShareActionProvider;
-    private Intent share;
     private LinearLayout articleRelLayout;
     private Bundle extras;
     private int webViewBackgroundColor;
@@ -134,7 +128,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         /** Обнаружение всех View **/
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.articleCoordinator);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
         sArticleHeader = (TextView) findViewById(R.id.article_header);
@@ -250,7 +243,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
                 break;
             case R.id.action_share:
-                share = new Intent(Intent.ACTION_SEND);
+                Intent share = new Intent(Intent.ACTION_SEND);
                 share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
                 share.setType("text/plain");
                 startActivity(share);
@@ -292,19 +285,22 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private void setupPaletteBackground(boolean isEnabled, Toolbar toolbar, boolean isTransparent) {
         //isEnabled можно либо убрать либо вынести в настройки на предпочтение людей
         if (isEnabled) {
-            Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
             try {
+                Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
                 if(p.getLightVibrantSwatch() != null && !isTransparent) {
                     toolbar.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
-                    Log.e(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
                 }
                 else {
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
-                    Log.e(TAG, "onCreate: else color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+                    Log.d(TAG, "onCreate: else color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
                 }
             } catch (NullPointerException e) {
-//                toolbar.setBackgroundColor(getResources().getColor(R.color.colorBackground_light));
-                Log.e(TAG, "onCreate: Unable to get color from bitmap", e.getCause());
+                if(isTransparent)
+                    toolbar.setBackgroundColor(Color.TRANSPARENT);
+                else
+
+                Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
             }
         }
     }
@@ -400,7 +396,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
                     "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:" + webViewTextColor + "}" +
-                    ".container{padding-left:16px;padding-right:16px; padding-bottom:16px}" +
+                    ".container{padding-left:16px;padding-right:16px; padding-bottom:36px}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
                     "iframe{max-width: 100%; width: 100%; height: 260px;}" +

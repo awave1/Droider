@@ -1,13 +1,10 @@
 package com.awave.apps.droider.Utils.Feed;
 
-import android.content.Context;
-import android.content.Intent;
+
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.awave.apps.droider.Utils.Helper;
 
@@ -18,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +31,14 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     private List<String> mYoutubeUrlList = new ArrayList<>();
 
     private Handler mRefreshHandler = new Handler();
-    private Context mContext;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private OnTaskCompleted mOnTaskCompleted;
 
-    public FeedParser(ArrayList<FeedItem> data, SwipeRefreshLayout refreshLayout, Context context, OnTaskCompleted onTaskCompleted) {
+    public FeedParser(ArrayList<FeedItem> data, SwipeRefreshLayout refreshLayout, OnTaskCompleted onTaskCompleted) {
         this.mFeedItems = data;
         this.mSwipeRefreshLayout = refreshLayout;
-        this.mContext = context;
         this.mOnTaskCompleted = onTaskCompleted;
     }
 

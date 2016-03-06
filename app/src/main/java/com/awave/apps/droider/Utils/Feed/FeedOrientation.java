@@ -17,14 +17,14 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     private Activity mActivity;
     // Portrait
     private int previousTotal_portrait = 0;
-    private byte visibleThreshold_portrait = 5;
+    private byte visibleThreshold_portrait = 4;
     private byte firstVisibleItem_portrait;
     private byte visibleItemCount_portrait;
     private byte totalItemCount_portrait;
     private boolean isLoading_portrait = true;
     // Landscape
     private int previousTotal_landscape = 0;
-    private byte visibleThreshold_landscape = 4; // 3
+    private byte visibleThreshold_landscape = 3; // 3
     private int[] firstVisibleItem_landscape;
     private byte visibleItemCount_landscape;
     private byte totalItemCount_landscape;

@@ -3,8 +3,6 @@ package com.awave.apps.droider.Utils.Feed;
 public class FeedItem {
     private static final String TAG = "FeedItem";
 
-    private static volatile FeedItem mInstance = null;
-
     private String mTitle;
     private String mDescription;
     private String mUrl;

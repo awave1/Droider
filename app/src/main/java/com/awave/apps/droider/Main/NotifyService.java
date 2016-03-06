@@ -77,11 +77,7 @@ public class NotifyService extends Service {
 
     public long NewPush(long time) {
         return (time * 1000 * 60 * 60);
-    }  //time * 1000 * 60 * 60
-
-    private long minutePush(long time) {
-        return time * 1000 * 60;
-    }
+    }  //time * 1000 * 60 * 60 = time часов
 
     public void Notify() {
         new Thread(new Runnable() {

@@ -28,21 +28,12 @@ import java.util.ArrayList;
 public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     public static ArrayList<FeedItem> data;
     private static Activity activity;
-    private static String headImage;
     private static Drawable headerImg;
     private String TAG = AdapterMain.class.getSimpleName();
 
     public AdapterMain(Activity activity, ArrayList<FeedItem> data) {
         AdapterMain.activity = activity;
         AdapterMain.data = data;
-    }
-
-    public static String getHeadImage() {
-        return headImage;
-    }
-
-    public static void setHeadImage(String mImage) {
-        AdapterMain.headImage = mImage;
     }
 
     public static Drawable getHeaderImage() {
@@ -88,7 +79,6 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
                     AdapterMain.setHeaderImg(viewHolder.cardImage.getDrawable());
-                    AdapterMain.setHeadImage(item.getImgUrl());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException
