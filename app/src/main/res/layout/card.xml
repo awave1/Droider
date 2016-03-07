@@ -10,7 +10,7 @@
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
     android:layout_marginStart="4dp"
-    card_view:cardBackgroundColor="?android:attr/colorBackground"
+    card_view:cardBackgroundColor="?attr/cardBackgroundColor"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="2dp"
     card_view:cardUseCompatPadding="true">
@@ -19,7 +19,7 @@
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorBackground">
+        android:background="?attr/cardBackgroundColor">
 
         <ImageView
             android:id="@+id/card_image"
@@ -35,7 +35,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/card_image_tint" />
+            android:background="@drawable/card_feed_image_tint" />
 
         <TextView
             android:id="@+id/articleTitle_card"
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
-            android:background="?android:attr/colorBackground"
+            android:background="?attr/cardBackgroundColor"
             android:orientation="vertical">
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:background="?android:attr/colorBackground"
+                android:background="?attr/cardBackgroundColor"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="14sp"
                 tools:text="Description!" />

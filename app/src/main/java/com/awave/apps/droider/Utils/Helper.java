@@ -124,8 +124,8 @@ public class Helper {
 
     public static Drawable applyBlur(Drawable drawable, Context context) {
         Bitmap fromDrawable = drawableToBitmap(drawable);
-        int width = Math.round(fromDrawable.getWidth() * 0.4f);
-        int height = Math.round(fromDrawable.getHeight() * 0.4f);
+        int width = Math.round(fromDrawable.getWidth() * 0.8f);
+        int height = Math.round(fromDrawable.getHeight() * 0.8f);
 
         Bitmap inBitmap = Bitmap.createScaledBitmap(fromDrawable, width, height, false);
         Bitmap outBitmap = Bitmap.createBitmap(inBitmap);
@@ -136,7 +136,7 @@ public class Helper {
         Allocation in = Allocation.createFromBitmap(renderScript, inBitmap);
         Allocation out = Allocation.createFromBitmap(renderScript, outBitmap);
 
-        blur.setRadius(11.5f);
+        blur.setRadius(5.5f);
         blur.setInput(in);
         blur.forEach(out);
 
@@ -149,8 +149,8 @@ public class Helper {
     public static Bitmap applyBlur(Bitmap bitmap, Context context) {
         RenderScript rs = RenderScript.create(context);
         Bitmap bitmapCopy;
-        int width = Math.round(bitmap.getWidth() * 0.4f);
-        int height = Math.round(bitmap.getHeight() * 0.4f);
+        int width = Math.round(bitmap.getWidth() * 0.8f);
+        int height = Math.round(bitmap.getHeight() * 0.8f);
 
         if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
             bitmapCopy = bitmap;
@@ -166,7 +166,7 @@ public class Helper {
         Allocation out = Allocation.createTyped(rs, in.getType());
 
         ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, out.getElement());
-        blur.setRadius(11.5f);
+        blur.setRadius(5.5f);
         blur.setInput(in);
         blur.forEach(out);
 

@@ -63,7 +63,7 @@
                     android:fitsSystemWindows="true"
                     android:gravity="center|center_horizontal"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:textSize="24sp"
                     android:textStyle="bold|italic" />
             </RelativeLayout>
@@ -96,13 +96,13 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            card_view:cardBackgroundColor="?android:attr/colorBackground">
+            card_view:cardBackgroundColor="?attr/cardBackgroundColor">
 
             <LinearLayout
                 android:id="@+id/articleRelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?android:attr/colorBackground"
+                android:background="?attr/cardBackgroundColor"
                 android:orientation="vertical">
 
                 <TextView
@@ -134,7 +134,7 @@
                     android:id="@+id/article"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/colorBackground"
+                    android:background="?attr/cardBackgroundColor"
                     tools:text="article" />
 
                 <!-- comments toolbar here -->

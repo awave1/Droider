@@ -65,7 +65,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private Bundle extras;
     private int webViewBackgroundColor;
     private int theme;
-    private boolean setGroupVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,10 +166,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+//                headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
             } else {
                 try {
-                    headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+//                    headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                    headerImage.setBackground(AdapterMain.getHeaderImage());
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
                     headerImage.setBackground(AdapterMain.getHeaderImage());
@@ -199,12 +200,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-            setupPaletteBackground(true, toolbar, false);
+            setupPaletteBackground(false, toolbar, false);
         } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
-            setupPaletteBackground(true, toolbar, true);
+            setupPaletteBackground(false, toolbar, true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -338,10 +339,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 imgs.wrap("<div class=\"article_image\"></div>");
 
                 isYoutube = elements.get(1).html().contains("iframe") || elements.get(2).html().contains("iframe") ;
-                Log.d(TAG, "doInBackground: " + isYoutube);
+//                Log.d(TAG, "doInBackground: " + isYoutube);
 
                 if (outIntent || isYoutube) {
-                    Log.d(TAG, "doInBackground: out intent");
+//                    Log.d(TAG, "doInBackground: out intent");
                     this.title = titleDiv.text();
 
                     if (isYoutube) {
@@ -359,14 +360,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     }
                 }
 
-                Log.d(TAG, "doInBackground: " + elements.toString());
+//                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
                 if(elements.get(1).hasText())
                 elements.remove(1);
 
                 html = setupHtml(elements.toString());
             } catch (IOException e) {
-                Log.d(TAG, "Failed");
+                Log.e(TAG, "Failed to fetch html", e.getCause());
             }
             return "";
         }
@@ -377,7 +378,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             if (outIntent || isYoutube) {
                 try {
                     //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
-                    sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+//                    sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+                    sArticleImg.setImageBitmap(bitmap);
                 } catch (NullPointerException | RSIllegalArgumentException npe)
                 {
                     npe.printStackTrace();
@@ -397,7 +399,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
 
         public String setupHtml(String html) {
-            String head = "<head>" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+            String head = "<head>" +
+                    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
                     "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:" + webViewTextColor + "}" +
