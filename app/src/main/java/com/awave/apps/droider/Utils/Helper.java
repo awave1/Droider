@@ -136,7 +136,7 @@ public class Helper {
         Allocation in = Allocation.createFromBitmap(renderScript, inBitmap);
         Allocation out = Allocation.createFromBitmap(renderScript, outBitmap);
 
-        blur.setRadius(5.5f);
+        blur.setRadius(11.5f);
         blur.setInput(in);
         blur.forEach(out);
 
@@ -166,7 +166,7 @@ public class Helper {
         Allocation out = Allocation.createTyped(rs, in.getType());
 
         ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, out.getElement());
-        blur.setRadius(5.5f);
+        blur.setRadius(11.5f);
         blur.setInput(in);
         blur.forEach(out);
 

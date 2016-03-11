@@ -65,13 +65,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private Bundle extras;
     private int webViewBackgroundColor;
     private int theme;
+    private static boolean isBlur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         /** Проверяем какая тема выбрана в настройках **/
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
-
+        isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.TRANSPARENT);
@@ -166,12 +167,16 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-//                headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
-                headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
+                if (isBlur)
+                    headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                else
+                    headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
             } else {
                 try {
-//                    headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
-                    headerImage.setBackground(AdapterMain.getHeaderImage());
+                    if(isBlur)
+                        headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                    else
+                        headerImage.setBackground(AdapterMain.getHeaderImage());
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
                     headerImage.setBackground(AdapterMain.getHeaderImage());
@@ -185,8 +190,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
-
-
 
         appBarLayout.addOnOffsetChangedListener(this);
 
@@ -378,8 +381,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             if (outIntent || isYoutube) {
                 try {
                     //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
-//                    sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
-                    sArticleImg.setImageBitmap(bitmap);
+                    if (isBlur)
+                        sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
+                    else
+                        sArticleImg.setImageBitmap(bitmap);
                 } catch (NullPointerException | RSIllegalArgumentException npe)
                 {
                     npe.printStackTrace();

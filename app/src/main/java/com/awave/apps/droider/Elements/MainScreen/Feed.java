@@ -45,7 +45,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         return feed;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

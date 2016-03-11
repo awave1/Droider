@@ -25,4 +25,15 @@
             android:title="@string/theme_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Бета фичи"
+        android:summary="Приложение может вылетать">
+        <SwitchPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:defaultValue="false"
+            android:key="beta_enableBlur"
+            android:title="Включить блюр"
+            android:summary="Не желательно для использования на старых девайсах"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>
