@@ -41,6 +41,10 @@ public class Helper {
         return img;
     }
 
+    public static String trimYoutubeId(String src){
+        return src.substring(30);
+    }
+
     public static boolean isOnline(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivity.getActiveNetworkInfo();

@@ -5,19 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    android:background="?android:attr/colorBackground">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <FrameLayout
             android:id="@+id/container_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
             android:background="?android:attr/colorBackground"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -41,6 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="?android:attr/colorBackground"
         app:itemTextColor="?android:attr/textColorPrimary"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />

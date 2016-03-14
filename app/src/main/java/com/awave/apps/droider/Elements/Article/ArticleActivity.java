@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -29,6 +30,7 @@ import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,6 +41,9 @@ import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,6 +56,7 @@ import java.util.concurrent.ExecutionException;
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
     private static final String TAG = "ArticleActivity";
     public static RelativeLayout headerImage;
+    private AppBarLayout appBarLayout;
     protected static TextView sArticleHeader;
     protected static WebView sArticle;
     protected static TextView sArticleShortDescription;
@@ -62,10 +68,14 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static String webViewTextColor;
     private CollapsingToolbarLayout collapsingToolbar;
     private LinearLayout articleRelLayout;
+    private static YouTubePlayerSupportFragment youtubeFragment;
+    private static FrameLayout youtubeFrame;
     private Bundle extras;
     private int webViewBackgroundColor;
     private int theme;
     private static boolean isBlur;
+
+    public static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +137,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         setContentView(R.layout.article);
 
         /** Обнаружение всех View **/
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
         sArticleHeader = (TextView) findViewById(R.id.article_header);
@@ -138,6 +148,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         sArticle = (WebView) findViewById(R.id.article);
         sArticleImg = (ImageView) findViewById(R.id.article_header_img);
         sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
+        youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame); /** мб перенести в setupYoutubePlayer() */
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -191,6 +202,17 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(Parser.isYoutube)
+                {
+                    setupYoutubePlayer();
+                }
+            }
+        },500);
+
+
         appBarLayout.addOnOffsetChangedListener(this);
 
         this.calculateMinimumHeight();
@@ -198,17 +220,35 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     }
 
+    private void setupYoutubePlayer() {
+        youtubeFrame.setVisibility(View.VISIBLE);
+       youtubeFragment = YouTubePlayerSupportFragment.newInstance();
+        youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
+                youTubePlayer.cueVideo(Parser.YouTubeVideoURL);
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.d(TAG, "onInitializationFailure: ");
+
+            }
+        });
+        getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
+    }
+
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-            setupPaletteBackground(false, toolbar, false);
+            setupPaletteBackground(true, toolbar, false);
         } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
-            setupPaletteBackground(false, toolbar, true);
+            setupPaletteBackground(true, toolbar, true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -261,6 +301,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         WebChromeClient client = new WebChromeClient();
 
+
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
         settings.setJavaScriptEnabled(true);
@@ -297,13 +338,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 }
                 else {
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
-                    Log.d(TAG, "onCreate: else color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+
+                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
                 }
             } catch (NullPointerException e) {
                 if(isTransparent)
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
                 else
-
                 Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
             }
         }
@@ -318,7 +359,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         private String descr = "";
         private Bitmap bitmap = null;
         private boolean outIntent;
-        boolean isYoutube;
+        public static boolean isYoutube;
+        private static String YouTubeVideoURL;
+
 
         public Parser(Activity a) {
             Parser.activity = a;
@@ -341,15 +384,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
 
-                isYoutube = elements.get(1).html().contains("iframe") || elements.get(2).html().contains("iframe") ;
-//                Log.d(TAG, "doInBackground: " + isYoutube);
+                isYoutube = elements.get(1).html().contains("iframe");
+                Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
 
-                if (outIntent || isYoutube) {
-//                    Log.d(TAG, "doInBackground: out intent");
+                if (isYoutube) {
+                    YouTubeVideoURL = Helper.trimYoutubeId(elements.get(1).select(".iframe_container iframe").attr("src"));
+                    Log.d(TAG, "doInBackground: YouTubeVideoURL  " + YouTubeVideoURL);
+                    elements.get(1).select(".iframe_container iframe").remove();
+                }
+                if (outIntent) {
                     this.title = titleDiv.text();
 
                     if (isYoutube) {
                         img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
+
                     } else {
                         img = elements.get(1).select(".article_image img").attr("src");
                     }
@@ -365,9 +413,11 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
 //                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
-                if(elements.get(1).hasText())
-                elements.remove(1);
 
+                if(!elements.isEmpty() && elements.get(1).hasText()) {
+                    Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
+                    elements.remove(1);
+                }
                 html = setupHtml(elements.toString());
             } catch (IOException e) {
                 Log.e(TAG, "Failed to fetch html", e.getCause());
@@ -378,7 +428,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected void onPostExecute(String aVoid) {
             sProgressBar.setVisibility(View.GONE);
-            if (outIntent || isYoutube) {
+            if (outIntent) {
                 try {
                     //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
                     if (isBlur)

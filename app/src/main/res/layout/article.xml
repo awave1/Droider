@@ -96,13 +96,13 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            card_view:cardBackgroundColor="?attr/cardBackgroundColor">
+            card_view:cardBackgroundColor="?android:attr/colorBackground">
 
             <LinearLayout
                 android:id="@+id/articleRelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?attr/cardBackgroundColor"
+                android:background="?android:attr/colorBackground"
                 android:orientation="vertical">
 
                 <TextView
@@ -121,6 +121,15 @@
                     android:textStyle="normal"
                     tools:text="ShortDescr" />
 
+                <FrameLayout
+                    android:fitsSystemWindows="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/YouTubeFrame"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone" />
+
                 <ProgressBar
                     android:id="@+id/article_progressBar"
                     style="?android:attr/progressBarStyleLarge"
@@ -134,7 +143,7 @@
                     android:id="@+id/article"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/cardBackgroundColor"
+                    android:background="?android:attr/colorBackground"
                     tools:text="article" />
 
                 <!-- comments toolbar here -->
