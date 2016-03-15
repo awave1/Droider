@@ -15,11 +15,12 @@
         <item name="android:textColorTertiary">@color/cardTitleTextColor_dark</item>
         <item name="android:homeAsUpIndicator">@color/colorControlNormal_dark</item>
         <item name="android:colorPressedHighlight">@color/cardTitleTint_dark</item>
-        <item name="cardBackgroundColor">@color/cardBackgroundColor_dark</item>
 
         <item name="colorIcons">@color/colorControlNormal_dark</item>
     </style>
 
+
+    
     <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -33,7 +34,7 @@
         <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
         <item name="android:homeAsUpIndicator">@color/colorControlNormal_light</item>
         <item name="android:colorPressedHighlight">@color/cardTitleTint_light</item>
-        <item name="cardBackgroundColor">@color/cardBackgroundColor_light</item>
+
         <item name="colorIcons">@color/colorControlNormal_light</item>
     </style>
 
@@ -41,5 +42,6 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBarOverlay">false</item>
+        <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
     </style>
 </resources>

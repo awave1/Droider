@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -230,70 +229,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
-                else {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Feed.sSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
                 break;
             case R.id.news_tab:
                 fragment = Feed.instance(Helper.NEWS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
-                else {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Feed.sSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
                 break;
             case R.id.apps_tab:
                 fragment = Feed.instance(Helper.APPS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
-                else {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Feed.sSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
                 break;
             case R.id.games_tab:
                 fragment = Feed.instance(Helper.GAMES_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
-                else {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Feed.sSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
                 break;
             case R.id.video_tab:
                 fragment = Feed.instance(Helper.VIDEOS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
-                else {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Feed.sSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
                 break;
             case R.id.settings_tab:
                 fragment = new Preferences();
@@ -307,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (fragment != null) {
             getFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right)
                     .replace(R.id.container_main, fragment)
                     .commit();
         }

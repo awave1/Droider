@@ -74,4 +74,8 @@
 
     <string name="theme_title">Выбрать тему</string>
     <string name="theme_summary">Светлая или тёмная</string>
+
+    <string name="palette_key">palette</string>
+    <string name="palette_title">Фон статьи из цвета картинки</string>
+    <string name="palette_summary">(только для светлой темы)\nЦвет фона статьи будет взят из картинки в заголовке(лёгкий оттенок, из-за чего не всегда может существовать)</string>
 </resources>

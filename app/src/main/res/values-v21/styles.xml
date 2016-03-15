@@ -14,7 +14,6 @@
         <item name="android:navigationBarColor">@color/colorNavigationBar_dark</item>
         <item name="android:textColorPrimary">@color/textColorPrimary_dark</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_dark</item>
-        <item name="cardBackgroundColor">@color/cardBackgroundColor_dark</item>
         <item name="colorIcons">@color/colorControlNormal_dark</item>
         <item name="android:colorActivatedHighlight">@color/cardTitleTint_dark</item>
         <item name="android:textColorTertiary">@color/cardTitleTextColor_dark</item>
@@ -37,7 +36,6 @@
         <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
         <item name="colorIcons">@color/colorControlNormal_light</item>
         <item name="android:colorActivatedHighlight">@color/cardTitleTint_light</item>
-        <item name="cardBackgroundColor">@color/cardBackgroundColor_light</item>
         <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
     </style>
 
@@ -47,6 +45,6 @@
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
-    </style>
 
+    </style>
 </resources>

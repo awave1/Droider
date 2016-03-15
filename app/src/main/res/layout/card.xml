@@ -6,20 +6,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginEnd="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginStart="4dp"
-    card_view:cardBackgroundColor="?attr/cardBackgroundColor"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="2dp"
+    android:layout_marginEnd="2dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:layout_marginStart="2dp"
+    card_view:cardBackgroundColor="?android:attr/colorBackground"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardElevation="5dp"
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/cardBackgroundColor">
+        android:background="?android:attr/colorBackground">
 
         <ImageView
             android:id="@+id/card_image"
@@ -50,6 +50,7 @@
             android:layout_marginTop="24dp"
             android:gravity="bottom|start"
             android:includeFontPadding="false"
+            android:typeface="serif"
             android:textColor="?android:attr/textColorTertiary"
             android:textSize="24sp"
             tools:text="Title!" />
@@ -59,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
-            android:background="?attr/cardBackgroundColor"
+            android:background="?android:attr/colorBackground"
             android:orientation="vertical">
 
             <TextView
@@ -72,7 +73,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:background="?attr/cardBackgroundColor"
+                android:background="?android:attr/colorBackground"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="14sp"
                 tools:text="Description!" />

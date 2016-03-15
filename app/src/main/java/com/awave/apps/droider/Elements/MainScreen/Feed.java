@@ -67,6 +67,9 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         mRecyclerView.setHasFixedSize(true);
 
         initLayoutManager();
+        /** где-то в этом классе должно крутиться колёсико рефрешера, пока все новости не загрузятся, ибо пустой экран и ожидание хрен пойми чего - не круто.
+         * и это по идее пока всё, надо лить, т.к у народа там траблы из-за моих косяков с логами в парсере hasText теперь там всё решает и чуточка магии конечно.
+         */
         return v;
     }
 

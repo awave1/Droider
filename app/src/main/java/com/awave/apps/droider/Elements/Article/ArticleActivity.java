@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.graphics.Palette;
@@ -69,20 +70,23 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private CollapsingToolbarLayout collapsingToolbar;
     private LinearLayout articleRelLayout;
     private static YouTubePlayerSupportFragment youtubeFragment;
+    private NestedScrollView articleBackground;
     private static FrameLayout youtubeFrame;
     private Bundle extras;
     private int webViewBackgroundColor;
     private int theme;
+    private String themeName;
     private static boolean isBlur;
-
+    private static boolean isPalette;
     public static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         /** Проверяем какая тема выбрана в настройках **/
-        String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
+        themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
         isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
+        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.TRANSPARENT);
@@ -110,23 +114,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 theme = R.style.DayNightAuto;
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
-                int currentNightMode = getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK;
-                switch (currentNightMode) {
-                    case Configuration.UI_MODE_NIGHT_NO:
-                        Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
-                        webViewBackgroundColor = R.color.cardBackgroundColor_light;
-                        break;
-                    case Configuration.UI_MODE_NIGHT_YES:
-                        Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
-                        webViewBackgroundColor = R.color.cardBackgroundColor_dark;
 
-                        break;
-                    case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                        Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
-                        break;
-                }
-                break;
         }
 
         super.onCreate(savedInstanceState);
@@ -137,6 +125,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         setContentView(R.layout.article);
 
         /** Обнаружение всех View **/
+        articleBackground = (NestedScrollView) findViewById(R.id.article_background_NSV);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
         headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
@@ -148,7 +137,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         sArticle = (WebView) findViewById(R.id.article);
         sArticleImg = (ImageView) findViewById(R.id.article_header_img);
         sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
-        youtubeFrame = (FrameLayout)findViewById(R.id.YouTubeFrame); /** мб перенести в setupYoutubePlayer() */
+
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -205,22 +194,43 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(Parser.isYoutube)
-                {
+                if (Parser.isYoutube) {
+                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
+                    youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
                     setupYoutubePlayer();
                 }
             }
-        },500);
+        }, 750);
 
 
         appBarLayout.addOnOffsetChangedListener(this);
 
+        int currentNightMode = getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
+                webViewBackgroundColor = R.color.colorBackground_light;
+                webViewTextColor = "black";
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
+                webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким изозрением добился нормального цвета, то бишь одного цвета с shortDescr, если сможешь - исправь на по проще. да и вообще там надо почитстить цвета, чтобы не было так много, и соответственно стайлы
+                webViewTextColor = "white";
+                break;
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
+                break;
+        }
+
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
+
 
     }
 
     private void setupYoutubePlayer() {
+
         youtubeFrame.setVisibility(View.VISIBLE);
        youtubeFragment = YouTubePlayerSupportFragment.newInstance();
         youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -243,12 +253,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-            setupPaletteBackground(true, toolbar, false);
+            setupPaletteBackground(false);
         } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
-            setupPaletteBackground(true, toolbar, true);
+            setupPaletteBackground(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -311,7 +321,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);
         settings.setSaveFormData(true);
-
     }
 
     private void calculateMinimumHeight() {
@@ -327,19 +336,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
     }
 
-    private void setupPaletteBackground(boolean isEnabled, Toolbar toolbar, boolean isTransparent) {
+    private void setupPaletteBackground(boolean isTransparent) {
         //isEnabled можно либо убрать либо вынести в настройки на предпочтение людей
-        if (isEnabled) {
+        if (isPalette && themeName.equals("Светлая")) {
             try {
                 Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
-                if(p.getLightVibrantSwatch() != null && !isTransparent) {
-                    toolbar.setBackgroundColor(p.getLightVibrantSwatch().getRgb());
-                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+                if(p.getLightMutedSwatch() != null && !isTransparent) {
+                    toolbar.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+//                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
                 }
                 else {
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
-
-                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
+                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+//                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
                 }
             } catch (NullPointerException e) {
                 if(isTransparent)
@@ -349,6 +359,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         }
     }
+
 
     public static class Parser extends AsyncTask<String, Integer, String> {
         private static Activity activity;
@@ -377,6 +388,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 Document document = Jsoup.connect(strings[0]).get();
                 Elements elements = document.select(".entry p, .entry ul li, .entry ol li");
 
+                isYoutube = elements.get(1).html().contains("iframe");
+                Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
+
                 Elements imgs = document.select(".entry img");
                 Elements iframe = document.select(".entry iframe, .entry p iframe ");
                 Elements titleDiv = document.select(".title a");
@@ -384,13 +398,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
 
-                isYoutube = elements.get(1).html().contains("iframe");
-                Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
+
 
                 if (isYoutube) {
                     YouTubeVideoURL = Helper.trimYoutubeId(elements.get(1).select(".iframe_container iframe").attr("src"));
                     Log.d(TAG, "doInBackground: YouTubeVideoURL  " + YouTubeVideoURL);
-                    elements.get(1).select(".iframe_container iframe").remove();
+                    elements.get(1).select(".iframe_container").remove();
                 }
                 if (outIntent) {
                     this.title = titleDiv.text();
@@ -411,12 +424,13 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     }
                 }
 
-//                Log.d(TAG, "doInBackground: " + elements.toString());
+                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
-
+                Log.d(TAG, "doInBackground: without element(0) " + elements.toString());
                 if(!elements.isEmpty() && elements.get(1).hasText()) {
                     Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
                     elements.remove(1);
+                    Log.d(TAG, "doInBackground:  without element(1) " + elements.toString());
                 }
                 html = setupHtml(elements.toString());
             } catch (IOException e) {
