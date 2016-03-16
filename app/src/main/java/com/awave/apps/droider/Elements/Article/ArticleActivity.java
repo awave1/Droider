@@ -78,6 +78,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private String themeName;
     private static boolean isBlur;
     private static boolean isPalette;
+    private int currentNightMode;
     public static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
 
     @Override
@@ -205,7 +206,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         appBarLayout.addOnOffsetChangedListener(this);
 
-        int currentNightMode = getResources().getConfiguration().uiMode
+        currentNightMode = getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK;
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
@@ -271,6 +272,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
     @Override
+    public void onBackPressed() {
+        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Only show items in the action bar relevant to this screen
         // if the drawer is not showing. Otherwise, let the drawer
@@ -281,8 +288,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 //        MenuItem shareItem = menu.findItem(R.id.action_share);
 //        mShareActionProvider = (ShareActionProvider)
 //                MenuItemCompat.getActionProvider(shareItem);
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -338,7 +343,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     private void setupPaletteBackground(boolean isTransparent) {
         //isEnabled можно либо убрать либо вынести в настройки на предпочтение людей
-        if (isPalette && themeName.equals("Светлая")) {
+        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO) ) {
             try {
                 Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
                 if(p.getLightMutedSwatch() != null && !isTransparent) {

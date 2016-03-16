@@ -8,6 +8,7 @@
             android:title="Включить уведомления" />
         <ListPreference
             android:textColor="?android:attr/textColorPrimary"
+            android:dependency="notify"
             android:entries="@array/interval_names"
             android:entryValues="@array/interval_times"
             android:key="interval"

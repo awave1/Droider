@@ -78,7 +78,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, viewHolder.description.getText().toString());
                     article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
-                    activity.overridePendingTransition(R.anim.diagonal_out, R.anim.diagonal_in);
+                    activity.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
                     AdapterMain.setHeaderImg(viewHolder.cardImage.getDrawable());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу
