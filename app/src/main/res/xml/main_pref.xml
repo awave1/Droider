@@ -17,7 +17,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Прекрасы">
+        android:title="Интерфейс">
         <ListPreference
             android:textColor="?android:attr/textColorPrimary"
             android:entries="@array/theme_values"
@@ -25,12 +25,12 @@
             android:key="theme"
             android:summary="@string/theme_summary"
             android:title="@string/theme_title" />
-        <SwitchPreference
-            android:textColor="?android:attr/textColorPrimary"
-            android:defaultValue="false"
-            android:key="@string/palette_key"
-            android:title="@string/palette_title"
-            android:summary="@string/palette_summary"/>
+        <!--<SwitchPreference-->
+            <!--android:textColor="?android:attr/textColorPrimary"-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="@string/palette_key"-->
+            <!--android:title="@string/palette_title"-->
+            <!--android:summary="@string/palette_summary"/>-->
     </PreferenceCategory>
 
     <PreferenceCategory

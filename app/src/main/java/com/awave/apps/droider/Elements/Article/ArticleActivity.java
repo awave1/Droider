@@ -63,6 +63,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     protected static TextView sArticleShortDescription;
     protected static ImageView sArticleImg;
     protected static ProgressBar sProgressBar;
+    private Window mWindow;
     private static Toolbar toolbar;
     private static String title;
     private static String shortDescr;
@@ -79,6 +80,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private static boolean isBlur;
     private static boolean isPalette;
     private int currentNightMode;
+
     public static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
 
     @Override
@@ -87,10 +89,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         /** Проверяем какая тема выбрана в настройках **/
         themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
         isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
-        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
-        Window window = getWindow();
+//        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
+        mWindow = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(Color.TRANSPARENT);
+            mWindow.setStatusBarColor(Color.TRANSPARENT);
         }
 
         switch (themeName) {
@@ -254,12 +256,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
             collapsingToolbar.setTitle(title);
-            setupPaletteBackground(false);
+//            setupPaletteBackground(false);
         } else {
             assert getSupportActionBar() != null;
             collapsingToolbar.setTitle("");
             assert getActionBar() != null;
-            setupPaletteBackground(true);
+//            setupPaletteBackground(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -341,29 +343,27 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
     }
 
-    private void setupPaletteBackground(boolean isTransparent) {
-        //isEnabled можно либо убрать либо вынести в настройки на предпочтение людей
-        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO) ) {
-            try {
-                Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
-                if(p.getLightMutedSwatch() != null && !isTransparent) {
-                    toolbar.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-//                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
-                }
-                else {
-                    toolbar.setBackgroundColor(Color.TRANSPARENT);
-                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-//                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
-                }
-            } catch (NullPointerException e) {
-                if(isTransparent)
-                    toolbar.setBackgroundColor(Color.TRANSPARENT);
-                else
-                Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
-            }
-        }
-    }
+//    private void setupPaletteBackground(boolean isTransparent) {
+//        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO) ) {
+//            try {
+//                Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
+//                if(p.getLightMutedSwatch() != null && !isTransparent) {
+//                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+////                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightVibrantSwatch().getRgb() + "");
+//                }
+//                else {
+//                    toolbar.setBackgroundColor(Color.TRANSPARENT);
+//                    articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+////                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
+//                }
+//            } catch (NullPointerException e) {
+//                if(isTransparent)
+//                    toolbar.setBackgroundColor(Color.TRANSPARENT);
+//                else
+//                Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
+//            }
+//        }
+//    }
 
 
     public static class Parser extends AsyncTask<String, Integer, String> {
