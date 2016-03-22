@@ -33,6 +33,6 @@
     <color name="cardTitleTint_light">#7d212121</color>
 
     <color name="navDrawerBackgroundColor_light">#e0e0e0</color>
-    <color name="colorControlNormal_light">#de000000</color>
+    <color name="colorControlNormal_light">#ffffff</color>
 
 </resources>
