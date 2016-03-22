@@ -2,6 +2,8 @@ package com.awave.apps.droider.Utils.Feed;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -12,6 +14,7 @@ import com.awave.apps.droider.Elements.MainScreen.Feed;
 
 public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     private static final String TAG = "FeedOrientation";
+    private SwipeRefreshLayout swipeRefresher;
     public static short nextPage_portrait = 1;
     public static short nextPage_landscape = 1;
     private Activity mActivity;
@@ -30,7 +33,8 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     private byte totalItemCount_landscape;
     private boolean isLoading_landscape;
 
-    public FeedOrientation(Activity a) {
+    public FeedOrientation(Activity a, SwipeRefreshLayout swipeRefresher) {
+        this.swipeRefresher = swipeRefresher;
         this.mActivity = a;
     }
 
@@ -53,7 +57,6 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         totalItemCount_portrait = (byte) layoutManager.getItemCount();
 
         Log.d(TAG, "portraitOrientation: totalItemCount_portrait = " + totalItemCount_portrait);
-
         firstVisibleItem_portrait = (byte) layoutManager.findFirstVisibleItemPosition();
 
 
@@ -70,6 +73,16 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
             nextPage_portrait++;
             loadNextPage();
             isLoading_portrait = true;
+        }
+
+        if (firstVisibleItem_portrait + 2  == totalItemCount_portrait)
+        {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefresher.setRefreshing(true);
+                }
+            });
         }
     }
 
@@ -100,6 +113,16 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
             nextPage_landscape++;
             loadNextPage();
             isLoading_landscape = true;
+        }
+
+        if (firstVisibleItem_landscape[0] + 2  >= totalItemCount_landscape || firstVisibleItem_landscape[1] + 2 >= totalItemCount_landscape)
+        {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefresher.setRefreshing(true);
+                }
+            });
         }
     }
 }

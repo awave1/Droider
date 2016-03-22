@@ -50,7 +50,7 @@
                     android:id="@+id/articleHeadImage_tint"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/card_image_tint"
+                    android:background="@drawable/article_image_tint"
                     android:fitsSystemWindows="true" />
 
                 <TextView

@@ -153,7 +153,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             }
         });
 
-
         Parser parser = new Parser(this);
 
         /** Проверка как мы попали в статью **/
@@ -191,7 +190,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         sArticleShortDescription.setText(shortDescr);
         sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -227,10 +225,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
 
-
     }
 
-    private void setupYoutubePlayer() {
+    private synchronized void setupYoutubePlayer() {
 
         youtubeFrame.setVisibility(View.VISIBLE);
        youtubeFragment = YouTubePlayerSupportFragment.newInstance();
@@ -266,15 +263,10 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }
     }
 
-    public void restoreActionBar() {
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
     @Override
     public void onBackPressed() {
-        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
         super.onBackPressed();
+        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
     }
 
     @Override
@@ -283,7 +275,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // if the drawer is not showing. Otherwise, let the drawer
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
-        restoreActionBar();
 //
 //        MenuItem shareItem = menu.findItem(R.id.action_share);
 //        mShareActionProvider = (ShareActionProvider)
@@ -377,6 +368,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         private boolean outIntent;
         public static boolean isYoutube;
         private static String YouTubeVideoURL;
+        Elements elements;
 
 
         public Parser(Activity a) {
@@ -390,8 +382,8 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         @Override
         protected String doInBackground(String... strings) {
             try {
-                Document document = Jsoup.connect(strings[0]).get();
-                Elements elements = document.select(".entry p, .entry ul li, .entry ol li");
+                Document document = Jsoup.connect(strings[0]).timeout(10000).get();
+                elements = document.select(".entry p, .entry ul li, .entry ol li");
 
                 isYoutube = elements.get(1).html().contains("iframe");
                 Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
@@ -402,8 +394,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
                 iframe.wrap("<div class=\"iframe_container\"></div>");
                 imgs.wrap("<div class=\"article_image\"></div>");
-
-
 
                 if (isYoutube) {
                     YouTubeVideoURL = Helper.trimYoutubeId(elements.get(1).select(".iframe_container iframe").attr("src"));
@@ -429,17 +419,18 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     }
                 }
 
-                Log.d(TAG, "doInBackground: " + elements.toString());
+//                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
-                Log.d(TAG, "doInBackground: without element(0) " + elements.toString());
+//                Log.d(TAG, "doInBackground: without element(0) " + elements.toString());
                 if(!elements.isEmpty() && elements.get(1).hasText()) {
-                    Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
+//                    Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
                     elements.remove(1);
-                    Log.d(TAG, "doInBackground:  without element(1) " + elements.toString());
+//                    Log.d(TAG, "doInBackground:  without element(1) " + elements.toString());
                 }
                 html = setupHtml(elements.toString());
             } catch (IOException e) {
                 Log.e(TAG, "Failed to fetch html", e.getCause());
+                html = setupHtml("Почему-то не получилось загрузить страницу. Попробуйте заново открыть статью");
             }
             return "";
         }

@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (fragment != null) {
             getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right)
+                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out)
                     .replace(R.id.container_main, fragment)
                     .commit();
         }
