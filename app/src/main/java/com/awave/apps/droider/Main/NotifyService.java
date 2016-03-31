@@ -21,10 +21,10 @@ import java.util.TimerTask;
 
 public class NotifyService extends Service {
     private static final int NOTIFY_ID = 101;
-    Notification notification;
-    SharedPreferences sp;
-    Timer myTimer = new Timer();
-    NotificationManager notificationManager;
+    private Notification notification;
+    private SharedPreferences sp;
+    private Timer myTimer = new Timer();
+    private NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -58,7 +58,7 @@ public class NotifyService extends Service {
         return null;
     }
 
-    public byte Interval() {
+    private byte Interval() {
         if (Byte.parseByte(sp.getString("interval", "3")) == 3)
             return 3;
         else if (Byte.parseByte(sp.getString("interval", "6")) == 6)
@@ -71,15 +71,15 @@ public class NotifyService extends Service {
             return 1;
     }
 
-    public boolean isPushEnabled() {
+    private boolean isPushEnabled() {
         return sp.getBoolean("notify", false);
     }
 
-    public long NewPush(long time) {
+    private long NewPush(long time) {
         return (time * 1000 * 60 * 60);
     }  //time * 1000 * 60 * 60 = time часов
 
-    public void Notify() {
+    private void Notify() {
         new Thread(new Runnable() {
             @Override
             public void run() {

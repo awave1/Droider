@@ -3,9 +3,7 @@ package com.awave.apps.droider.Utils.Feed;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-/**
- * Created by awave on 2016-02-19.
- */
+
 public class FeedItemTouchHelper extends ItemTouchHelper.Callback {
     private static final String TAG = "FeedItemTouchHelper";
 

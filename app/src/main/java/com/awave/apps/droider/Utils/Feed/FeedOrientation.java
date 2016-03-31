@@ -51,7 +51,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
     }
 
-    public void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+    private void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
         this.mActivity = activity;
         visibleItemCount_portrait = (byte) recyclerView.getChildCount();
         totalItemCount_portrait = (byte) layoutManager.getItemCount();
@@ -86,7 +86,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
     }
 
-    public void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager) {
+    private void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager) {
         this.mActivity = activity;
         visibleItemCount_landscape = (byte) recyclerView.getChildCount();
         totalItemCount_landscape = (byte) staggeredGridLayoutManager.getItemCount();

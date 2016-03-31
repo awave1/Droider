@@ -67,7 +67,7 @@ public class Helper {
                 }).create().show();
     }
 
-    public static void enableWiFi(Context c, boolean wifi) {
+    private static void enableWiFi(Context c, boolean wifi) {
         WifiManager wifiConfiguration = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
         wifiConfiguration.setWifiEnabled(wifi);
     }

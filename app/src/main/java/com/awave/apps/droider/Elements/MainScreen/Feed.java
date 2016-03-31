@@ -23,14 +23,12 @@ import com.awave.apps.droider.Utils.Helper;
 
 import java.util.ArrayList;
 
-/**
- * Created by awave on 2016-01-23.
- */
+
 public class Feed extends android.app.Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
 
-    public static SwipeRefreshLayout sSwipeRefreshLayout;
+    private static SwipeRefreshLayout sSwipeRefreshLayout;
     public static LinearLayoutManager sLinearLayoutManager;
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
@@ -173,7 +171,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         }
     }
 
-    public void loadMore(String url) {
+    private void loadMore(String url) {
         new FeedParser(sFeedItems, this, getActivity()).execute(url);
     }
 
