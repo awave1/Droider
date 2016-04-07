@@ -1,31 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="Уведомления">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Уведомления">
         <SwitchPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:defaultValue="false"
             android:key="notify"
-            android:title="Включить уведомления"
-            android:defaultValue="true">
-        </SwitchPreference>
+            android:title="Включить уведомления" />
         <ListPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:dependency="notify"
             android:entries="@array/interval_names"
             android:entryValues="@array/interval_times"
             android:key="interval"
             android:summary="@string/interval"
-            android:title="@string/interval_title">
-        </ListPreference>
+            android:title="@string/interval_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Тема">
+        android:title="Интерфейс">
         <ListPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:defaultValue="Светлая"
             android:entries="@array/theme_values"
             android:entryValues="@array/theme_values"
             android:key="theme"
             android:summary="@string/theme_summary"
-            android:title="@string/theme_title">
-        </ListPreference>
+            android:title="@string/theme_title" />
+        <SwitchPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:defaultValue="false"
+            android:key="@string/palette_key"
+            android:title="@string/palette_title"
+            android:summary="@string/palette_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Бета фичи"
+        android:summary="Приложение может вылетать">
+        <SwitchPreference
+            android:textColor="?android:attr/textColorPrimary"
+            android:defaultValue="false"
+            android:key="beta_enableBlur"
+            android:title="Включить блюр"
+            android:summary="Не желательно для использования на старых девайсах"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

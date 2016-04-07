@@ -40,7 +40,7 @@
         <li>Возможность сохранять статью</li>
         <li> Уведомления </li>
         <li>Анимации карточек + фичи для карточек (аля свайп влево/впавро сохраняет статью)
-        (http://developer.alexanderklimov.ru/android/animation/overridependingtransition.php , http://habrahabr.ru/post/162389 , http://www.cyberforum.ru/android-dev/thread934360.html ,  http://andreylunevich.blogspot.ru/2012/03/android.html)</li>
+        (Анимация переходов между фрагментами https://www.google.ru/search?q=Animate+the+transition+between+fragments&oq=Animate+the+transition+between+fragments&aqs=chrome..69i57j69i60&sourceid=chrome&es_sm=122&ie=UTF-8)</li>
         </ol>
     </li>
 </ol>

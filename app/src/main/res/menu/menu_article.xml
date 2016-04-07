@@ -1,23 +1,20 @@
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ArticleActivity">
+    <item
+        android:id="@+id/action_open_in_browser"
+        android:enabled="true"
+        android:icon="@drawable/ic_open_in_browser_24dp"
+        android:orderInCategory="1"
+        android:title="@string/open_in_browser"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_share"
+        android:enabled="true"
+        android:icon="@drawable/ic_share_24dp"
+        android:orderInCategory="1"
         android:title="@string/share"
-        android:icon="@android:drawable/ic_menu_share"
-        android:orderInCategory="100"
-        app:showAsAction="collapseActionView"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
-
-    <item
-        android:id="@+id/action_open_in_browser"
-        android:title="@string/open_in_browser"
-        android:icon="@drawable/ic_explore"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        />
-
+        app:showAsAction="ifRoom" />
 </menu>

@@ -5,10 +5,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,30 +15,33 @@ import android.view.ViewGroup;
 
 import com.awave.apps.droider.Main.AdapterMain;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Utils.Feed.FeedParser;
-import com.awave.apps.droider.Utils.Utils.Feed.OnTaskCompleted;
-import com.awave.apps.droider.Utils.Utils.Feed.Orientation;
-import com.awave.apps.droider.Utils.Utils.FeedItem;
-import com.awave.apps.droider.Utils.Utils.Helper;
+import com.awave.apps.droider.Utils.Feed.FeedItem;
+import com.awave.apps.droider.Utils.Feed.FeedOrientation;
+import com.awave.apps.droider.Utils.Feed.FeedParser;
+import com.awave.apps.droider.Utils.Feed.OnTaskCompleted;
+import com.awave.apps.droider.Utils.Helper;
 
 import java.util.ArrayList;
 
-/**
- * Created by awave on 2016-01-23.
- */
+
 public class Feed extends android.app.Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
 
-    public static SwipeRefreshLayout mSwipeRefreshLayout;
+    private static SwipeRefreshLayout sSwipeRefreshLayout;
+    public static LinearLayoutManager sLinearLayoutManager;
+    public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
+    private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
-    public static LinearLayoutManager mLayoutManager;
-    public static GridLayoutManager mGridLayoutManager;
     private AdapterMain adapter;
-    private DisplayMetrics metrics;
-    private static ArrayList<FeedItem> items = new ArrayList<>();
 
-    public static boolean isRefreshing;
+    public static Feed instance(String feedUrl) {
+        Feed feed = new Feed();
+        Bundle bundle = new Bundle();
+        bundle.putString(Helper.EXTRA_ARTICLE_URL, feedUrl);
+        feed.setArguments(bundle);
+        return feed;
+    }
 
     @Nullable
     @Override
@@ -47,33 +49,22 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         View v = inflater.inflate(R.layout.feed_fragment, container, false);
 
         Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
-        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_FEED_URL) = " + getArguments().getString(Helper.EXTRA_FEED_URL));
+        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_ARTICLE_URL) = " + getArguments().getString(Helper.EXTRA_ARTICLE_URL));
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
+        sSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
+        sSwipeRefreshLayout.setOnRefreshListener(this);
+        sSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_dark,
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
-        mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        sSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
-        adapter = new AdapterMain(getActivity(), items, metrics);
+        adapter = new AdapterMain(getActivity(), sFeedItems);
         mRecyclerView.setHasFixedSize(true);
-
-        metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         initLayoutManager();
-
-
         return v;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: orientation = " + getActivity().getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -82,9 +73,8 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             @Override
             public void run() {
                 if (Helper.isOnline(getActivity())) {
-                    getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
-                }
-                else {
+                    initLayoutManager();
+                } else {
                     Helper.initInternetConnectionDialog(getActivity());
                 }
             }
@@ -92,95 +82,101 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     }
 
     @Override
-    public void onTaskComplete() {
+    public synchronized void onTaskCompleted() {
         adapter.notifyDataSetChanged();
+        if(sSwipeRefreshLayout.isRefreshing())
+            sSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                sSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
         switch (newConfig.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 adapter.notifyDataSetChanged();
-                mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
-                mRecyclerView.setLayoutManager(mGridLayoutManager);
+                sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
 
                 mRecyclerView.setAdapter(adapter);
-                mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
                     @Override
-                    public void loadingMore() {
-                        loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPageLand);
-                        adapter.notifyDataSetChanged();
-
+                    public void loadNextPage() {
+                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_landscape);
+                        onTaskCompleted();
                     }
                 });
 
-                getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
                 adapter.notifyDataSetChanged();
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mRecyclerView.setLayoutManager(mLayoutManager);
+                sLinearLayoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerView.setLayoutManager(sLinearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
-                mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+                mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
                     @Override
-                    public void loadingMore() {
-                        loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPagePort);
-                        adapter.notifyDataSetChanged();
+                    public void loadNextPage() {
+                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_portrait);
+                        onTaskCompleted();
                     }
                 });
 
-                getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+                getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
                 break;
         }
     }
 
     private void initLayoutManager() {
 
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                sSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(mLayoutManager);
+            sLinearLayoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(sLinearLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+            mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
                 @Override
-                public void loadingMore() {
-                    loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPagePort);
-                    adapter.notifyDataSetChanged();
+                public void loadNextPage() {
+                    loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_portrait);
+                    onTaskCompleted();
                 }
             });
-            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+            getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
         }
 
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mGridLayoutManager = new GridLayoutManager(getActivity(), 2);
-            mRecyclerView.setLayoutManager(mGridLayoutManager);
+            sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
 
             mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(new Orientation(getActivity()) {
+            mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
                 @Override
-                public void loadingMore() {
-                    loadMore(getArguments().getString(Helper.EXTRA_FEED_URL) + Orientation.nextPageLand);
-                    adapter.notifyDataSetChanged();
+                public void loadNextPage() {
+                    loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_landscape);
+                    onTaskCompleted();
                 }
             });
-            getFeeds(getArguments().getString(Helper.EXTRA_FEED_URL));
+            getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
         }
     }
 
-    public static Feed instance(String feedUrl){
-        Feed feed = new Feed();
-        Bundle bundle = new Bundle();
-        bundle.putString(Helper.EXTRA_FEED_URL, feedUrl);
-        feed.setArguments(bundle);
-        return feed;
-    }
-
-    public  void loadMore(String url) {
-        new FeedParser(this, items, getActivity(), mSwipeRefreshLayout).execute(url);
+    private void loadMore(String url) {
+        new FeedParser(sFeedItems, this, getActivity()).execute(url);
     }
 
     private void getFeeds(String url) {
-        items.clear();
-        new FeedParser(this, items, getActivity(), mSwipeRefreshLayout).execute(url + 1);
+        sFeedItems.clear();
+        new FeedParser(sFeedItems, this, getActivity()).execute(url + 1);
     }
 }

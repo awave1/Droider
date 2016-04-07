@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/home_page_tab"
-            android:icon="@drawable/ic_action_home"
+            android:icon="@drawable/ic_home_24dp"
             android:title="@string/drawer_item_home" />
         <item
             android:id="@+id/news_tab"
-            android:icon="@drawable/ic_action_public"
+            android:icon="@drawable/ic_public_24dp"
             android:title="@string/drawer_item_news" />
         <item
             android:id="@+id/apps_tab"
-            android:icon="@drawable/ic_action_apps"
+            android:icon="@drawable/ic_apps_24dp"
             android:title="@string/drawer_item_apps" />
         <item
             android:id="@+id/games_tab"
-            android:icon="@drawable/ic_action_gamepad"
+            android:icon="@drawable/ic_games_24dp"
             android:title="@string/drawer_item_games" />
         <item
             android:id="@+id/video_tab"
-            android:icon="@drawable/ic_action_videos"
-            android:title="@string/drawer_item_videos"/>
+            android:icon="@drawable/ic_video_collection_24dp"
+            android:title="@string/drawer_item_videos" />
     </group>
 
-    <item
-        android:title="@string/drawer_item_section_header">
+    <item android:title="@string/drawer_item_section_header">
         <menu>
             <item
                 android:id="@+id/settings_tab"
-                android:icon="@drawable/ic_action_settings"
+                android:icon="@drawable/ic_settings_24dp"
                 android:title="@string/drawer_item_settings" />
             <item
                 android:id="@+id/info_tab"
-                android:icon="@drawable/ic_action_group"
+                android:icon="@drawable/ic_info_outline_24dp"
                 android:title="@string/drawer_item_about" />
         </menu>
     </item>

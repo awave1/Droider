@@ -14,7 +14,13 @@
     <string name="drawer_item_section_header">Прочее</string>
 
     <string name="description">Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной системе Android, в частности. Наша цель – интересно, оперативно и доступно рассказывать поклонникам технологий о новых устройствах, приложениях и играх.</string>
-    
+    <string name="vedenskiy_about">Борис Веденский\nАвтор Droider Show, ОффТОП Шоу и #КакОно. Главред Droider.ru.</string>
+    <string name="istishev_about">Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast</string>
+    <string name="art_about">Артем Головин\nПрограммист, студент MRU</string>
+    <string name="alex_about">Александр Гузенко\nПрограммист, студент МЭИ</string>
+    <string name="devs_about">Разработчки</string>
+    <string name="authors_about">Авторы</string>
+    <string name="shortInformation_about">Основное</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
 
@@ -35,12 +41,12 @@
         <item>12</item>
         <item>24</item>
     </string-array>
-    
-    
-    <string name="sizes">Выберите размер шрифта</string>
 
-    <string name="sizes_title">Размер шрифта</string>
-    <string-array name="sizes_names">
+
+    <string name="choose_text_size">Выберите размер шрифта</string>
+
+    <string name="text_size">Размер шрифта</string>
+    <string-array name="text_size_list">
         <item>12</item>
         <item>14</item>
         <item>16</item>
@@ -50,7 +56,7 @@
         <item>24</item>
     </string-array>
 
-    <string-array name="sizes_values">
+    <string-array name="text_size_values">
         <item>12</item>
         <item>14</item>
         <item>16</item>
@@ -63,8 +69,13 @@
     <string-array name="theme_values">
         <item>Светлая</item>
         <item>Тёмная</item>
+        <item>В зависимости от времени суток</item>
     </string-array>
-    
+
     <string name="theme_title">Выбрать тему</string>
     <string name="theme_summary">Светлая или тёмная</string>
+
+    <string name="palette_key">palette</string>
+    <string name="palette_title">Фон статьи из цвета картинки</string>
+    <string name="palette_summary">(только для светлой темы)\nЦвет фона статьи будет взят из картинки в заголовке(лёгкий оттенок, из-за чего не всегда может существовать)</string>
 </resources>

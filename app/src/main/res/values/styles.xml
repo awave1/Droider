@@ -1,33 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
+
     <style name="DarkTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBarOverlay">false</item>
 
-        <item name="colorPrimary">@color/primary_bgr</item>
-        <item name="colorPrimaryDark">@color/colorNavigationBar_dark</item>
-        <item name="android:background">@color/colorBackground_dark</item>
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
         <item name="colorAccent">@color/colorAccent_dark</item>
         <item name="android:colorBackground">@color/colorBackground_dark</item>
         <item name="android:textColorPrimary">@color/textColorPrimary_dark</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_dark</item>
-        <item name="android:shadowColor">@color/shadowColor_dark</item>
+        <item name="android:textColorTertiary">@color/cardTitleTextColor_dark</item>
+        <item name="android:homeAsUpIndicator">@color/colorControlNormal_dark</item>
+        <item name="android:colorPressedHighlight">@color/cardTitleTint_dark</item>
+
+        <item name="colorIcons">@color/colorControlNormal_dark</item>
     </style>
 
-    <style name="LightTheme" parent="Base.Theme.AppCompat.Light">
+
+
+    <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBarOverlay">false</item>
-
+        <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
         <item name="colorPrimary">@color/colorPrimary_light</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
-        <item name="android:background">@color/Background_light</item>
         <item name="colorAccent">@color/colorAccent_light</item>
         <item name="android:colorBackground">@color/colorBackground_light</item>
         <item name="android:textColorPrimary">@color/textColorPrimary_light</item>
         <item name="android:textColorSecondary">@color/textColorSecondary_light</item>
-        <item name="android:shadowColor">@color/shadowColor_light</item>
+        <item name="android:homeAsUpIndicator">@color/colorControlNormal_light</item>
+        <item name="android:colorPressedHighlight">@color/cardTitleTint_light</item>
+
+        <item name="colorIcons">@color/colorControlNormal_light</item>
+    </style>
+
+    <style name="DayNightAuto" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBarOverlay">false</item>
+        <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
     </style>
 </resources>
+
+
