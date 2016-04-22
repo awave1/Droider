@@ -5,7 +5,6 @@
     android:id="@+id/articleCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="fill_vertical"
     android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true"
     tools:context=".Elements.Article.ArticleActivity">

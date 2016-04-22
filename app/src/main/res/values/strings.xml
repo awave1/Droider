@@ -7,6 +7,7 @@
     <string name="drawer_item_apps">Приложения</string>
     <string name="drawer_item_games">Игры</string>
     <string name="drawer_item_videos">Видео</string>
+    <string name="drawer_item_drcast">Droider Cast</string>
     <string name="drawer_item_settings">Настройки</string>
     <string name="drawer_item_about">О Проекте</string>
     <string name="share">Поделиться</string>

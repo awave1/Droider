@@ -1,7 +1,6 @@
 package com.awave.apps.droider.Main;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
@@ -30,7 +29,6 @@ import com.awave.apps.droider.Utils.Helper;
 @SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static int mainOrientation;
-    SharedPreferences sp;
     Toolbar toolbar;
     String mTitle = "Главная";
     int theme;
@@ -91,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         drawer = (DrawerLayout) findViewById(R.id.nav_drawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -254,9 +251,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
-case R.id.droider_cast_tab:
+            case R.id.droider_cast_tab:
                 fragment = Feed.instance(Helper.DROIDER_CAST_URL);
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;

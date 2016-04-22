@@ -159,7 +159,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         /** Проверка как мы попали в статью **/
         extras = getIntent().getExtras();
-        //Проверят можно в статье про ремикс ос 2 (через категорию видео легко найти)
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             parser.isOutIntent(true);
             String outsideUrl = getIntent().getData().toString();
