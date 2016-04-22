@@ -25,6 +25,7 @@ public class Helper {
     public static final String APPS_URL = "http://droider.ru/category/apps_and_games/programs/page/";
     public static final String GAMES_URL = "http://droider.ru/category/apps_and_games/games/page/";
     public static final String VIDEOS_URL = "http://droider.ru/category/video/page/";
+public static final String DROIDER_CAST_URL = "http://droider.ru/category/5294-8165/page/";
 
     public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
     public static final String EXTRA_ARTICLE_URL = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_URL";
