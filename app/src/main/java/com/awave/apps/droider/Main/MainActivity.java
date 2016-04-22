@@ -254,6 +254,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
+case R.id.droider_cast_tab:
+                fragment = Feed.instance(Helper.DROIDER_CAST_URL);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+                if (!Helper.isOnline(this))
+                    Helper.initInternetConnectionDialog(this);
+                break;
+
             case R.id.settings_tab:
                 fragment = new Preferences();
                 getSupportActionBar().setTitle(R.string.drawer_item_settings);
