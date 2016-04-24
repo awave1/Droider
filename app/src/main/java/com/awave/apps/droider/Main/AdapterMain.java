@@ -30,10 +30,12 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
     private static Activity activity;
     private static Drawable headerImg;
     private String TAG = AdapterMain.class.getSimpleName();
+    private boolean isPodcast = false;
 
-    public AdapterMain(Activity activity, ArrayList<FeedItem> data) {
+    public AdapterMain(Activity activity, ArrayList<FeedItem> data, boolean isPodcast) {
         AdapterMain.activity = activity;
         AdapterMain.data = data;
+        this.isPodcast = isPodcast;
     }
 
     public static Drawable getHeaderImage() {
@@ -60,7 +62,12 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteUrl.setText(item.getUrl());
 
-        if (viewHolder.cardImage != null) {
+        if (isPodcast)
+        {
+            assert viewHolder.cardImage != null;
+            Glide.with(activity).load(R.drawable.dr_cast).into(viewHolder.cardImage);
+        }
+        else {
             Glide.with(activity).load(item.getImgUrl()).into(viewHolder.cardImage);
         }
 

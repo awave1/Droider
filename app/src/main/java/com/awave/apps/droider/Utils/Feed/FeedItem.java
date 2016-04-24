@@ -7,6 +7,16 @@ public class FeedItem {
     private String mDescription;
     private String mUrl;
     private String mImgUrl;
+    private int drCastImg;
+
+    public void setDrCastImg(int drCastImg) {
+        this.drCastImg = drCastImg;
+    }
+
+    public int getDrCastImg() {
+
+        return drCastImg;
+    }
 
     public String getTitle() {
         return mTitle;

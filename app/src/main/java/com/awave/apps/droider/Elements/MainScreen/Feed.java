@@ -34,6 +34,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private AdapterMain adapter;
+    private boolean isPodcast= false;
 
     public static Feed instance(String feedUrl) {
         Feed feed = new Feed();
@@ -51,6 +52,9 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
         Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_ARTICLE_URL) = " + getArguments().getString(Helper.EXTRA_ARTICLE_URL));
 
+        if (Helper.DROIDER_CAST_URL.equals(getArguments().getString(Helper.EXTRA_ARTICLE_URL)))
+            isPodcast = true;
+
         sSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
         sSwipeRefreshLayout.setOnRefreshListener(this);
         sSwipeRefreshLayout.setColorSchemeResources(
@@ -61,8 +65,9 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         sSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
-        adapter = new AdapterMain(getActivity(), sFeedItems);
+        adapter = new AdapterMain(getActivity(), sFeedItems, isPodcast);
         mRecyclerView.setHasFixedSize(true);
+
         initLayoutManager();
         return v;
     }
@@ -98,7 +103,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         });
         switch (newConfig.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                adapter.notifyDataSetChanged();
                 sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                 mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
 
@@ -114,7 +118,6 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
-                adapter.notifyDataSetChanged();
                 sLinearLayoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(sLinearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
@@ -127,6 +130,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 });
 
                 getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+
                 break;
         }
     }
@@ -172,11 +176,11 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     }
 
     private void loadMore(String url) {
-        new FeedParser(sFeedItems, this, getActivity()).execute(url);
+        new FeedParser(sFeedItems, this, getActivity(), isPodcast).execute(url);
     }
 
     private void getFeeds(String url) {
         sFeedItems.clear();
-        new FeedParser(sFeedItems, this, getActivity()).execute(url + 1);
+        new FeedParser(sFeedItems, this, getActivity(), isPodcast).execute(url + 1);
     }
 }

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 
 import org.jsoup.Jsoup;
@@ -30,13 +31,14 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
     private List<String> mDescrList = new ArrayList<>();
     private List<String> mImgUrlList = new ArrayList<>();
     private List<String> mYoutubeUrlList = new ArrayList<>();
-
+    private boolean isPodcast = false;
     private OnTaskCompleted mOnTaskCompleted;
 
-    public FeedParser(ArrayList<FeedItem> data, OnTaskCompleted onTaskCompleted, Activity activity) {
+    public FeedParser(ArrayList<FeedItem> data, OnTaskCompleted onTaskCompleted, Activity activity, boolean isPodcast) {
         this.activity = activity;
         this.mFeedItems = data;
         this.mOnTaskCompleted = onTaskCompleted;
+        this.isPodcast = isPodcast;
     }
 
     @Override
@@ -57,7 +59,8 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
                  mTitleList.add(element.getElementsByTag("a").attr("title"));
                  mUrlList.add(element.getElementsByTag("a").attr("href"));
                  mDescrList.add(element.getElementsByTag("p").text().substring(0, element.getElementsByTag("p").text().lastIndexOf(" ")));
-                 mImgUrlList.add(element.getElementsByTag("img").attr("src"));
+                 if (!isPodcast)
+                    mImgUrlList.add(element.getElementsByTag("img").attr("src"));
                  count++;
              }
              for (Element youtube : entry) {
@@ -94,15 +97,20 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
                 feedItem.setDescription(mDescrList.get(i));
                 feedItem.setUrl(mUrlList.get(i));
 
-                if (mYoutubeUrlList.get(i).contains("youtube")) {
-                    Log.d(TAG, "onPostExecute: set image from youtube");
-                    feedItem.setImgUrl(Helper.getYoutubeImg(mYoutubeUrlList.get(i)));
-                } else if (mImgUrlList.get(i).contains("\u0060")) {
-                    feedItem.setImgUrl(mImgUrlList.get(i).replace("\u0060", "%60"));
-                } else {
-                    feedItem.setImgUrl(mImgUrlList.get(i));
+                if(!isPodcast) {
+                    if (mYoutubeUrlList.get(i).contains("youtube")) {
+                        Log.d(TAG, "onPostExecute: set image from youtube");
+                        feedItem.setImgUrl(Helper.getYoutubeImg(mYoutubeUrlList.get(i)));
+                    } else if (mImgUrlList.get(i).contains("\u0060")) {
+                        feedItem.setImgUrl(mImgUrlList.get(i).replace("\u0060", "%60"));
+                    } else {
+                        feedItem.setImgUrl(mImgUrlList.get(i));
+                    }
                 }
-
+                else
+                {
+                    feedItem.setDrCastImg(R.drawable.dr_cast);
+                }
                 mFeedItems.add(feedItem);
             }
 
