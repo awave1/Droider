@@ -17,42 +17,43 @@ public class AboutFragment extends android.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.about_fragment, container, false);
+//
+//        ImageView ArtIm = (ImageView) v.findViewById(R.id.ArtIm);
+//
+//        ArtIm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/awawave")));
+//            }
+//        });
+//
+//        ImageView AlexIm = (ImageView) v.findViewById(R.id.AlexIm);
+//        AlexIm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/jackson23")));
+//            }
+//        });
+//
+//        ImageView IstIm = (ImageView) v.findViewById(R.id.IstIm);
+//
+//        IstIm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/istishev")));
+//            }
+//        });
+//
+//
+//        ImageView VedIm = (ImageView) v.findViewById(R.id.VedIm);
+//
+//        VedIm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/borisvedensky")));
+//            }
+//        });
 
-        ImageView ArtIm = (ImageView) v.findViewById(R.id.ArtIm);
-
-        ArtIm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/awawave")));
-            }
-        });
-
-        ImageView AlexIm = (ImageView) v.findViewById(R.id.AlexIm);
-        AlexIm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/jackson23")));
-            }
-        });
-
-        ImageView IstIm = (ImageView) v.findViewById(R.id.IstIm);
-
-        IstIm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/istishev")));
-            }
-        });
-
-
-        ImageView VedIm = (ImageView) v.findViewById(R.id.VedIm);
-
-        VedIm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/borisvedensky")));
-            }
-        });
         return v;
     }
 }
