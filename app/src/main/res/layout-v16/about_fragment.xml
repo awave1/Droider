@@ -13,11 +13,11 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:text="@string/shortInformation_about"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,6 +27,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif"
             android:text="@string/about_fragment_description"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="14sp" />
@@ -41,11 +42,11 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:text="@string/authors_about"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <ListView
             android:layout_width="match_parent"
@@ -63,11 +64,11 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:text="@string/devs_about"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <ListView
             android:layout_width="match_parent"
