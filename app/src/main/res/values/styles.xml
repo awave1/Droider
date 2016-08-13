@@ -18,8 +18,7 @@
 
         <item name="colorIcons">@color/colorControlNormal_dark</item>
     </style>
-
-
+    
     <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -58,6 +57,15 @@
     <style name="RedTheme.Toolbar" parent="RedThemeBase">
         <item name="android:textColorPrimary">@color/text_color_primary_red_toolbar</item>
         <item name="android:textColorSecondary">@color/text_color_primary_red_toolbar</item>
+    </style>
+
+    <style name="AverageHorizontalMarginBase">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="AverageHorizontalMargin" parent="AverageHorizontalMarginBase">
+
     </style>
 
 </resources>
