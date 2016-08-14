@@ -14,20 +14,28 @@
     <string name="open_in_browser">Открыть в браузере</string>
     <string name="drawer_item_section_header">Прочее</string>
 
-    <string name="description">Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной системе Android, в частности. Наша цель – интересно, оперативно и доступно рассказывать поклонникам технологий о новых устройствах, приложениях и играх.</string>
+    <!-- About Fragment strings -->
     <string name="about_fragment_description">
         Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной
         системе Android в частности. Цель проекта – интересно, оперативно и доступно рассказывать
         поклонникам технологий о новых устройствах, приложениях и играх.\n\nDroider App –
         неофициальное приложение для быстрого и удобного доступа к статьям и контенту Droider.ru с
         мобильных устройств Android.</string>
-    <string name="vedenskiy_about">Борис Веденский\nАвтор Droider Show, ОффТОП Шоу и #КакОно. Главред Droider.ru.</string>
-    <string name="istishev_about">Валерий Истишев\nCEO Droider Media. IT-жур, DroiderShow, Droider.ru, Droidercast</string>
-    <string name="art_about">Артем Головин\nПрограммист, студент MRU</string>
-    <string name="alex_about">Александр Гузенко\nПрограммист, студент МЭИ</string>
-    <string name="devs_about">Разработчики</string>
-    <string name="authors_about">Авторы</string>
-    <string name="shortInformation_about">Основное</string>
+    <string name="about_fragment_vedenskiy_title">Борис Веденский</string>
+    <string name="about_fragment_vedenskiy_description">Автор Droider Show, ОффТОП Шоу и #КакОно.
+        Главред Droider.ru</string>
+    <string name="about_fragment_istishev_title">Валерий Истишев</string>
+    <string name="about_fragment_istishev_description">CEO Droider Media. IT-жур, DroiderShow,
+        Droider.ru, Droidercast</string>
+    <string name="about_fragment_art_title">Артем Головин</string>
+    <string name="about_fragment_art_description">Программист, студент MRU</string>
+    <string name="about_fragment_alex_title">Александр Гузенко</string>
+    <string name="about_fragment_alex_description">Программист, студент МЭИ</string>
+    <string name="about_fragment_devs_about">Разработчики</string>
+    <string name="about_fragment_authors_about">Авторы</string>
+    <string name="about_fragment_shortInformation_about">Основное</string>
+    <string name="about_fragment_item_avatar_description">Authors avatar</string>
+
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
 

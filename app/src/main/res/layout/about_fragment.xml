@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:text="@string/shortInformation_about"
+            android:text="@string/about_fragment_shortInformation_about"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -22,8 +22,8 @@
             style="@style/AverageHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/about_fragment_description"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="14sp" />
@@ -31,44 +31,46 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/textColorSecondary" />
+            android:background="?android:attr/listDivider" />
 
         <TextView
             style="@style/AverageHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:text="@string/authors_about"
+            android:text="@string/about_fragment_authors_about"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/droider_ru_authors_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_margin="16dp"
-            android:background="@color/colorPrimary_dark" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/textColorSecondary" />
+            android:background="?android:attr/listDivider" />
 
         <TextView
             style="@style/AverageHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:text="@string/devs_about"
+            android:text="@string/about_fragment_devs_about"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/droider_app_authors_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_margin="16dp"
-            android:background="@color/colorPrimary_dark" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp" />
 
         <!--todo: Make Material image little joke-->
         <!--  <ImageView
