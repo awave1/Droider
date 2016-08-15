@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Droider</string>
+    <string name="app_name">Droider App</string>
     <string name="drawer_item_home">Главная</string>
     <string name="drawer_item_news">Новости</string>
     <string name="drawer_item_apps">Приложения</string>
