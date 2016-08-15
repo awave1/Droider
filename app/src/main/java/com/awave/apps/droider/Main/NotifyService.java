@@ -86,12 +86,10 @@ public class NotifyService extends Service {
                 Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
                 PendingIntent contextIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                Resources res = getApplicationContext().getResources();
                 Notification.Builder builder = new Notification.Builder(getApplicationContext());
 
                 builder.setContentIntent(contextIntent)
-                        .setSmallIcon(R.drawable.ic_stat_dr)
-                        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_large_notify))
+                        .setSmallIcon(R.mipmap.ic_stat_notify_article)
                         .setTicker("Droider")
                         .setWhen(System.currentTimeMillis())
                         .setAutoCancel(true)
