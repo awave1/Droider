@@ -1,6 +1,8 @@
 package com.awave.apps.droider.Elements.MainScreen;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.awave.apps.droider.R;
@@ -31,57 +34,38 @@ public class AboutFragment extends android.app.Fragment {
         authorsRecyclerViewInit(returnView);
         developersRecyclerViewInit(returnView);
 
-//        todo: social links
-//        ImageView ArtIm = (ImageView) v.findViewById(R.id.ArtIm);
-//
-//        ArtIm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/awawave")));
-//            }
-//        });
-//
-//        ImageView AlexIm = (ImageView) v.findViewById(R.id.AlexIm);
-//        AlexIm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/jackson23")));
-//            }
-//        });
-//
-//        ImageView IstIm = (ImageView) v.findViewById(R.id.IstIm);
-//
-//        IstIm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/istishev")));
-//            }
-//        });
-//
-//
-//        ImageView VedIm = (ImageView) v.findViewById(R.id.VedIm);
-//
-//        VedIm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/borisvedensky")));
-//            }
-//        });
-
         return returnView;
     }
 
     private void authorsRecyclerViewInit(View v) {
         List<Author> authorsList = new ArrayList<>();
-        authorsList.add(new Author(
-                getString(R.string.about_fragment_vedenskiy_title),
-                getString(R.string.about_fragment_vedenskiy_description),
-                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vedenskiy, null))
+        authorsList.add(
+                new Author(
+                        getString(R.string.about_fragment_vedenskiy_title),
+                        getString(R.string.about_fragment_vedenskiy_description),
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vedenskiy, null)) {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://vk.com/borisvedensky")
+                        ));
+                    }
+                }
         );
-        authorsList.add(new Author(
-                getString(R.string.about_fragment_istishev_title),
-                getString(R.string.about_fragment_istishev_description),
-                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_istishev, null))
+        authorsList.add(
+                new Author(
+                        getString(R.string.about_fragment_istishev_title),
+                        getString(R.string.about_fragment_istishev_description),
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_istishev, null)) {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://vk.com/istishev")
+                        ));
+                    }
+                }
         );
 
         recyclerViewAdapterSetting(v, authorsList, R.id.droider_ru_authors_recycler_view);
@@ -89,15 +73,33 @@ public class AboutFragment extends android.app.Fragment {
 
     private void developersRecyclerViewInit(View v) {
         List<Author> developersList = new ArrayList<>();
-        developersList.add(new Author(
-                getString(R.string.about_fragment_art_title),
-                getString(R.string.about_fragment_art_description),
-                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_art, null))
+        developersList.add(
+                new Author(
+                        getString(R.string.about_fragment_art_title),
+                        getString(R.string.about_fragment_art_description),
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_art, null)) {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://vk.com/awawave")
+                        ));
+                    }
+                }
         );
-        developersList.add(new Author(
-                getString(R.string.about_fragment_alex_title),
-                getString(R.string.about_fragment_alex_description),
-                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_alex, null))
+        developersList.add(
+                new Author(
+                        getString(R.string.about_fragment_alex_title),
+                        getString(R.string.about_fragment_alex_description),
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_alex, null)) {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://vk.com/jackson23")
+                        ));
+                    }
+                }
         );
 
         recyclerViewAdapterSetting(v, developersList, R.id.droider_app_authors_recycler_view);
@@ -119,6 +121,7 @@ public class AboutFragment extends android.app.Fragment {
 
     class AuthorsViewHolder extends RecyclerView.ViewHolder {
 
+        private final LinearLayout baseLinearLayout;
         private TextView titleTextView;
         private TextView descriptionTextView;
         private ImageView imageView;
@@ -129,6 +132,13 @@ public class AboutFragment extends android.app.Fragment {
             descriptionTextView = (TextView) itemView.findViewById(
                     R.id.authors_description_text_view);
             imageView = (ImageView) itemView.findViewById(R.id.authors_image_view);
+            baseLinearLayout = (LinearLayout) itemView.findViewById(R.id.authors_base_linear_layout);
+        }
+
+        public void setOnClickListener(View.OnClickListener onClickListener) {
+            if (baseLinearLayout != null) {
+                baseLinearLayout.setOnClickListener(onClickListener);
+            }
         }
 
         public TextView getTitleTextView() {
@@ -166,6 +176,7 @@ public class AboutFragment extends android.app.Fragment {
             holder.getTitleTextView().setText(author.getTitleString());
             holder.getDescriptionTextView().setText(author.getDescriptionString());
             holder.getImageView().setImageDrawable(author.getImageDrawable());
+            holder.setOnClickListener(author);
         }
 
         @Override
@@ -175,7 +186,7 @@ public class AboutFragment extends android.app.Fragment {
 
     }
 
-    private class Author {
+    private class Author implements View.OnClickListener {
 
         private String titleString;
         private String descriptionString;
@@ -200,5 +211,11 @@ public class AboutFragment extends android.app.Fragment {
             return imageDrawable;
         }
 
+        @Override
+        public void onClick(View view) {
+//            Override it if you need
+        }
+
     }
+
 }
