@@ -7,9 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.awave.apps.droider.R;
@@ -18,8 +18,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NotifyService extends Service {
+
     private static final int NOTIFY_ID = 101;
-    private Notification notification;
     private SharedPreferences sp;
     private Timer myTimer = new Timer();
     private NotificationManager notificationManager;
@@ -81,36 +81,30 @@ public class NotifyService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
-                PendingIntent contextIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                        getApplicationContext()
+                );
+                Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent contextIntent = PendingIntent.getActivity(
+                        getApplicationContext(), 0, notifyIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                );
 
                 builder.setContentIntent(contextIntent)
                         .setSmallIcon(R.mipmap.ic_stat_notify_article)
-                        .setTicker("Droider")
+                        .setTicker(getString(R.string.app_name))
                         .setWhen(System.currentTimeMillis())
                         .setAutoCancel(true)
-                        .setContentTitle("Новые статьи")
-                        .setContentText("Проверь, что нового?");
+                        .setContentTitle(getString(R.string.notification_title))
+                        .setContentText(getString(R.string.notification_text));
 
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    notification = builder.getNotification();
-                } else {
-                    Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+                Notification notification = builder.build();
 
-                    inboxStyle.setBigContentTitle("");
-                    inboxStyle.addLine("Привет, не хочешь ли узнать, что нового");
-                    inboxStyle.addLine(" в этом технологическом мире?");
-
-
-                    builder.setStyle(inboxStyle);
-                    notification = builder.build();
-                }
                 notification.defaults = Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS;
 
-                Log.d("Notify ", "Сработало");
-                notificationManager.notify(NOTIFY_ID, notification);
+                notificationManager.notify(NotifyService.NOTIFY_ID, notification);
+
             }
         }).start();
     }
