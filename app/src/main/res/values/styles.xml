@@ -20,7 +20,6 @@
     </style>
 
 
-
     <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -44,6 +43,23 @@
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
     </style>
+
+    <style name="RedThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary_red</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_red</item>
+        <item name="colorAccent">@color/color_accent_red</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_red</item>
+    </style>
+
+    <style name="RedTheme" parent="RedThemeBase">
+
+    </style>
+
+    <style name="RedTheme.Toolbar" parent="RedThemeBase">
+        <item name="android:textColorPrimary">@color/text_color_primary_red_toolbar</item>
+        <item name="android:textColorSecondary">@color/text_color_primary_red_toolbar</item>
+    </style>
+
 </resources>
 
 

@@ -1,48 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Уведомления">
+
+    <PreferenceCategory android:title="@string/pref_group_notifications_title">
+
         <SwitchPreference
-            android:textColor="?android:attr/textColorPrimary"
             android:defaultValue="false"
-            android:key="notify"
-            android:title="Включить уведомления" />
-        <ListPreference
+            android:key="@string/pref_notifications_key"
             android:textColor="?android:attr/textColorPrimary"
-            android:dependency="notify"
-            android:entries="@array/interval_names"
-            android:entryValues="@array/interval_times"
-            android:key="interval"
-            android:summary="@string/interval"
-            android:title="@string/interval_title" />
+            android:title="@string/pref_notifications_title" />
+
+        <ListPreference
+            android:dependency="@string/pref_notifications_key"
+            android:entries="@array/pref_notification_interval_entries"
+            android:entryValues="@array/pref_notification_interval_values"
+            android:key="@string/pref_interval_key"
+            android:summary="@string/pref_notifications_interval_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_notifications_interval_title" />
+
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Интерфейс">
+    <PreferenceCategory android:title="@string/pref_group_ui_title">
+
         <ListPreference
+            android:defaultValue="@string/pref_theme_entry_red"
+            android:entries="@array/pref_theme_entries"
+            android:entryValues="@array/pref_theme_entries"
+            android:key="@string/pref_theme_key"
+            android:summary="@string/pref_theme_summary"
             android:textColor="?android:attr/textColorPrimary"
-            android:defaultValue="Светлая"
-            android:entries="@array/theme_values"
-            android:entryValues="@array/theme_values"
-            android:key="theme"
-            android:summary="@string/theme_summary"
-            android:title="@string/theme_title" />
+            android:title="@string/pref_theme_title" />
+
         <SwitchPreference
-            android:textColor="?android:attr/textColorPrimary"
             android:defaultValue="false"
             android:key="@string/palette_key"
-            android:title="@string/palette_title"
-            android:summary="@string/palette_summary"/>
+            android:summary="@string/pref_palette_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_palette_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Бета фичи"
-        android:summary="Приложение может вылетать">
+        android:summary="@string/pref_group_beta_summary"
+        android:title="@string/pref_group_beta">
+
         <SwitchPreference
-            android:textColor="?android:attr/textColorPrimary"
             android:defaultValue="false"
             android:key="beta_enableBlur"
-            android:title="Включить блюр"
-            android:summary="Не желательно для использования на старых девайсах"/>
+            android:summary="@string/pref_blur_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_blur_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

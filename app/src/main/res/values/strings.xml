@@ -25,9 +25,10 @@
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
 
-    <string name="interval_title">Интервал уведомления</string>
-    <string name="interval">Как часто вы хотите получать уведомления</string>
-    <string-array name="interval_names">
+    <!-- Preferences -->
+    <string name="pref_notifications_interval_title">Интервал уведомления</string>
+    <string name="pref_notifications_interval_summary">Как часто вы хотите получать уведомления</string>
+    <string-array name="pref_notification_interval_entries">
         <item>1 час</item>
         <item>3 часa</item>
         <item>6 часов</item>
@@ -35,14 +36,13 @@
         <item>24 часа</item>
     </string-array>
 
-    <string-array name="interval_times">
+    <string-array name="pref_notification_interval_values">
         <item>1</item>
         <item>3</item>
         <item>6</item>
         <item>12</item>
         <item>24</item>
     </string-array>
-
 
     <string name="choose_text_size">Выберите размер шрифта</string>
 
@@ -67,16 +67,34 @@
         <item>24</item>
     </string-array>
 
-    <string-array name="theme_values">
-        <item>Светлая</item>
-        <item>Тёмная</item>
-        <item>В зависимости от времени суток</item>
+    <string name="pref_theme_entry_red">Красная</string>
+    <string name="pref_theme_entry_light">Светлая</string>
+    <string name="pref_theme_entry_dark">Темная</string>
+    <string name="pref_theme_entry_daytime">В зависимости от времени суток</string>
+
+    <string-array name="pref_theme_entries">
+        <item>@string/pref_theme_entry_red</item>
+        <item>@string/pref_theme_entry_light</item>
+        <item>@string/pref_theme_entry_dark</item>
+        <item>@string/pref_theme_entry_daytime</item>
     </string-array>
 
-    <string name="theme_title">Выбрать тему</string>
-    <string name="theme_summary">Светлая или тёмная</string>
+    <string name="pref_theme_title">Выбрать тему</string>
+    <string name="pref_theme_summary">Светлая или тёмная</string>
 
     <string name="palette_key">palette</string>
-    <string name="palette_title">Фон статьи из цвета картинки</string>
-    <string name="palette_summary">(только для светлой темы)\nЦвет фона статьи будет взят из картинки в заголовке(лёгкий оттенок, из-за чего не всегда может существовать)</string>
+    <string name="pref_palette_title">Фон статьи из цвета картинки</string>
+    <string name="pref_palette_summary">(только для светлой темы)\nЦвет фона статьи будет взят из картинки в заголовке(лёгкий оттенок, из-за чего не всегда может существовать)</string>
+    <string name="pref_notifications_title">Включить уведомления</string>
+    <string name="pref_group_notifications_title">Уведомления</string>
+    <string name="pref_group_ui_title">Интерфейс</string>
+    <string name="pref_group_beta">Бета фичи</string>
+    <string name="pref_group_beta_summary">Приложение может вылетать</string>
+    <string name="pref_blur_summary">Не желательно для использования на старых девайсах</string>
+    <string name="pref_blur_title">Включить блюр</string>
+    <string name="pref_notifications_key">notify</string>
+    <string name="pref_interval_key">interval</string>
+    <string name="pref_theme_key">theme</string>
+    <!---->
+
 </resources>
