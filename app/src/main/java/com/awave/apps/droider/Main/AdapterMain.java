@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
+    
     public static ArrayList<FeedItem> data;
     private static Activity activity;
     private static Drawable headerImg;
@@ -62,12 +63,10 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
         viewHolder.description.setText(item.getDescription());
         viewHolder.siteUrl.setText(item.getUrl());
 
-        if (isPodcast)
-        {
+        if (isPodcast) {
             assert viewHolder.cardImage != null;
             Glide.with(activity).load(R.drawable.dr_cast).into(viewHolder.cardImage);
-        }
-        else {
+        } else {
             Glide.with(activity).load(item.getImgUrl()).into(viewHolder.cardImage);
         }
 
@@ -130,10 +129,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.ViewHolder> {
             siteUrl = (TextView) holderView.findViewById(R.id.siteurl);
 
             articleTitle = (TextView) holderView.findViewById(R.id.articleTitle_card);
-            articleTitle.setTypeface(Helper.getRobotoFont("Light", true, AdapterMain.activity));
-
             description = (TextView) holderView.findViewById(R.id.articleDescription);
-            description.setTypeface(Helper.getRobotoFont("Light", false, AdapterMain.activity));
         }
     }
 

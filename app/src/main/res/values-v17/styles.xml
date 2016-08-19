@@ -11,4 +11,9 @@
         <item name="android:paddingEnd">16dp</item>
     </style>
 
+    <style name="RedTheme.Card" parent="RedTheme.CardBase">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
 </resources>

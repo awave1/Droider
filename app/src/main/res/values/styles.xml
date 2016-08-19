@@ -18,7 +18,7 @@
 
         <item name="colorIcons">@color/colorControlNormal_dark</item>
     </style>
-    
+
     <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -57,6 +57,19 @@
     <style name="RedTheme.Toolbar" parent="RedThemeBase">
         <item name="android:textColorPrimary">@color/text_color_primary_red_toolbar</item>
         <item name="android:textColorSecondary">@color/text_color_primary_red_toolbar</item>
+    </style>
+
+    <style name="RedTheme.CardBase" parent="RedThemeBase">
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+    <style name="RedTheme.Card" parent="RedTheme.CardBase">
+
     </style>
 
     <style name="AverageHorizontalMarginBase">
