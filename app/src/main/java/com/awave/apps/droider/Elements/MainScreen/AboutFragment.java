@@ -43,7 +43,7 @@ public class AboutFragment extends android.app.Fragment {
                 new Author(
                         getString(R.string.about_fragment_vedenskiy_title),
                         getString(R.string.about_fragment_vedenskiy_description),
-                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vedenskiy, null)) {
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vedensky, null)) {
                     @Override
                     public void onClick(View view) {
                         startActivity(new Intent(
