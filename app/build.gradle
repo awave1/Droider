@@ -12,6 +12,9 @@ android {
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
+        dexOptions {
+            incremental true
+        }
     }
     buildTypes {
         release {
