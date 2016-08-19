@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.awave.apps.droider.Main.AdapterMain;
+import com.awave.apps.droider.Main.FeedRecyclerViewAdapter;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Feed.FeedOrientation;
@@ -24,7 +24,8 @@ import com.awave.apps.droider.Utils.Helper;
 import java.util.ArrayList;
 
 
-public class Feed extends android.app.Fragment implements OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
+public class Feed extends android.app.Fragment implements
+        OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
 
@@ -33,8 +34,8 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
     private static ArrayList<FeedItem> sFeedItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
-    private AdapterMain adapter;
-    private boolean isPodcast= false;
+    private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
+    private boolean isPodcast = false;
 
     public static Feed instance(String feedUrl) {
         Feed feed = new Feed();
@@ -46,15 +47,34 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.feed_fragment, container, false);
-
-        Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources().getConfiguration().orientation);
-        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_ARTICLE_URL) = " + getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.feed_fragment, container, false);
+        orientationDebugging();
 
         if (Helper.DROIDER_CAST_URL.equals(getArguments().getString(Helper.EXTRA_ARTICLE_URL)))
             isPodcast = true;
 
+        swipeRefreshLayoutSetup(view);
+        recyclerViewSetup(view);
+        initLayoutManager();
+        return view;
+    }
+
+    private void recyclerViewSetup(View v) {
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
+        feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(getActivity(), sFeedItems, isPodcast);
+        mRecyclerView.setHasFixedSize(true);
+    }
+
+    private void orientationDebugging() {
+        Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources()
+                .getConfiguration().orientation);
+        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_ARTICLE_URL) = " + getArguments()
+                .getString(Helper.EXTRA_ARTICLE_URL));
+    }
+
+    private void swipeRefreshLayoutSetup(View v) {
         sSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.feed_swipe_refresh);
         sSwipeRefreshLayout.setOnRefreshListener(this);
         sSwipeRefreshLayout.setColorSchemeResources(
@@ -62,14 +82,7 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
-        sSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.feed_recycler_view);
-        adapter = new AdapterMain(getActivity(), sFeedItems, isPodcast);
-        mRecyclerView.setHasFixedSize(true);
-
-        initLayoutManager();
-        return v;
+        sSwipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
     }
 
     @Override
@@ -88,8 +101,8 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
 
     @Override
     public synchronized void onTaskCompleted() {
-        adapter.notifyDataSetChanged();
-        if(sSwipeRefreshLayout.isRefreshing())
+        feedRecyclerViewAdapter.notifyDataSetChanged();
+        if (sSwipeRefreshLayout.isRefreshing())
             sSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -103,40 +116,15 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
         });
         switch (newConfig.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
-
-                mRecyclerView.setAdapter(adapter);
-                mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
-                    @Override
-                    public void loadNextPage() {
-                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_landscape);
-                        onTaskCompleted();
-                    }
-                });
-
-                getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+                setOrientationLandscape();
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
-                sLinearLayoutManager = new LinearLayoutManager(getActivity());
-                mRecyclerView.setLayoutManager(sLinearLayoutManager);
-                mRecyclerView.setAdapter(adapter);
-                mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
-                    @Override
-                    public void loadNextPage() {
-                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_portrait);
-                        onTaskCompleted();
-                    }
-                });
-
-                getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
-
+                setOrientationPortrait();
                 break;
         }
     }
 
     private void initLayoutManager() {
-
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -144,35 +132,47 @@ public class Feed extends android.app.Fragment implements OnTaskCompleted, Swipe
             }
         });
 
-        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            sLinearLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(sLinearLayoutManager);
-
-            mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
-                @Override
-                public void loadNextPage() {
-                    loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_portrait);
-                    onTaskCompleted();
-                }
-            });
-            getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+        Configuration configuration = getActivity().getResources().getConfiguration();
+        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setOrientationPortrait();
         }
-
-        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
-
-            mRecyclerView.setAdapter(adapter);
-            mRecyclerView.addOnScrollListener(new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
-                @Override
-                public void loadNextPage() {
-                    loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL) + FeedOrientation.nextPage_landscape);
-                    onTaskCompleted();
-                }
-            });
-            getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setOrientationLandscape();
         }
+    }
+
+    private void setOrientationLandscape() {
+        sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(
+                2, StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
+        mRecyclerView.setAdapter(feedRecyclerViewAdapter);
+        mRecyclerView.addOnScrollListener(
+                new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
+                    @Override
+                    public void loadNextPage() {
+                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL)
+                                + FeedOrientation.nextPage_landscape);
+                        onTaskCompleted();
+                    }
+                });
+
+        getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
+    }
+
+    private void setOrientationPortrait() {
+        sLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(sLinearLayoutManager);
+        mRecyclerView.setAdapter(feedRecyclerViewAdapter);
+        mRecyclerView.addOnScrollListener(
+                new FeedOrientation(getActivity(), sSwipeRefreshLayout) {
+                    @Override
+                    public void loadNextPage() {
+                        loadMore(getArguments().getString(Helper.EXTRA_ARTICLE_URL)
+                                + FeedOrientation.nextPage_portrait);
+                        onTaskCompleted();
+                    }
+                });
+        getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
     }
 
     private void loadMore(String url) {

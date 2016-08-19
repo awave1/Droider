@@ -45,10 +45,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
+                <feedItemArrayList
                     android:host="droider.ru"
                     android:scheme="http" />
-                <data
+                <feedItemArrayList
                     android:host="www.droider.ru"
                     android:pathPattern="/.*"
                     android:scheme="http" />

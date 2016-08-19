@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/card_image"
+            android:id="@+id/feed_card_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:fadingEdge="vertical"
@@ -24,20 +24,22 @@
             android:src="@drawable/dr_cast" />
 
         <TextView
-            android:id="@+id/articleTitle_card"
+            android:id="@+id/feed_card_title"
             style="@style/AverageHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="24dp"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:textColor="@color/text_color_primary_red"
             android:textSize="24sp"
+            android:textStyle="bold"
             tools:text="Title!" />
 
         <TextView
-            android:id="@+id/articleDescription"
+            android:id="@+id/feed_card_description"
             style="@style/AverageHorizontalMargin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,10 +51,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/siteurl"
+        android:id="@+id/feed_card_site_url"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_below="@+id/card_image"
+        android:layout_below="@+id/feed_card_image"
         android:visibility="gone" />
 
 </android.support.v7.widget.CardView>

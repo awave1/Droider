@@ -38,7 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.awave.apps.droider.Main.AdapterMain;
+import com.awave.apps.droider.Main.FeedRecyclerViewAdapter;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 import com.bumptech.glide.Glide;
@@ -169,18 +169,18 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 if (isBlur)
-                    headerImage.setBackgroundDrawable(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                    headerImage.setBackgroundDrawable(Helper.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
                 else
-                    headerImage.setBackgroundDrawable(AdapterMain.getHeaderImage());
+                    headerImage.setBackgroundDrawable(FeedRecyclerViewAdapter.getHeaderImageDrawable());
             } else {
                 try {
                     if(isBlur)
-                        headerImage.setBackground(Helper.applyBlur(AdapterMain.getHeaderImage(), this));
+                        headerImage.setBackground(Helper.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
                     else
-                        headerImage.setBackground(AdapterMain.getHeaderImage());
+                        headerImage.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
-                    headerImage.setBackground(AdapterMain.getHeaderImage());
+                    headerImage.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
                 }
 
             }
