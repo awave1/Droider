@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Need for Transparent Navigation Bar -->
+    <dimen name="transparent_navigation_bar_margin">-96dp</dimen>
+    <dimen name="transparent_action_bar_margin">0dp</dimen>
+    <dimen name="main_container_transparent_margin_top">48dp</dimen>
+    <!---->
+
+</resources>

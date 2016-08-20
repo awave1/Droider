@@ -6,4 +6,11 @@
     <dimen name="medium_text_font_size">20sp</dimen>
     <dimen name="head_text_font_size">24sp</dimen>
     <dimen name="material_drawer_account_header_height">148dp</dimen>
+
+    <!-- Need for Transparent Navigation Bar -->
+    <dimen name="transparent_navigation_bar_margin">0dp</dimen>
+    <dimen name="transparent_action_bar_margin">0dp</dimen>
+    <dimen name="main_container_transparent_margin_top">48dp</dimen>
+    <!---->
+
 </resources>
