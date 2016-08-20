@@ -79,6 +79,9 @@
               android:adjustViewBounds="true"
               android:src="@drawable/footer" />-->
 
+        <!-- Margin below Transparent Navigation Bar -->
+        <include layout="@layout/transparent_navigation_bar_view"/>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

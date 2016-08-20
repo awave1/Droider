@@ -42,4 +42,9 @@
         </menu>
     </item>
 
+    <!-- Needed for Transparent Navigation bar -->
+    <group android:enabled="false">
+        <item android:title="" />
+    </group>
+
 </menu>
