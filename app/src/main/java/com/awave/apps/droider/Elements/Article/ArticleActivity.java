@@ -55,6 +55,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+
     private static final String TAG = "ArticleActivity";
     private static RelativeLayout headerImage;
     private AppBarLayout appBarLayout;
@@ -174,7 +175,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     headerImage.setBackgroundDrawable(FeedRecyclerViewAdapter.getHeaderImageDrawable());
             } else {
                 try {
-                    if(isBlur)
+                    if (isBlur)
                         headerImage.setBackground(Helper.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
                     else
                         headerImage.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
@@ -334,21 +335,20 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
     private void setupPaletteBackground(boolean isTransparent) {
-        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO) ) {
+        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
                 Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
-                if(p.getLightMutedSwatch() != null && !isTransparent) {
+                if (p.getLightMutedSwatch() != null && !isTransparent) {
                     toolbar.setBackgroundColor(p.getLightMutedSwatch().getRgb());
                     articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
                     Log.d(TAG, "onCreate: color from bitmap: " + p.getLightMutedSwatch().getRgb() + "");
-                }
-                else {
+                } else {
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
                     articleBackground.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT " );
+                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ");
                 }
             } catch (NullPointerException e) {
-                if(isTransparent)
+                if (isTransparent)
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
                 else
                     Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
@@ -422,7 +422,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 //                Log.d(TAG, "doInBackground: " + elements.toString());
                 elements.remove(0);
 //                Log.d(TAG, "doInBackground: without element(0) " + elements.toString());
-                if(!elements.isEmpty() && elements.get(1).hasText()) {
+                if (!elements.isEmpty() && elements.get(1).hasText()) {
 //                    Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
                     elements.remove(1);
 //                    Log.d(TAG, "doInBackground:  without element(1) " + elements.toString());
@@ -445,8 +445,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                         sArticleImg.setImageBitmap(Helper.applyBlur(bitmap, activity));
                     else
                         sArticleImg.setImageBitmap(bitmap);
-                } catch (NullPointerException | RSIllegalArgumentException npe)
-                {
+                } catch (NullPointerException | RSIllegalArgumentException npe) {
                     npe.printStackTrace();
                     sArticleImg.setImageBitmap(bitmap);
                 }
@@ -457,7 +456,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
             try {
                 sArticle.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
-                Log.d(TAG, "onPostExecute: "+ html);
+                Log.d(TAG, "onPostExecute: " + html);
             } catch (StringIndexOutOfBoundsException e) {
                 Log.e(TAG, "onPostExecute: Error loading html content", e.getCause());
             }
