@@ -17,7 +17,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.support.v8.renderscript.RSIllegalArgumentException;
@@ -27,7 +26,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -51,6 +49,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
@@ -58,107 +57,96 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
     private static final String TAG = "ArticleActivity";
     private static RelativeLayout headerImage;
-    private AppBarLayout appBarLayout;
     private static TextView sArticleHeader;
     private static WebView sArticle;
     private static TextView sArticleShortDescription;
     private static ImageView sArticleImg;
     private static ProgressBar sProgressBar;
-    private Window mWindow;
-    private static Toolbar toolbar;
     private static String title;
-    private static String shortDescr;
+    private static String shortDescription;
     private static String webViewTextColor;
-    private CollapsingToolbarLayout collapsingToolbar;
-    private LinearLayout articleRelLayout;
-    private static YouTubePlayerSupportFragment youtubeFragment;
-    private NestedScrollView articleBackground;
     private static FrameLayout youtubeFrame;
-    private Bundle extras;
-    private int webViewBackgroundColor;
-    private int theme;
-    private String themeName;
     private static boolean isBlur;
     private static boolean isPalette;
+    private AppBarLayout appBarLayout;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private LinearLayout articleRelLayout;
+    private NestedScrollView articleBackground;
+    private Bundle extras;
+    private int webViewBackgroundColor;
+    private String themeName;
     private int currentNightMode;
 
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
+    private HashMap<String, Integer> themesHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /** Проверяем какая тема выбрана в настройках **/
-        themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
         isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
         isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
-        mWindow = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWindow.setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        switch (themeName) {
-            case "Светлая":
-
-                theme = R.style.LightTheme;
-
-                webViewBackgroundColor = R.color.cardBackgroundColor_light;
-                webViewTextColor = "black";
-                break;
-
-            case "Тёмная":
-
-                theme = R.style.DarkTheme;
-
-                webViewBackgroundColor = R.color.cardBackgroundColor_dark;
-                webViewTextColor = "white";
-                break;
-
-            case "В зависимости от времени суток":
-
-                theme = R.style.DayNightAuto;
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-
-
-        }
+        themeSetup();
 
         super.onCreate(savedInstanceState);
-
-        /** Затем "включаем" нужную тему **/
-        setTheme(theme);
-
         setContentView(R.layout.article);
 
-        /** Обнаружение всех View **/
-        articleBackground = (NestedScrollView) findViewById(R.id.article_background_NSV);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
-        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
-        headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
-        sArticleHeader = (TextView) findViewById(R.id.article_header);
-        sArticleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
-        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_article);
-        sArticle = (WebView) findViewById(R.id.article);
-        sArticleImg = (ImageView) findViewById(R.id.article_header_img);
-        sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
+        // TODO: 23.08.2016 Another variants? Butterknife? Binding?
+        viewInitialisation();
 
+        toolbarSetup();
+        parserSetup();
+        appBarLayout.addOnOffsetChangedListener(this);
 
-        setSupportActionBar(toolbar);
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
+        nightModeSetup();
+        this.calculateMinimumHeight();
+        this.setupArticleWebView(sArticle);
+    }
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
+    private void parserSetup() {
         Parser parser = new Parser(this);
-
         /** Проверка как мы попали в статью **/
+        intentExtraChecking(parser);
+
+        sArticleHeader.setText(title);
+        sArticleShortDescription.setText(shortDescription);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Parser.isYoutube) {
+                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
+                    youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
+                    setupYoutubePlayer();
+                }
+            }
+        }, 750);
+    }
+
+    private void nightModeSetup() {
+        currentNightMode = getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
+                webViewBackgroundColor = R.color.colorBackground_light;
+                webViewTextColor = "black";
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
+                webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким
+                // изозрением добился нормального цвета, то бишь одного цвета с shortDescription,
+                // если сможешь - исправь на по проще. да и вообще там надо почитстить цвета,
+                // чтобы не было так много, и соответственно стайлы
+                webViewTextColor = "white";
+                break;
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
+                break;
+        }
+    }
+
+    private void intentExtraChecking(Parser parser) {
         extras = getIntent().getExtras();
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             parser.isOutIntent(true);
@@ -166,7 +154,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             parser.execute(outsideUrl);
         } else {
             title = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
-            shortDescr = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
+            shortDescription = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 if (isBlur)
@@ -186,53 +174,58 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
             }
         }
+    }
 
-        sArticleHeader.setText(title);
-        sArticleHeader.setTypeface(Helper.getRobotoFont("Light", true, this));
+    private void viewInitialisation() {
+        /** Обнаружение всех View **/
+        articleBackground = (NestedScrollView) findViewById(R.id.article_background_NSV);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
+        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
+        headerImage = (RelativeLayout) findViewById(R.id.article_header_content);
+        sArticleHeader = (TextView) findViewById(R.id.article_header);
+        sArticleShortDescription = (TextView) findViewById(R.id.article_shortDescription);
+        articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        sArticle = (WebView) findViewById(R.id.article);
+        sArticleImg = (ImageView) findViewById(R.id.article_header_img);
+        sProgressBar = (ProgressBar) findViewById(R.id.article_progressBar);
+    }
 
-        sArticleShortDescription.setText(shortDescr);
-        sArticleShortDescription.setTypeface(Helper.getRobotoFont("Light", false, this));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (Parser.isYoutube) {
-                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
-                    youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
-                    setupYoutubePlayer();
+    private void toolbarSetup() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_article);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
                 }
-            }
-        }, 750);
-
-
-        appBarLayout.addOnOffsetChangedListener(this);
-
-        currentNightMode = getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
-                webViewBackgroundColor = R.color.colorBackground_light;
-                webViewTextColor = "black";
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
-                webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким изозрением добился нормального цвета, то бишь одного цвета с shortDescr, если сможешь - исправь на по проще. да и вообще там надо почитстить цвета, чтобы не было так много, и соответственно стайлы
-                webViewTextColor = "white";
-                break;
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
-                break;
+            });
         }
+    }
 
-        this.calculateMinimumHeight();
-        this.setupArticleWebView(sArticle);
-
+    // TODO: 23.08.2016 Move to base class
+    private void themeSetup() {
+        if (themesHashMap == null) {
+            themesHashMap = new HashMap<>();
+            themesHashMap.put(getString(R.string.pref_theme_entry_red), R.style.RedTheme);
+            themesHashMap.put(getString(R.string.pref_theme_entry_light), R.style.LightTheme);
+            themesHashMap.put(getString(R.string.pref_theme_entry_dark), R.style.DarkTheme);
+            themesHashMap.put(getString(R.string.pref_theme_entry_daytime), R.style.DayNightAuto);
+        }
+        themeName = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                getString(R.string.pref_theme_key), getString(R.string.pref_theme_entry_red));
+        setTheme(themesHashMap.get(themeName));
     }
 
     private synchronized void setupYoutubePlayer() {
-
         youtubeFrame.setVisibility(View.VISIBLE);
-        youtubeFragment = YouTubePlayerSupportFragment.newInstance();
+        YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
         youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
@@ -252,7 +245,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
-            collapsingToolbar.setTitle(title);
+//            collapsingToolbar.setTitle(title);
             setupPaletteBackground(false);
         } else {
             assert getSupportActionBar() != null;
@@ -309,7 +302,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         WebChromeClient client = new WebChromeClient();
 
-
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
         settings.setJavaScriptEnabled(true);
@@ -358,6 +350,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
 
     public static class Parser extends AsyncTask<String, Integer, String> {
+
         private static Activity activity;
 
         private String html = "";
@@ -402,16 +395,12 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 }
                 if (outIntent) {
                     this.title = titleDiv.text();
-
                     if (isYoutube) {
                         img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
-
                     } else {
                         img = elements.get(1).select(".article_image img").attr("src");
                     }
-
                     descr = elements.get(0).text() + " " + elements.get(2).text();
-
                     try {
                         bitmap = Glide.with(activity).load(img).asBitmap().into(-1, -1).get(); // -1, -1 дает возможность загрузить фулл сайз.
                     } catch (InterruptedException | ExecutionException e) {

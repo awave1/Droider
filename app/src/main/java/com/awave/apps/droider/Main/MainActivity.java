@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IntegerRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,7 +21,6 @@ import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
 
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 
 @SuppressWarnings("ALL")
@@ -92,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    // TODO: 23.08.2016 Move to base class
     private void themeSetup() {
         if (themesHashMap == null) {
             themesHashMap = new HashMap<>();
@@ -118,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void toolbarSetup() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(mTitle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
