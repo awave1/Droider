@@ -1,7 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-
     <dimen name="body_text_font_size">14sp</dimen>
     <dimen name="medium_text_font_size">20sp</dimen>
     <dimen name="head_text_font_size">24sp</dimen>
@@ -13,5 +12,9 @@
     <dimen name="main_container_transparent_margin_bottom">0dp</dimen>
     <dimen name="margin_below_transparent_navigation_bar_view">0dp</dimen>
     <!---->
+
+    <!-- Article Transparent UI KitKat workaround -->
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_top">0dp</dimen>
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_bottom">0dp</dimen>
 
 </resources>

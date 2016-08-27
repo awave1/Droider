@@ -7,4 +7,8 @@
     <dimen name="margin_below_transparent_navigation_bar_view">48dp</dimen>
     <!---->
 
+    <!-- Article Transparent UI KitKat workaround -->
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_top">-24dp</dimen>
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_bottom">-48dp</dimen>
+
 </resources>

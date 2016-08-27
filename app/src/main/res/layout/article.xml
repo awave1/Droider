@@ -4,6 +4,8 @@
     android:id="@+id/articleCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/collapsing_toolbar_coordinator_layout_margin_bottom"
+    android:layout_marginTop="@dimen/collapsing_toolbar_coordinator_layout_margin_top"
     android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true"
     tools:context=".Elements.Article.ArticleActivity">
@@ -18,7 +20,6 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="4dp"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
@@ -49,6 +50,7 @@
                 style="@style/RedTheme.Toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="@dimen/transparent_action_bar_margin"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed" />
 
@@ -147,7 +149,9 @@
                 <!--android:layout_height="50dp"-->
                 <!--layout="@layout/info_toolbar"/>-->
             </LinearLayout>
+
         </android.support.v7.widget.CardView>
+
     </android.support.v4.widget.NestedScrollView>
 
     <!--<android.support.design.widget.FloatingActionButton-->
@@ -159,4 +163,5 @@
     <!--android:id="@+id/article_fab_share"-->
     <!--app:layout_anchor="@id/appbar_article"-->
     <!--app:layout_anchorGravity="bottom|right|end"/>-->
+
 </android.support.design.widget.CoordinatorLayout>
