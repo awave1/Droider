@@ -8,6 +8,7 @@
     <dimen name="main_container_transparent_margin_top">56dp</dimen>
     <dimen name="main_container_transparent_margin_bottom">0dp</dimen>
     <dimen name="margin_below_transparent_navigation_bar_view">0dp</dimen>
+    <dimen name="margin_below_article_transparent_navigation_bar_view">0dp</dimen>
     <!---->
 
     <!-- Article Transparent UI KitKat workaround -->

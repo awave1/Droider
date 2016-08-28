@@ -75,80 +75,93 @@
         app:behavior_overlapTop="34dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:elevation="8dp"
-            android:theme="@style/RedTheme.Card"
-            card_view:cardBackgroundColor="?android:attr/colorBackground">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/articleRelLayout"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:elevation="8dp"
+                android:theme="@style/RedTheme.Card"
+                card_view:cardBackgroundColor="?android:attr/colorBackground">
 
-                <TextView
-                    android:id="@+id/article_header"
-                    style="@style/AverageHorizontalMargin"
+                <LinearLayout
+                    android:id="@+id/articleRelLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="24dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:maxLines="2"
-                    android:textColor="@color/text_color_primary_red"
-                    android:textSize="24sp"
-                    tools:text="Title!" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/article_shortDescription"
-                    style="@style/AverageHorizontalMargin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:textColor="@color/text_color_primary_red"
-                    android:textSize="14sp"
-                    tools:text="Description!" />
+                    <TextView
+                        android:id="@+id/article_header"
+                        style="@style/AverageHorizontalMargin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="24dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:maxLines="2"
+                        android:textColor="@color/text_color_primary_red"
+                        android:textSize="24sp"
+                        tools:text="Title!" />
 
-                <FrameLayout
-                    android:id="@+id/YouTubeFrame"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:fitsSystemWindows="true"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/article_shortDescription"
+                        style="@style/AverageHorizontalMargin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:textColor="@color/text_color_primary_red"
+                        android:textSize="14sp"
+                        tools:text="Description!" />
 
-                <ProgressBar
-                    android:id="@+id/article_progressBar"
-                    style="@style/Base.Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="visible" />
+                    <FrameLayout
+                        android:id="@+id/YouTubeFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:fitsSystemWindows="true"
+                        android:visibility="gone" />
 
-                <WebView
-                    android:id="@+id/article"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    tools:text="article" />
+                    <ProgressBar
+                        android:id="@+id/article_progressBar"
+                        style="@style/Base.Widget.AppCompat.ProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="visible" />
 
-                <!-- comments toolbar here -->
-                <!--<include-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="50dp"-->
-                <!--layout="@layout/info_toolbar"/>-->
-            </LinearLayout>
+                    <WebView
+                        android:id="@+id/article"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        tools:text="article" />
 
-        </android.support.v7.widget.CardView>
+                    <!-- comments toolbar here -->
+                    <!--<include-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--layout="@layout/info_toolbar"/>-->
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_marginTop="@dimen/margin_below_article_transparent_navigation_bar_view" />
+
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
