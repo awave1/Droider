@@ -456,7 +456,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                     "<style>" +
-                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif;color:" + webViewTextColor + "}" +
+                    "body{margin:0;padding:0;font-family:\"Roboto\", sans-serif; font-size: 14px; color:" + webViewTextColor + "}" +
                     ".container{padding-left:16px;padding-right:16px; padding-bottom:36px;}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
