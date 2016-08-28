@@ -38,7 +38,6 @@
     <string name="about_fragment_devs_about">Разработчики</string>
     <string name="about_fragment_authors_about">Авторы</string>
     <string name="about_fragment_shortInformation_about">Основное</string>
-    <string name="about_fragment_item_avatar_description">Authors avatar</string>
 
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
@@ -59,29 +58,6 @@
         <item>3</item>
         <item>6</item>
         <item>12</item>
-        <item>24</item>
-    </string-array>
-
-    <string name="choose_text_size">Выберите размер шрифта</string>
-
-    <string name="text_size">Размер шрифта</string>
-    <string-array name="text_size_list">
-        <item>12</item>
-        <item>14</item>
-        <item>16</item>
-        <item>18</item>
-        <item>20</item>
-        <item>22</item>
-        <item>24</item>
-    </string-array>
-
-    <string-array name="text_size_values">
-        <item>12</item>
-        <item>14</item>
-        <item>16</item>
-        <item>18</item>
-        <item>20</item>
-        <item>22</item>
         <item>24</item>
     </string-array>
 

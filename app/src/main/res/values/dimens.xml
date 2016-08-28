@@ -1,9 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="body_text_font_size">14sp</dimen>
-    <dimen name="medium_text_font_size">20sp</dimen>
-    <dimen name="head_text_font_size">24sp</dimen>
     <dimen name="material_drawer_account_header_height">148dp</dimen>
 
     <!-- Need for Transparent Navigation Bar -->

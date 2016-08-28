@@ -8,8 +8,6 @@
     <color name="colorPrimaryDark_dark">#000000</color>
     <color name="colorAccent_dark">#FF009688</color>
     <color name="colorBackground_dark">#ff424242</color>
-    <color name="colorForeground_dark">#212121</color>
-    <color name="colorNavigationBar_dark">#212121</color>
     <color name="textColorPrimary_dark">#ffffffff</color>
     <color name="textColorSecondary_dark">#b3ffffff</color>
     <color name="cardTitleTextColor_dark">#ffffff</color>
@@ -23,12 +21,9 @@
     <color name="colorPrimaryDark_light">#424242</color>
     <color name="colorAccent_light">#FF009688</color>
     <color name="colorBackground_light">#fafafa</color>
-    <color name="colorForeground_light">#FF000000</color>
-    <color name="colorNavigationBar_light">#FF000000</color>
     <color name="textColorPrimary_light">#de000000</color>
     <color name="textColorSecondary_light">#8a000000</color>
     <color name="cardTitleTextColor_light">#ffffff</color>
-    <color name="cardBackgroundColor_light">#ffffff</color>
     <color name="cardTitleTint_light">#7d212121</color>
 
     <color name="colorControlNormal_light">#000000</color>
@@ -39,7 +34,6 @@
     <color name="color_accent_red">#e53935</color>
     <color name="text_color_primary_red">#d9000000</color>
     <color name="text_color_primary_red_toolbar">#ffffff</color>
-    <color name="text_color_secondary_red_toolbar">#ffffff</color>
     <color name="navigation_bar_color">#60000000</color>
 
 </resources>
