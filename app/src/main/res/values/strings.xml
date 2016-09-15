@@ -14,6 +14,10 @@
     <string name="open_in_browser">Открыть в браузере</string>
     <string name="drawer_item_section_header">Прочее</string>
 
+    <!-- Feed Fragment -->
+    <string name="main">Ссылка скопирована</string>
+    <!-- -->
+
     <!-- About Fragment strings -->
     <string name="about_fragment_description">
         Droider.ru – информационный проект о гаджетах во всех их проявлениях и об операционной

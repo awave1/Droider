@@ -98,7 +98,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
                 ClipboardManager clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData copyLink = ClipData.newPlainText("", feedItem.getUrl());
                 clipboardManager.setPrimaryClip(copyLink);
-                Snackbar.make(view, "Ссылка скопирована", Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), R.string.main, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
