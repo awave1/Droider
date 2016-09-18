@@ -43,24 +43,25 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         if (newState == 0) {
-            if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                portraitOrientation(mActivity, recyclerView, Feed.sLinearLayoutManager);
-            } else if (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                landscapeOrientation(mActivity, recyclerView, Feed.sStaggeredGridLayoutManager);
+            if ((mActivity.getResources().getConfiguration().screenLayout &
+                    Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                doubleColsLoading(mActivity, recyclerView, Feed.sStaggeredGridLayoutManager);
+            } else {
+                singleColsLoading(mActivity, recyclerView, Feed.sLinearLayoutManager);
             }
         }
     }
 
-    private void portraitOrientation(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+    private void singleColsLoading(Activity activity, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
         this.mActivity = activity;
         visibleItemCount_portrait = (byte) recyclerView.getChildCount();
         totalItemCount_portrait = (byte) layoutManager.getItemCount();
 
-        Log.d(TAG, "portraitOrientation: totalItemCount_portrait = " + totalItemCount_portrait);
+        Log.d(TAG, "singleColsLoading: totalItemCount_portrait = " + totalItemCount_portrait);
         firstVisibleItem_portrait = (byte) layoutManager.findFirstVisibleItemPosition();
 
 
-        Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait = " + firstVisibleItem_portrait);
+        Log.d(TAG, "singleColsLoading: firstVisibleItem_portrait = " + firstVisibleItem_portrait);
 
         if (isLoading_portrait && totalItemCount_portrait > previousTotal_portrait) {
             isLoading_portrait = false;
@@ -69,14 +70,13 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
 
         if (!isLoading_portrait &&
                 (totalItemCount_portrait - visibleItemCount_portrait) <= (firstVisibleItem_portrait + visibleThreshold_portrait)) {
-            Log.d(TAG, "portraitOrientation: end has been reached, loading next page");
+            Log.d(TAG, "singleColsLoading: end has been reached, loading next page");
             nextPage_portrait++;
             loadNextPage();
             isLoading_portrait = true;
         }
 
-        if (firstVisibleItem_portrait + 2  == totalItemCount_portrait)
-        {
+        if (firstVisibleItem_portrait + 2 == totalItemCount_portrait) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -86,17 +86,17 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         }
     }
 
-    private void landscapeOrientation(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager) {
+    private void doubleColsLoading(Activity activity, RecyclerView recyclerView, StaggeredGridLayoutManager staggeredGridLayoutManager) {
         this.mActivity = activity;
         visibleItemCount_landscape = (byte) recyclerView.getChildCount();
         totalItemCount_landscape = (byte) staggeredGridLayoutManager.getItemCount();
 
-        Log.d(TAG, "landscapeOrientation: totalItemCount_landscape = " + totalItemCount_landscape);
+        Log.d(TAG, "doubleColsLoading: totalItemCount_landscape = " + totalItemCount_landscape);
 
         firstVisibleItem_landscape = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItem_landscape);
 
-        Log.d(TAG, "portraitOrientation: firstVisibleItem_portrait (length) = " + firstVisibleItem_landscape.length);
-        Log.d(TAG, "landscapeOrientation: firstVisibleItem_landscape [0]/[1] = \n"
+        Log.d(TAG, "singleColsLoading: firstVisibleItem_portrait (length) = " + firstVisibleItem_landscape.length);
+        Log.d(TAG, "doubleColsLoading: firstVisibleItem_landscape [0]/[1] = \n"
                 + firstVisibleItem_landscape[0] + "/" + firstVisibleItem_landscape[1]);
 
         if (firstVisibleItem_landscape != null && firstVisibleItem_landscape.length > 0) {
@@ -115,8 +115,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
             isLoading_landscape = true;
         }
 
-        if (firstVisibleItem_landscape[0] + 2  >= totalItemCount_landscape || firstVisibleItem_landscape[1] + 2 >= totalItemCount_landscape)
-        {
+        if (firstVisibleItem_landscape[0] + 2 >= totalItemCount_landscape || firstVisibleItem_landscape[1] + 2 >= totalItemCount_landscape) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {

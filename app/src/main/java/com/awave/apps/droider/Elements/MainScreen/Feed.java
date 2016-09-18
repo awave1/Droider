@@ -114,14 +114,6 @@ public class Feed extends android.app.Fragment implements
                 sSwipeRefreshLayout.setRefreshing(true);
             }
         });
-        switch (newConfig.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                setOrientationLandscape();
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-                setOrientationPortrait();
-                break;
-        }
     }
 
     private void initLayoutManager() {
@@ -131,25 +123,15 @@ public class Feed extends android.app.Fragment implements
                 sSwipeRefreshLayout.setRefreshing(true);
             }
         });
-
-        // TODO: 18.09.2016 Delete all orientation changing functions
-//        Configuration configuration = getActivity().getResources().getConfiguration();
-//        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            setOrientationPortrait();
-//        }
-//        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            setOrientationLandscape();
-//        }
-
-        if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-            setOrientationLandscape();
+        if ((getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            setDoubleColFeedMode();
         } else {
-            setOrientationPortrait();
+            setSingleColFeedMode();
         }
-
     }
 
-    private void setOrientationLandscape() {
+    private void setDoubleColFeedMode() {
         sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(
                 2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
@@ -163,11 +145,10 @@ public class Feed extends android.app.Fragment implements
                         onTaskCompleted();
                     }
                 });
-
         getFeeds(getArguments().getString(Helper.EXTRA_ARTICLE_URL));
     }
 
-    private void setOrientationPortrait() {
+    private void setSingleColFeedMode() {
         sLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(sLinearLayoutManager);
         mRecyclerView.setAdapter(feedRecyclerViewAdapter);
