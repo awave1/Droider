@@ -132,13 +132,21 @@ public class Feed extends android.app.Fragment implements
             }
         });
 
-        Configuration configuration = getActivity().getResources().getConfiguration();
-        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // TODO: 18.09.2016 Delete all orientation changing functions
+//        Configuration configuration = getActivity().getResources().getConfiguration();
+//        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            setOrientationPortrait();
+//        }
+//        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            setOrientationLandscape();
+//        }
+
+        if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            setOrientationLandscape();
+        } else {
             setOrientationPortrait();
         }
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setOrientationLandscape();
-        }
+
     }
 
     private void setOrientationLandscape() {
