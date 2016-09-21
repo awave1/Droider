@@ -62,13 +62,11 @@
     </string-array>
 
     <string name="pref_theme_entry_red">Красная</string>
-    <string name="pref_theme_entry_light">Светлая</string>
     <string name="pref_theme_entry_dark">Темная</string>
     <string name="pref_theme_entry_daytime">В зависимости от времени суток</string>
 
     <string-array name="pref_theme_entries">
         <item>@string/pref_theme_entry_red</item>
-        <item>@string/pref_theme_entry_light</item>
         <item>@string/pref_theme_entry_dark</item>
         <item>@string/pref_theme_entry_daytime</item>
     </string-array>

@@ -15,8 +15,9 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.support.v8.renderscript.RSIllegalArgumentException;
@@ -36,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.awave.apps.droider.DroiderBaseActivity;
 import com.awave.apps.droider.Main.FeedRecyclerViewAdapter;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Helper;
@@ -49,11 +51,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
-public class ArticleActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
     private static RelativeLayout headerImage;
@@ -75,11 +76,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     private NestedScrollView articleBackground;
     private Bundle extras;
     private int webViewBackgroundColor;
-    private String themeName;
     private int currentNightMode;
 
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
-    private HashMap<String, Integer> themesHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +95,28 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
 
         toolbarSetup();
         parserSetup();
+        backgroundTintColorSetup();
         appBarLayout.addOnOffsetChangedListener(this);
 
-        nightModeSetup();
+//        nightModeSetup();
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
+    }
+
+    private void backgroundTintColorSetup() {
+        View view = findViewById(R.id.article_background_tint_view);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackgroundDrawable(AppCompatResources
+                    .getDrawable(this, activeTheme == R.style.RedTheme
+                            ? R.drawable.article_background_tint_light
+                            : R.drawable.article_background_tint_dark
+                    ));
+        } else {
+            view.setBackground(AppCompatResources
+                    .getDrawable(this, activeTheme == R.style.RedTheme
+                            ? R.drawable.article_background_tint_light
+                            : R.drawable.article_background_tint_dark));
+        }
     }
 
     private void parserSetup() {
@@ -123,6 +139,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         }, 750);
     }
 
+    @Override
+    protected void themeSetup() {
+        super.themeSetup();
+        if (activeTheme == R.style.RedTheme) {
+            webViewBackgroundColor = R.color.colorBackground_light;
+            webViewTextColor = "black";
+        } else {
+            webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким
+            webViewTextColor = "white";
+        }
+    }
+
+    // TODO: 22.09.2016 Create night mode 
     private void nightModeSetup() {
         currentNightMode = getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK;
@@ -198,7 +227,9 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+            getSupportActionBar().setHomeAsUpIndicator(activeTheme == R.style.RedTheme
+                    ? R.drawable.ic_arrow_back_white_24dp
+                    : R.drawable.ic_arrow_back_black_24dp);
 
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -207,20 +238,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
                 }
             });
         }
-    }
-
-    // TODO: 23.08.2016 Move to base class
-    private void themeSetup() {
-        if (themesHashMap == null) {
-            themesHashMap = new HashMap<>();
-            themesHashMap.put(getString(R.string.pref_theme_entry_red), R.style.RedTheme);
-            themesHashMap.put(getString(R.string.pref_theme_entry_light), R.style.LightTheme);
-            themesHashMap.put(getString(R.string.pref_theme_entry_dark), R.style.DarkTheme);
-            themesHashMap.put(getString(R.string.pref_theme_entry_daytime), R.style.DayNightAuto);
-        }
-        themeName = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                getString(R.string.pref_theme_key), getString(R.string.pref_theme_entry_red));
-        setTheme(themesHashMap.get(themeName));
     }
 
     private synchronized void setupYoutubePlayer() {
@@ -245,7 +262,6 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (Math.abs(verticalOffset) >= appBarLayout.getBottom()) {
-//            collapsingToolbar.setTitle(title);
             setupPaletteBackground(false);
         } else {
             assert getSupportActionBar() != null;
@@ -270,10 +286,19 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
         // if the drawer is not showing. Otherwise, let the drawer
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
-//
-//        MenuItem shareItem = menu.findItem(R.id.action_share);
-//        mShareActionProvider = (ShareActionProvider)
-//                MenuItemCompat.getActionProvider(shareItem);
+
+        menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
+                getResources(), activeTheme == R.style.RedTheme
+                        ? R.drawable.ic_share_white_24dp
+                        : R.drawable.ic_share_black_24dp,
+                null));
+
+        menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
+                getResources(), activeTheme == R.style.RedTheme
+                        ? R.drawable.ic_open_in_browser_white_24dp
+                        : R.drawable.ic_open_in_browser_black_24dp,
+                null));
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -327,7 +352,7 @@ public class ArticleActivity extends AppCompatActivity implements AppBarLayout.O
     }
 
     private void setupPaletteBackground(boolean isTransparent) {
-        if ((isPalette && themeName.equals("Светлая")) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
+        if ((isPalette && activeTheme == R.style.RedTheme) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
                 Palette p = new Palette.Builder(Helper.drawableToBitmap(headerImage.getBackground())).generate();
                 if (p.getLightMutedSwatch() != null && !isTransparent) {
