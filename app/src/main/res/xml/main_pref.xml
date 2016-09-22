@@ -23,7 +23,7 @@
     <PreferenceCategory android:title="@string/pref_group_ui_title">
 
         <ListPreference
-            android:defaultValue="@string/pref_theme_entry_red"
+            android:defaultValue="@string/pref_theme_entry_light"
             android:entries="@array/pref_theme_entries"
             android:entryValues="@array/pref_theme_entries"
             android:key="@string/pref_theme_key"

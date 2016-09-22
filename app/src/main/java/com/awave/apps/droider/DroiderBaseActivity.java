@@ -13,12 +13,12 @@ public class DroiderBaseActivity extends AppCompatActivity {
     protected void themeSetup() {
         if ((themesHashMap == null) || themesHashMap.isEmpty()) {
             themesHashMap = new HashMap<>();
-            themesHashMap.put(getString(R.string.pref_theme_entry_red), R.style.RedTheme);
+            themesHashMap.put(getString(R.string.pref_theme_entry_light), R.style.RedTheme);
             themesHashMap.put(getString(R.string.pref_theme_entry_dark), R.style.RedThemeDark);
             themesHashMap.put(getString(R.string.pref_theme_entry_daytime), R.style.DayNightAuto);
         }
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                getString(R.string.pref_theme_key), getString(R.string.pref_theme_entry_red));
+                getString(R.string.pref_theme_key), getString(R.string.pref_theme_entry_light));
         activeTheme = themesHashMap.get(themeName);
         setTheme(activeTheme);
     }
