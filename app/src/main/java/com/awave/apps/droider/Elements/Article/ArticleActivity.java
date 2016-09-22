@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.content.res.AppCompatResources;
@@ -142,13 +141,10 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     @Override
     protected void themeSetup() {
         super.themeSetup();
-        if (activeTheme == R.style.RedTheme) {
-            webViewBackgroundColor = R.color.colorBackground_light;
-            webViewTextColor = "black";
-        } else {
-            webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким
-            webViewTextColor = "white";
-        }
+        webViewBackgroundColor = getThemeAttribute(android.R.attr.colorBackground, activeTheme);
+        webViewTextColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
+                android.R.attr.textColorPrimary, activeTheme
+        ));
     }
 
     // TODO: 22.09.2016 Create night mode 
@@ -324,7 +320,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setupArticleWebView(WebView w) {
-        w.setBackgroundColor(ContextCompat.getColor(Parser.activity, webViewBackgroundColor));
+        w.setBackgroundColor(webViewBackgroundColor);
 
         WebChromeClient client = new WebChromeClient();
 

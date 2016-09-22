@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -99,21 +100,7 @@ public class MainActivity extends DroiderBaseActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        drawerLayout.setBackgroundColor(getColorPrimary(activeTheme));
-    }
-
-    private int getColorPrimary(@StyleRes int theme) {
-        // The attributes you want retrieved
-        int[] attrs = {R.attr.colorPrimary};
-        // Parse MyCustomStyle, using Context.obtainStyledAttributes()
-        TypedArray attributesTypedArray = obtainStyledAttributes(theme, attrs);
-        // Fetching the colors defined in your style
-        int colorPrimary = attributesTypedArray.getColor(0, Color.BLACK);
-        // Do some logging to see if we have retrieved correct values
-        Log.d("Retrieved colorPrimary as hex:", Integer.toHexString(colorPrimary));
-        // OH, and don't forget to recycle the TypedArray
-        attributesTypedArray.recycle();
-        return colorPrimary;
+        drawerLayout.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, activeTheme));
     }
 
     private void toolbarSetup() {
