@@ -289,14 +289,14 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
         menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
                 getResources(), activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_share_white_24dp
-                        : R.drawable.ic_share_black_24dp,
+                        ? R.drawable.ic_open_in_browser_white_24dp
+                        : R.drawable.ic_open_in_browser_black_24dp,
                 null));
 
         menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
                 getResources(), activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_open_in_browser_white_24dp
-                        : R.drawable.ic_open_in_browser_black_24dp,
+                        ? R.drawable.ic_share_white_24dp
+                        : R.drawable.ic_share_black_24dp,
                 null));
 
         return super.onCreateOptionsMenu(menu);
