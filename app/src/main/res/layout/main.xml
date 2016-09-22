@@ -4,7 +4,6 @@
     android:id="@+id/nav_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_red"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
