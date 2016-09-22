@@ -55,11 +55,6 @@
 
     </style>
 
-    <style name="RedTheme.Toolbar" parent="RedThemeBase">
-        <item name="android:textColorPrimary">@color/text_color_red_toolbar</item>
-        <item name="android:textColorSecondary">@color/text_color_red_toolbar</item>
-    </style>
-
     <style name="RedThemeDarkBase" parent="Theme.Design.NoActionBar">
         <item name="colorPrimary">@color/color_primary_red_dark</item>
         <item name="colorPrimaryDark">@color/color_primary_dark_red_dark</item>
@@ -70,11 +65,6 @@
 
     <style name="RedThemeDark" parent="RedThemeDarkBase">
 
-    </style>
-
-    <style name="RedThemeDark.Toolbar" parent="RedThemeDarkBase">
-        <item name="android:textColorPrimary">@color/text_color_primary_red</item>
-        <item name="android:textColorSecondary">@color/text_color_primary_red</item>
     </style>
 
     <style name="CardStyleBase">

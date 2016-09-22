@@ -46,7 +46,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_article"
-                style="@style/RedTheme.Toolbar"
+
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginTop="@dimen/transparent_action_bar_margin"

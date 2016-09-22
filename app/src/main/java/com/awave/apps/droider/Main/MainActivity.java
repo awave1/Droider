@@ -2,11 +2,7 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.AttrRes;
-import android.support.annotation.StyleRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
