@@ -313,10 +313,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
                 break;
             case R.id.action_share:
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
-                share.setType("text/plain");
-                startActivity(share);
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, title + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"));
         }
         return true;
     }
