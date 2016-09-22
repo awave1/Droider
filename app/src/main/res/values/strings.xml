@@ -63,12 +63,12 @@
 
     <string name="pref_theme_entry_light">Светлая</string>
     <string name="pref_theme_entry_dark">Темная</string>
-    <string name="pref_theme_entry_daytime">Адаптивная</string>
+    <string name="pref_theme_entry_adaptive">Адаптивная</string>
 
     <string-array name="pref_theme_entries">
         <item>@string/pref_theme_entry_light</item>
         <item>@string/pref_theme_entry_dark</item>
-        <item>@string/pref_theme_entry_daytime</item>
+        <item>@string/pref_theme_entry_adaptive</item>
     </string-array>
 
     <string name="pref_theme_title">Выбрать тему</string>

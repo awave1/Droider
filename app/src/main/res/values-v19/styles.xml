@@ -11,4 +11,9 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="AdaptiveTheme" parent="AdaptiveThemeBase">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
 </resources>

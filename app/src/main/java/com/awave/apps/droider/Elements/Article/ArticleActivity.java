@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -97,24 +99,38 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         backgroundTintColorSetup();
         appBarLayout.addOnOffsetChangedListener(this);
 
-//        nightModeSetup();
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
     }
 
     private void backgroundTintColorSetup() {
         View view = findViewById(R.id.article_background_tint_view);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackgroundDrawable(AppCompatResources
-                    .getDrawable(this, activeTheme == R.style.RedTheme
-                            ? R.drawable.article_background_tint_light
-                            : R.drawable.article_background_tint_dark
-                    ));
+        if (activeTheme != R.style.AdaptiveTheme) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                view.setBackgroundDrawable(AppCompatResources
+                        .getDrawable(this, activeTheme == R.style.RedTheme
+                                ? R.drawable.article_background_tint_light
+                                : R.drawable.article_background_tint_dark
+                        ));
+            } else {
+                view.setBackground(AppCompatResources
+                        .getDrawable(this, activeTheme == R.style.RedTheme
+                                ? R.drawable.article_background_tint_light
+                                : R.drawable.article_background_tint_dark));
+            }
         } else {
-            view.setBackground(AppCompatResources
-                    .getDrawable(this, activeTheme == R.style.RedTheme
-                            ? R.drawable.article_background_tint_light
-                            : R.drawable.article_background_tint_dark));
+            final Drawable tintDrawable = AppCompatResources.getDrawable(this,
+                    R.drawable.article_background_tint_dark);
+            if (tintDrawable != null) {
+                tintDrawable.setColorFilter(
+                        getThemeAttribute(android.R.attr.colorBackground, activeTheme),
+                        PorterDuff.Mode.SRC_ATOP);
+            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                view.setBackgroundDrawable(tintDrawable);
+            } else {
+                view.setBackground(tintDrawable);
+            }
         }
     }
 
@@ -145,30 +161,6 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         webViewTextColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
                 android.R.attr.textColorPrimary, activeTheme
         ));
-    }
-
-    // TODO: 22.09.2016 Create night mode 
-    private void nightModeSetup() {
-        currentNightMode = getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
-                webViewBackgroundColor = R.color.colorBackground_light;
-                webViewTextColor = "black";
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
-                webViewBackgroundColor = R.color.cardBackgroundColor_dark; // только таким диким
-                // изозрением добился нормального цвета, то бишь одного цвета с shortDescription,
-                // если сможешь - исправь на по проще. да и вообще там надо почитстить цвета,
-                // чтобы не было так много, и соответственно стайлы
-                webViewTextColor = "white";
-                break;
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
-                break;
-        }
     }
 
     private void intentExtraChecking(Parser parser) {
@@ -222,10 +214,22 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle("");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(activeTheme == R.style.RedTheme
-                    ? R.drawable.ic_arrow_back_white_24dp
-                    : R.drawable.ic_arrow_back_black_24dp);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            if (activeTheme != R.style.AdaptiveTheme) {
+                getSupportActionBar().setHomeAsUpIndicator(activeTheme == R.style.RedTheme
+                        ? R.drawable.ic_arrow_back_white_24dp
+                        : R.drawable.ic_arrow_back_black_24dp);
+            } else {
+                final Drawable menuIconDrawable = AppCompatResources.getDrawable(this,
+                        R.drawable.ic_arrow_back_black_24dp);
+                if (menuIconDrawable != null) {
+                    menuIconDrawable.setColorFilter(ResourcesCompat.getColor(
+                            getResources(), R.color.text_color_toolbar_adaptive, null),
+                            PorterDuff.Mode.SRC_ATOP);
+                }
+                getSupportActionBar().setHomeAsUpIndicator(menuIconDrawable);
+            }
 
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -283,18 +287,33 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
 
-        menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
-                getResources(), activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_open_in_browser_white_24dp
-                        : R.drawable.ic_open_in_browser_black_24dp,
-                null));
-
-        menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
-                getResources(), activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_share_white_24dp
-                        : R.drawable.ic_share_black_24dp,
-                null));
-
+        if (activeTheme != R.style.AdaptiveTheme) {
+            menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
+                    getResources(), activeTheme == R.style.RedTheme
+                            ? R.drawable.ic_open_in_browser_white_24dp
+                            : R.drawable.ic_open_in_browser_black_24dp,
+                    null));
+            menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
+                    getResources(), activeTheme == R.style.RedTheme
+                            ? R.drawable.ic_share_white_24dp
+                            : R.drawable.ic_share_black_24dp,
+                    null));
+        } else {
+            final Drawable browserIconDrawable = AppCompatResources.getDrawable(this,
+                    R.drawable.ic_open_in_browser_black_24dp);
+            if (browserIconDrawable != null) {
+                browserIconDrawable.setColorFilter(ResourcesCompat.getColor(getResources(),
+                        R.color.text_color_toolbar_adaptive, null), PorterDuff.Mode.SRC_ATOP);
+            }
+            final Drawable shareIconDrawable = AppCompatResources.getDrawable(this,
+                    R.drawable.ic_share_black_24dp);
+            if (shareIconDrawable != null) {
+                shareIconDrawable.setColorFilter(ResourcesCompat.getColor(getResources(),
+                        R.color.text_color_toolbar_adaptive, null), PorterDuff.Mode.SRC_ATOP);
+            }
+            menu.getItem(0).setIcon(browserIconDrawable);
+            menu.getItem(1).setIcon(shareIconDrawable);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -473,7 +492,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             }
         }
 
-        public String setupHtml(String html) {
+        String setupHtml(String html) {
             String head = "<head>" +
                     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                     "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
