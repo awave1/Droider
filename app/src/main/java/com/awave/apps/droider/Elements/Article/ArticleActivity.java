@@ -217,21 +217,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-            if (activeTheme != R.style.AdaptiveTheme) {
-                getSupportActionBar().setHomeAsUpIndicator(activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_arrow_back_white_24dp
-                        : R.drawable.ic_arrow_back_black_24dp);
-            } else {
-                final Drawable menuIconDrawable = AppCompatResources.getDrawable(this,
-                        R.drawable.ic_arrow_back_black_24dp);
-                if (menuIconDrawable != null) {
-                    menuIconDrawable.setColorFilter(ResourcesCompat.getColor(
-                            getResources(), R.color.text_color_toolbar_adaptive, null),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-                getSupportActionBar().setHomeAsUpIndicator(menuIconDrawable);
-            }
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
 
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -289,33 +275,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
 
-        if (activeTheme != R.style.AdaptiveTheme) {
-            menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
-                    getResources(), activeTheme == R.style.RedTheme
-                            ? R.drawable.ic_open_in_browser_white_24dp
-                            : R.drawable.ic_open_in_browser_black_24dp,
-                    null));
-            menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
-                    getResources(), activeTheme == R.style.RedTheme
-                            ? R.drawable.ic_share_white_24dp
-                            : R.drawable.ic_share_black_24dp,
-                    null));
-        } else {
-            final Drawable browserIconDrawable = AppCompatResources.getDrawable(this,
-                    R.drawable.ic_open_in_browser_black_24dp);
-            if (browserIconDrawable != null) {
-                browserIconDrawable.setColorFilter(ResourcesCompat.getColor(getResources(),
-                        R.color.text_color_toolbar_adaptive, null), PorterDuff.Mode.SRC_ATOP);
-            }
-            final Drawable shareIconDrawable = AppCompatResources.getDrawable(this,
-                    R.drawable.ic_share_black_24dp);
-            if (shareIconDrawable != null) {
-                shareIconDrawable.setColorFilter(ResourcesCompat.getColor(getResources(),
-                        R.color.text_color_toolbar_adaptive, null), PorterDuff.Mode.SRC_ATOP);
-            }
-            menu.getItem(0).setIcon(browserIconDrawable);
-            menu.getItem(1).setIcon(shareIconDrawable);
-        }
+        menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
+                getResources(), R.drawable.ic_open_in_browser_white_24dp, null));
+        menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
+                getResources(), R.drawable.ic_share_white_24dp, null));
+
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -2,8 +2,6 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -103,31 +101,13 @@ public class MainActivity extends DroiderBaseActivity implements
 
     private void toolbarSetup() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (activeTheme != R.style.AdaptiveTheme) {
-            toolbar.setTitleTextColor(activeTheme == R.style.RedTheme
-                    ? getResources().getColor(R.color.text_color_toolbar_red)
-                    : getResources().getColor(R.color.text_color_toolbar_red_dark));
-        } else {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_color_toolbar_adaptive));
-        }
+        toolbar.setTitleTextColor(getResources().getColor(R.color.text_color_toolbar_red));
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(mTitle);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-            if (activeTheme != R.style.AdaptiveTheme) {
-                getSupportActionBar().setHomeAsUpIndicator(activeTheme == R.style.RedTheme
-                        ? R.drawable.ic_menu_white_24dp
-                        : R.drawable.ic_menu_black_24dp);
-            } else {
-                final Drawable menuIconDrawable = getResources().getDrawable(
-                        R.drawable.ic_menu_black_24dp);
-                menuIconDrawable.setColorFilter(
-                        getResources().getColor(R.color.text_color_toolbar_adaptive),
-                        PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(menuIconDrawable);
-            }
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
     }
 
