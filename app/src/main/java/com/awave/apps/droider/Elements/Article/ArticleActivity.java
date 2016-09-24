@@ -67,6 +67,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private static String title;
     private static String shortDescription;
     private static String webViewTextColor;
+    private static String webViewLinkColor;
     private static FrameLayout youtubeFrame;
     private static boolean isBlur;
     private static boolean isPalette;
@@ -159,8 +160,9 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         super.themeSetup();
         webViewBackgroundColor = getThemeAttribute(android.R.attr.colorBackground, activeTheme);
         webViewTextColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
-                android.R.attr.textColorPrimary, activeTheme
-        ));
+                android.R.attr.textColorPrimary, activeTheme));
+        webViewLinkColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
+                R.attr.colorPrimary, activeTheme));
     }
 
     private void intentExtraChecking(Parser parser) {
@@ -501,6 +503,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                     ".container{padding-left:16px;padding-right:16px; padding-bottom:36px;}" +
                     ".article_image{margin-left:-16px;margin-right:-16px;}" +
                     ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
+                    "a {color:" + webViewLinkColor + ";}" +
                     "iframe{max-width: 100%; width: 100%; height: 260px; allowfullscreen; }" +
                     "img{max-width: 100%; width: 100vW; height: auto;}" +
                     "</style></head>";
