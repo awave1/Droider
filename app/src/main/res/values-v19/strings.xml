@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Just suppress this error -->
+    <string-array name="pref_theme_entries">
+        <item>@string/pref_theme_entry_light</item>
+        <item>@string/pref_theme_entry_dark</item>
+        <item>@string/pref_theme_entry_adaptive</item>
+    </string-array>
+
+</resources>
