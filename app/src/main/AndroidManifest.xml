@@ -34,9 +34,11 @@
 
             </intent-filter>
         </activity>
+
+        <!-- !Translucent Theme needed for Circular Reveal animation -->
         <activity
             android:name=".Elements.Article.ArticleActivity"
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:label="Droider"

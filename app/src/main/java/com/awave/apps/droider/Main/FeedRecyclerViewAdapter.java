@@ -77,7 +77,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
                     article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
                     article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
                     activity.startActivity(article);
-                    activity.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
                     FeedRecyclerViewAdapter.setHeaderImageDrawable(feedViewHolder.getCardImageView().getDrawable());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу

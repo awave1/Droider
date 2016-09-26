@@ -1,5 +1,6 @@
 package com.awave.apps.droider.Elements.Article;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,6 +30,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -54,6 +57,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import io.codetail.animation.ViewAnimationUtils;
 
 public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
@@ -81,6 +85,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private int currentNightMode;
 
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
+    private View articleCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,9 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
         isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
         themeSetup();
+
+        // Fix for Circular Reveal animation on Pre-Lollipop
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article);
@@ -102,6 +110,36 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
         this.calculateMinimumHeight();
         this.setupArticleWebView(sArticle);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setupCircularRevealAnimation();
+    }
+
+    private void setupCircularRevealAnimation() {
+        final View animatedView = articleCoordinatorLayout;
+        animatedView.post(new Runnable() {
+            @Override
+            public void run() {
+                // get the center for the clipping circle
+                int cx = (animatedView.getLeft() + animatedView.getRight()) / 2;
+                int cy = (animatedView.getTop() + animatedView.getBottom()) / 2;
+
+                // get the final radius for the clipping circle
+                int dx = Math.max(cx, animatedView.getWidth() - cx);
+                int dy = Math.max(cy, animatedView.getHeight() - cy);
+                float finalRadius = (float) Math.hypot(dx, dy);
+
+                // Android native animator
+                Animator animator =
+                        ViewAnimationUtils.createCircularReveal(animatedView, cx, cy, 0, finalRadius);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.setDuration(1500);
+                animator.start();
+            }
+        });
     }
 
     private void backgroundTintColorSetup() {
@@ -197,6 +235,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
     private void viewInitialisation() {
         /** Обнаружение всех View **/
+        articleCoordinatorLayout = findViewById(R.id.article_coordinator_layout);
         articleBackground = (NestedScrollView) findViewById(R.id.article_background_NSV);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
@@ -265,7 +304,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+//        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
     }
 
     @Override
