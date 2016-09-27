@@ -1,5 +1,6 @@
 package com.awave.apps.droider.Main;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -31,6 +32,7 @@ public class MainActivity extends DroiderBaseActivity implements
     private int theme;
     private String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout drawerLayout;
+    private String activeFeedTitle;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -121,6 +123,7 @@ public class MainActivity extends DroiderBaseActivity implements
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
+        activeFeedTitle = getString(R.string.drawer_item_home);
     }
 
     @Override
@@ -198,6 +201,7 @@ public class MainActivity extends DroiderBaseActivity implements
 
     @Override
     public void onBackPressed() {
+        getSupportActionBar().setTitle(activeFeedTitle);
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
@@ -208,42 +212,50 @@ public class MainActivity extends DroiderBaseActivity implements
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         android.app.Fragment fragment = null;
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        boolean isBackStackNeeded = false;
 
         switch (menuItem.getItemId()) {
 
             case R.id.home_page_tab:
                 fragment = Feed.instance(Helper.HOME_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
+                activeFeedTitle = getString(R.string.drawer_item_home);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.news_tab:
                 fragment = Feed.instance(Helper.NEWS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
+                activeFeedTitle = getString(R.string.drawer_item_news);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.apps_tab:
                 fragment = Feed.instance(Helper.APPS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
+                activeFeedTitle = getString(R.string.drawer_item_apps);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.games_tab:
                 fragment = Feed.instance(Helper.GAMES_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
+                activeFeedTitle = getString(R.string.drawer_item_games);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.video_tab:
                 fragment = Feed.instance(Helper.VIDEOS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+                activeFeedTitle = getString(R.string.drawer_item_videos);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.droider_cast_tab:
                 fragment = Feed.instance(Helper.DROIDER_CAST_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
+                activeFeedTitle = getString(R.string.drawer_item_drcast);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
@@ -251,18 +263,23 @@ public class MainActivity extends DroiderBaseActivity implements
             case R.id.settings_tab:
                 fragment = new Preferences();
                 getSupportActionBar().setTitle(R.string.drawer_item_settings);
+                isBackStackNeeded = true;
                 break;
             case R.id.info_tab:
                 fragment = new AboutFragment();
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_about));
+                isBackStackNeeded = true;
                 break;
         }
 
         if (fragment != null) {
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .replace(R.id.container_main, fragment)
-                    .commit();
+            fragmentTransaction.setCustomAnimations(
+                    android.R.animator.fade_in, android.R.animator.fade_out);
+            if (isBackStackNeeded) {
+                fragmentTransaction.addToBackStack(fragment.getTag());
+                isBackStackNeeded = false;
+            }
+            fragmentTransaction.replace(R.id.container_main, fragment).commit();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
