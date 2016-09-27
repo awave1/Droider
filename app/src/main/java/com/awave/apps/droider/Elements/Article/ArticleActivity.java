@@ -1,6 +1,7 @@
 package com.awave.apps.droider.Elements.Article;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -85,8 +86,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private int webViewBackgroundColor;
     private int currentNightMode;
     private View articleCoordinatorLayout;
-    private float touchXCoordinate;
-    private float touchYCoordinate;
+    private boolean isAnimationPlayed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,25 +120,44 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     @Override
     protected void onStart() {
         super.onStart();
-        setupCircularRevealAnimation();
+        if (!isAnimationPlayed) {
+            playActivityAnimation();
+            isAnimationPlayed = true;
+        }
     }
 
-    private void setupCircularRevealAnimation() {
+    private void playActivityAnimation() {
         final View animatedView = articleCoordinatorLayout;
         animatedView.post(new Runnable() {
             @Override
             public void run() {
-                Bundle extras = getIntent().getExtras();
-                touchXCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
-                touchYCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
-                Animator animator = ViewAnimationUtils.createCircularReveal(animatedView,
-                        (int) touchXCoordinate, (int) touchYCoordinate, 0,
-                        Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
-                animator.setInterpolator(new AccelerateInterpolator());
-                animator.setDuration(500);
-                animator.start();
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                    createFadeAnimation(animatedView);
+                } else {
+                    createCircularRevealAnimation(animatedView);
+                }
             }
         });
+    }
+
+    private void createFadeAnimation(View animatedView) {
+        ObjectAnimator objectAnimator = ObjectAnimator
+                .ofFloat(animatedView, "alpha", 0f, 1f);
+        objectAnimator.setDuration(500);
+        objectAnimator.start();
+    }
+
+    private void createCircularRevealAnimation(View animatedView) {
+        animatedView.setVisibility(View.VISIBLE);
+        Bundle extras = getIntent().getExtras();
+        float touchXCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
+        float touchYCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
+        Animator animator = ViewAnimationUtils.createCircularReveal(animatedView,
+                (int) touchXCoordinate, (int) touchYCoordinate, 0,
+                Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setDuration(500);
+        animator.start();
     }
 
     private void backgroundTintColorSetup() {
@@ -235,6 +254,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private void viewInitialisation() {
         /** Обнаружение всех View **/
         articleCoordinatorLayout = findViewById(R.id.article_coordinator_layout);
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            articleCoordinatorLayout.setAlpha(0);
+        } else {
+            articleCoordinatorLayout.setVisibility(View.INVISIBLE);
+        }
         articleBackground = (NestedScrollView) findViewById(R.id.article_background_NSV);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_article);
         articleRelLayout = (LinearLayout) findViewById(R.id.articleRelLayout);
