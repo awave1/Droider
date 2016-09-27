@@ -30,7 +30,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -62,6 +62,7 @@ import io.codetail.animation.ViewAnimationUtils;
 public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
+    private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
     private static RelativeLayout headerImage;
     private static TextView sArticleHeader;
     private static WebView sArticle;
@@ -83,15 +84,14 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private Bundle extras;
     private int webViewBackgroundColor;
     private int currentNightMode;
-
-    private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
     private View articleCoordinatorLayout;
+    private float touchXCoordinate;
+    private float touchYCoordinate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
-        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
+        getSharedPreferences();
         themeSetup();
 
         // Fix for Circular Reveal animation on Pre-Lollipop
@@ -112,6 +112,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         this.setupArticleWebView(sArticle);
     }
 
+    private void getSharedPreferences() {
+        isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
+        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -123,20 +128,14 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         animatedView.post(new Runnable() {
             @Override
             public void run() {
-                // get the center for the clipping circle
-                int cx = (animatedView.getLeft() + animatedView.getRight()) / 2;
-                int cy = (animatedView.getTop() + animatedView.getBottom()) / 2;
-
-                // get the final radius for the clipping circle
-                int dx = Math.max(cx, animatedView.getWidth() - cx);
-                int dy = Math.max(cy, animatedView.getHeight() - cy);
-                float finalRadius = (float) Math.hypot(dx, dy);
-
-                // Android native animator
-                Animator animator =
-                        ViewAnimationUtils.createCircularReveal(animatedView, cx, cy, 0, finalRadius);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.setDuration(1500);
+                Bundle extras = getIntent().getExtras();
+                touchXCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
+                touchYCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
+                Animator animator = ViewAnimationUtils.createCircularReveal(animatedView,
+                        (int) touchXCoordinate, (int) touchYCoordinate, 0,
+                        Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
+                animator.setInterpolator(new AccelerateInterpolator());
+                animator.setDuration(500);
                 animator.start();
             }
         });

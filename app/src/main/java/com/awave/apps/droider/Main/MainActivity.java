@@ -2,6 +2,7 @@ package com.awave.apps.droider.Main;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -51,6 +53,16 @@ public class MainActivity extends DroiderBaseActivity implements
 
         // TODO: 18.08.2016 For what?
         nightModeDebug();
+        calculateCircularRevealAnimationRadius();
+    }
+
+    private void calculateCircularRevealAnimationRadius() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS = Math.max(width, height);
     }
 
     private void nightModeDebug() {

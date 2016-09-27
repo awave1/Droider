@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
     private static Drawable headerImageDrawable;
     private String TAG = FeedRecyclerViewAdapter.class.getSimpleName();
     private boolean isPodcast = false;
+    private float touchYCoordinate;
+    private float touchXCoordinate;
 
     public FeedRecyclerViewAdapter(Activity activity, ArrayList<FeedItem> feedItemArrayList,
                                    boolean isPodcast) {
@@ -67,16 +70,27 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
 
         final String url = feedItem.getUrl();
 
+        feedViewHolder.getCardView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                touchXCoordinate = event.getRawX();
+                touchYCoordinate = event.getRawY();
+                return false;
+            }
+        });
+
         feedViewHolder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     new ArticleActivity.Parser(activity).execute(url);
-                    Intent article = new Intent(activity, ArticleActivity.class);
-                    article.putExtra(Helper.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
-                    article.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
-                    article.putExtra(Helper.EXTRA_ARTICLE_URL, url);
-                    activity.startActivity(article);
+                    Intent articleIntent = new Intent(activity, ArticleActivity.class);
+                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
+                    articleIntent.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
+                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_URL, url);
+                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
+                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
+                    activity.startActivity(articleIntent);
                     FeedRecyclerViewAdapter.setHeaderImageDrawable(feedViewHolder.getCardImageView().getDrawable());
                 } catch (Exception e) {
                     // Ошибка происходит если пытаться отправить пикчу

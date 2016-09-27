@@ -25,12 +25,15 @@ public class Helper {
     public static final String APPS_URL = "http://droider.ru/category/apps_and_games/programs/page/";
     public static final String GAMES_URL = "http://droider.ru/category/apps_and_games/games/page/";
     public static final String VIDEOS_URL = "http://droider.ru/category/video/page/";
-public static final String DROIDER_CAST_URL = "http://droider.ru/category/5294-8165/page/";
+    public static final String DROIDER_CAST_URL = "http://droider.ru/category/5294-8165/page/";
 
     public static final String EXTRA_ARTICLE_TITLE = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
     public static final String EXTRA_ARTICLE_URL = "com.awave.apps.droider.Elements.EXTRA_ARTICLE_URL";
     public static final String EXTRA_SHORT_DESCRIPTION = "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
+    public static final String EXTRA_ARTICLE_X_TOUCH_COORDINATE = "EXTRA_ARTICLE_X_TOUCH_COORDINATE";
+    public static final String EXTRA_ARTICLE_Y_TOUCH_COORDINATE = "EXTRA_ARTICLE_Y_TOUCH_COORDINATE";
     private static final String TAG = "Helper";
+    public static int CIRCULAR_REVIVAL_ANIMATION_RADIUS = 100;
 
 
     public static String getYoutubeImg(String src) {
@@ -42,7 +45,7 @@ public static final String DROIDER_CAST_URL = "http://droider.ru/category/5294-8
         return img;
     }
 
-    public static String trimYoutubeId(String src){
+    public static String trimYoutubeId(String src) {
         return src.substring(30);
     }
 
