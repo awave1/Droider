@@ -46,8 +46,8 @@
 
     </PreferenceCategory>
 
-    <Preference>
+    <PreferenceCategory>
         <!-- Needed for Transparent Navigation Bar -->
-    </Preference>
+    </PreferenceCategory>
 
 </PreferenceScreen>
