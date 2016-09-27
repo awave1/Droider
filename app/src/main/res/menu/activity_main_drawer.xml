@@ -23,7 +23,7 @@
             android:icon="@drawable/ic_video_collection_24dp"
             android:title="@string/drawer_item_videos" />
 
-<item
+        <item
             android:id="@+id/droider_cast_tab"
             android:icon="@drawable/ic_mic_black_24dp"
             android:title="@string/drawer_item_drcast" />

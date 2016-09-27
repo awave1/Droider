@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_page_tab"
+            android:icon="@drawable/ic_home_24dp"
+            android:title="@string/drawer_item_home" />
+        <item
+            android:id="@+id/news_tab"
+            android:icon="@drawable/ic_public_24dp"
+            android:title="@string/drawer_item_news" />
+        <item
+            android:id="@+id/apps_tab"
+            android:icon="@drawable/ic_apps_24dp"
+            android:title="@string/drawer_item_apps" />
+        <item
+            android:id="@+id/games_tab"
+            android:icon="@drawable/ic_games_24dp"
+            android:title="@string/drawer_item_games" />
+        <item
+            android:id="@+id/video_tab"
+            android:icon="@drawable/ic_video_collection_24dp"
+            android:title="@string/drawer_item_videos" />
+
+        <item
+            android:id="@+id/droider_cast_tab"
+            android:icon="@drawable/ic_mic_black_24dp"
+            android:title="@string/drawer_item_drcast" />
+    </group>
+
+    <item android:title="@string/drawer_item_section_header">
+        <menu>
+            <item
+                android:id="@+id/settings_tab"
+                android:icon="@drawable/ic_settings_24dp"
+                android:title="@string/drawer_item_settings" />
+            <item
+                android:id="@+id/info_tab"
+                android:icon="@drawable/ic_info_outline_24dp"
+                android:title="@string/drawer_item_about" />
+        </menu>
+    </item>
+
+    <!-- Needed for Transparent Navigation bar -->
+    <group android:enabled="false">
+        <item android:title="" />
+    </group>
+
+</menu>

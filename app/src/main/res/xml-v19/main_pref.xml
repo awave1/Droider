@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_group_notifications_title">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_notifications_key"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_notifications_title" />
+
+        <ListPreference
+            android:dependency="@string/pref_notifications_key"
+            android:entries="@array/pref_notification_interval_entries"
+            android:entryValues="@array/pref_notification_interval_values"
+            android:key="@string/pref_interval_key"
+            android:summary="@string/pref_notifications_interval_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_notifications_interval_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_group_ui_title">
+
+        <ListPreference
+            android:defaultValue="@string/pref_theme_entry_light"
+            android:entries="@array/pref_theme_entries"
+            android:entryValues="@array/pref_theme_entries"
+            android:key="@string/pref_theme_key"
+            android:summary="@string/pref_theme_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_theme_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:summary="@string/pref_group_beta_summary"
+        android:title="@string/pref_group_beta">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="beta_enableBlur"
+            android:summary="@string/pref_blur_summary"
+            android:textColor="?android:attr/textColorPrimary"
+            android:title="@string/pref_blur_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <!-- Needed for Transparent Navigation Bar -->
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Need for Transparent Navigation Bar -->
+    <dimen name="transparent_action_bar_margin">25dp</dimen>
+    <dimen name="main_container_transparent_margin_top">80dp</dimen>
+    <dimen name="margin_below_transparent_navigation_bar_view">48dp</dimen>
+    <dimen name="margin_below_article_transparent_navigation_bar_view">96dp</dimen>
+    <!---->
+
+    <!-- Article Transparent UI KitKat workaround -->
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_top">-24dp</dimen>
+    <dimen name="collapsing_toolbar_coordinator_layout_margin_bottom">-48dp</dimen>
+
+</resources>

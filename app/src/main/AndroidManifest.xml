@@ -13,9 +13,9 @@
     <application
         android:allowBackup="true"
         android:configChanges="orientation|screenSize"
-        android:largeHeap="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_droider_app"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/LightTheme">
         <service android:name=".Main.NotifyService">
             <intent-filter>
@@ -26,18 +26,23 @@
         <activity
             android:name=".Main.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
         </activity>
+
+        <!-- !Translucent Theme needed for Circular Reveal animation -->
         <activity
             android:name=".Elements.Article.ArticleActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:label="Droider"
+            android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -45,10 +50,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
+                <feedItemArrayList
                     android:host="droider.ru"
                     android:scheme="http" />
-                <data
+                <feedItemArrayList
                     android:host="www.droider.ru"
                     android:pathPattern="/.*"
                     android:scheme="http" />

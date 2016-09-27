@@ -19,8 +19,6 @@
         <item name="colorIcons">@color/colorControlNormal_dark</item>
     </style>
 
-
-
     <style name="LightTheme" parent="Base.Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -44,6 +42,74 @@
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:textColorTertiary">@color/cardTitleTextColor_light</item>
     </style>
+
+    <style name="RedThemeBase" parent="Theme.Design.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary_red</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_red</item>
+        <item name="colorAccent">@color/color_accent_red</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_red</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary_red</item>
+    </style>
+
+    <style name="RedTheme" parent="RedThemeBase">
+
+    </style>
+
+    <style name="RedThemeDarkBase" parent="Theme.Design.NoActionBar">
+        <item name="colorPrimary">@color/color_primary_red_dark</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_red_dark</item>
+        <item name="colorAccent">@color/color_accent_red_dark</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_red_dark</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary_red_dark</item>
+    </style>
+
+    <style name="RedThemeDark" parent="RedThemeDarkBase">
+
+    </style>
+
+    <style name="AdaptiveThemeBase" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_primary_adaptive</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_adaptive</item>
+        <item name="colorAccent">@color/color_accent_adaptive</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_adaptive</item>
+        <item name="android:textColorSecondary">@color/text_color_primary_adaptive</item>
+    </style>
+
+    <style name="AdaptiveTheme" parent="RedThemeDarkBase">
+
+    </style>
+
+    <style name="CardStyleBase">
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+    <style name="CardStyle" parent="CardStyleBase">
+
+    </style>
+
+    <style name="AverageHorizontalMarginBase">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="AverageHorizontalMargin" parent="AverageHorizontalMarginBase">
+
+    </style>
+
+    <style name="AverageHorizontalPaddingBase">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="AverageHorizontalPadding" parent="AverageHorizontalPaddingBase">
+
+    </style>
+
 </resources>
 
 

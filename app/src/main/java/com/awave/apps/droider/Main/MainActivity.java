@@ -1,24 +1,21 @@
 package com.awave.apps.droider.Main;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.os.Build;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 
+import com.awave.apps.droider.DroiderBaseActivity;
 import com.awave.apps.droider.Elements.MainScreen.AboutFragment;
 import com.awave.apps.droider.Elements.MainScreen.Feed;
 import com.awave.apps.droider.Elements.MainScreen.Preferences;
@@ -27,13 +24,15 @@ import com.awave.apps.droider.Utils.Helper;
 
 
 @SuppressWarnings("ALL")
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    public static int mainOrientation;
-    Toolbar toolbar;
-    String mTitle = "Главная";
-    int theme;
+public class MainActivity extends DroiderBaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
+
+    private Toolbar toolbar;
+    private String mTitle = "Главная";
+    private int theme;
     private String TAG = MainActivity.class.getSimpleName();
-    private DrawerLayout drawer;
+    private DrawerLayout drawerLayout;
+    private String activeFeedTitle;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -43,64 +42,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /** Проверяем какая тема выбрана в настройках **/
-        String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "Светлая");
-        Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
+        themeSetup();
 
-        switch (themeName) {
-            case "Светлая":
-
-                theme = R.style.LightTheme;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_light));
-                }
-                break;
-
-            case "Тёмная":
-
-                theme = R.style.DarkTheme;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_dark));
-                }
-                break;
-
-            case "В зависимости от времени суток":
-                theme = R.style.DayNightAuto;
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-                break;
-        }
         super.onCreate(savedInstanceState);
-        /** Затем "включаем" нужную тему **/
-        setTheme(theme);
-
         setContentView(R.layout.main);
 
-        MainActivity.mainOrientation = this.getResources().getConfiguration().orientation;
-        // Handle Toolbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // TODO: 18.08.2016 Font size on screen orientation changing
+        toolbarSetup();
+        navigationDrawerSetup();
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(mTitle);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        fragmentSetting();
+
+        // TODO: 18.08.2016 For what?
+        nightModeDebug();
+        calculateCircularRevealAnimationRadius();
+    }
+
+    private void calculateCircularRevealAnimationRadius() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS = Math.max(width, height);
+    }
+
+    private void nightModeDebug() {
+        int currentNightMode = getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
+                break;
+
+            case Configuration.UI_MODE_NIGHT_YES:
+                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
+                break;
+
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+
+                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
+                break;
         }
+    }
 
-
-        drawer = (DrawerLayout) findViewById(R.id.nav_drawer);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
+    private void fragmentSetting() {
         Log.d(TAG, "onCreate: isOnline = " + Helper.isOnline(this));
-
         if (!Helper.isOnline(this))
             Helper.initInternetConnectionDialog(this);
         else {
@@ -111,26 +98,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                Log.d(TAG, "onCreate: Night mode is not active, we're in day time ");
-
-
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                Log.d(TAG, "onCreate: Night mode is active, we're at night! ");
-
-                break;
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                Log.d(TAG, "onCreate: We don't know what mode we're in, assume notnight ");
-                break;
-        }
-
     }
 
+    private void navigationDrawerSetup() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.nav_drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        drawerLayout.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, activeTheme));
+    }
+
+    private void toolbarSetup() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.text_color_toolbar_red));
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(mTitle);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        }
+        activeFeedTitle = getString(R.string.drawer_item_home);
+    }
 
     @Override
     protected void onStart() {
@@ -181,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitle(mTitle);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Only show items in the action bar relevant to this screen
@@ -208,8 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        getSupportActionBar().setTitle(activeFeedTitle);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -218,42 +212,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         android.app.Fragment fragment = null;
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        boolean isBackStackNeeded = false;
 
         switch (menuItem.getItemId()) {
 
             case R.id.home_page_tab:
                 fragment = Feed.instance(Helper.HOME_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
+                activeFeedTitle = getString(R.string.drawer_item_home);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.news_tab:
                 fragment = Feed.instance(Helper.NEWS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
+                activeFeedTitle = getString(R.string.drawer_item_news);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.apps_tab:
                 fragment = Feed.instance(Helper.APPS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
+                activeFeedTitle = getString(R.string.drawer_item_apps);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.games_tab:
                 fragment = Feed.instance(Helper.GAMES_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
+                activeFeedTitle = getString(R.string.drawer_item_games);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.video_tab:
                 fragment = Feed.instance(Helper.VIDEOS_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+                activeFeedTitle = getString(R.string.drawer_item_videos);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
             case R.id.droider_cast_tab:
                 fragment = Feed.instance(Helper.DROIDER_CAST_URL);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
+                activeFeedTitle = getString(R.string.drawer_item_drcast);
                 if (!Helper.isOnline(this))
                     Helper.initInternetConnectionDialog(this);
                 break;
@@ -261,21 +263,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.settings_tab:
                 fragment = new Preferences();
                 getSupportActionBar().setTitle(R.string.drawer_item_settings);
+                isBackStackNeeded = true;
                 break;
             case R.id.info_tab:
                 fragment = new AboutFragment();
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_about));
+                isBackStackNeeded = true;
                 break;
         }
 
         if (fragment != null) {
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out)
-                    .replace(R.id.container_main, fragment)
-                    .commit();
+            fragmentTransaction.setCustomAnimations(
+                    android.R.animator.fade_in, android.R.animator.fade_out);
+            if (isBackStackNeeded) {
+                fragmentTransaction.addToBackStack(fragment.getTag());
+                isBackStackNeeded = false;
+            }
+            fragmentTransaction.replace(R.id.container_main, fragment).commit();
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return super.onOptionsItemSelected(menuItem);
     }
 }

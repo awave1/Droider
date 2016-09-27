@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- AdaptiveTheme -->
+    <color name="color_primary_adaptive">@color/color_primary_red</color>
+    <color name="color_primary_dark_adaptive">@color/color_primary_dark_red</color>
+    <color name="color_accent_adaptive">@color/color_accent_red</color>
+    <color name="text_color_primary_adaptive">@color/text_color_primary_red</color>
+    <color name="text_color_secondary_adaptive">@color/text_color_secondary_red</color>
+    <color name="text_color_toolbar_adaptive">@color/text_color_toolbar_red</color>
+
+</resources>
