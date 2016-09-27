@@ -31,13 +31,6 @@
             android:textColor="?android:attr/textColorPrimary"
             android:title="@string/pref_theme_title" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/palette_key"
-            android:summary="@string/pref_palette_summary"
-            android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_palette_title" />
-
     </PreferenceCategory>
 
     <PreferenceCategory
