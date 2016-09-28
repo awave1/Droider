@@ -35,6 +35,8 @@
     <string name="about_fragment_art_description">Программист, студент MRU</string>
     <string name="about_fragment_alex_title">Александр Гузенко</string>
     <string name="about_fragment_alex_description">Программист, студент МЭИ</string>
+    <string name="about_fragment_fatih_title">Фатих Газимзянов</string>
+    <string name="about_fragment_fatih_description">Дизайнер, художник, программист, студент ИжГТУ</string>
     <string name="about_fragment_devs_about">Разработчики</string>
     <string name="about_fragment_authors_about">Авторы</string>
     <string name="about_fragment_shortInformation_about">Основное</string>

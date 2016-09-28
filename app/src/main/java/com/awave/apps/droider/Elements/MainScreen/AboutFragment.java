@@ -101,6 +101,20 @@ public class AboutFragment extends android.app.Fragment {
                     }
                 }
         );
+        developersList.add(
+                new Author(
+                        getString(R.string.about_fragment_fatih_title),
+                        getString(R.string.about_fragment_fatih_description),
+                        ResourcesCompat.getDrawable(getResources(), R.drawable.ic_fatih, null)) {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://vk.com/virgil7")
+                        ));
+                    }
+                }
+        );
 
         recyclerViewAdapterSetting(v, developersList, R.id.droider_app_authors_recycler_view);
     }
