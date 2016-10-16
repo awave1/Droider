@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.awave.apps.droider.Elements.Article.ArticleActivity;
+import com.awave.apps.droider.Elements.Article.ArticleParser;
 import com.awave.apps.droider.R;
 import com.awave.apps.droider.Utils.Feed.FeedItem;
 import com.awave.apps.droider.Utils.Helper;
@@ -83,7 +84,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
             @Override
             public void onClick(View v) {
                 try {
-                    new ArticleActivity.Parser(activity).execute(url);
+                    new ArticleParser(activity).execute(url);
                     Intent articleIntent = new Intent(activity, ArticleActivity.class);
                     articleIntent.putExtra(Helper.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
                     articleIntent.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
@@ -92,13 +93,14 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
                     articleIntent.putExtra(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
                     activity.startActivity(articleIntent);
                     FeedRecyclerViewAdapter.setHeaderImageDrawable(feedViewHolder.getCardImageView().getDrawable());
-                } catch (Exception e) {
+                } catch (NullPointerException npe) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException
                     // на article в ArticleActivity. Я закомментил
                     // после этого ничего не открывалось
                     Toast.makeText(activity, "Произошла ошибка при открытии статьи!", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "onClick: Failed to open ArticleActivity!", e.getCause());
+                    Log.e(TAG, "onClick: Failed to open ArticleActivity!", npe.getCause());
+                    npe.printStackTrace();
                 }
             }
         });

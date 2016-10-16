@@ -13,6 +13,9 @@ android {
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+
+    dataBinding.enabled = true
+
     buildTypes {
         release {
             minifyEnabled false
