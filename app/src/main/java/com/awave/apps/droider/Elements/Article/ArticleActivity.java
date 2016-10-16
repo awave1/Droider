@@ -62,7 +62,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private boolean isAnimationPlayed = false;
     private ArticleParser ArticleParser;
     @SuppressLint("StaticFieldLeak")
-    private static ArticleBinding binding;
+    private ArticleBinding binding;
 
 
     @Override
