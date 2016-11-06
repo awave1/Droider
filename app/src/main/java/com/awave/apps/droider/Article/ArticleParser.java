@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Elements.Article;
+package com.awave.apps.droider.Article;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -7,7 +7,7 @@ import android.support.v8.renderscript.RSIllegalArgumentException;
 import android.util.Log;
 import android.view.View;
 
-import com.awave.apps.droider.Utils.Helper;
+import com.awave.apps.droider.Utils.Utils;
 import com.bumptech.glide.Glide;
 
 import org.jsoup.Jsoup;
@@ -56,14 +56,14 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             imgs.wrap("<div class=\"article_image\"></div>");
 
             if (isYoutube) {
-                YouTubeVideoURL = Helper.trimYoutubeId(elements.get(1).select(".iframe_container iframe").attr("src"));
+                YouTubeVideoURL = Utils.trimYoutubeId(elements.get(1).select(".iframe_container iframe").attr("src"));
                 Log.d(TAG, "doInBackground: YouTubeVideoURL  " + YouTubeVideoURL);
                 elements.get(1).select(".iframe_container").remove();
             }
             if (outIntent) {
                 this.title = titleDiv.text();
                 if (isYoutube) {
-                    img = Helper.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
+                    img = Utils.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
                 } else {
                     img = elements.get(1).select(".article_image img").attr("src");
                 }
@@ -98,7 +98,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             try {
                 //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
                 if (Article.isBlur)
-                    Article.getArticleImg().setImageBitmap(Helper.applyBlur(bitmap, activity));
+                    Article.getArticleImg().setImageBitmap(Utils.applyBlur(bitmap, activity));
                 else
                     Article.getArticleImg().setImageBitmap(bitmap);
             } catch (NullPointerException | RSIllegalArgumentException npe) {

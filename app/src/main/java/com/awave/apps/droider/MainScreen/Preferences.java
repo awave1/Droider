@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Elements.MainScreen;
+package com.awave.apps.droider.MainScreen;
 
 import android.os.Bundle;
 import android.preference.Preference;

@@ -2,7 +2,6 @@ package com.awave.apps.droider.Utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
@@ -11,14 +10,13 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 
-public class Helper {
+public class Utils {
 
     public static final String HOME_URL = "http://droider.ru/page/";
     public static final String NEWS_URL = "http://droider.ru/category/news/page/";
@@ -55,23 +53,9 @@ public class Helper {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static void initInternetConnectionDialog(final Context context) {
 
-        new AlertDialog.Builder(context).setTitle("Соединение прервано").setMessage("Проверьте своё соединение с интернетом")
-                .setNeutralButton("Включить Wi-Fi?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Helper.enableWiFi(context, true);
-                    }
-                })
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                }).create().show();
-    }
 
-    private static void enableWiFi(Context c, boolean wifi) {
+    public static void enableWiFi(Context c, boolean wifi) {
         WifiManager wifiConfiguration = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
         wifiConfiguration.setWifiEnabled(wifi);
     }

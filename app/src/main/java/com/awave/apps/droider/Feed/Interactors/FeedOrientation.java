@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Utils.Feed;
+package com.awave.apps.droider.Feed.Interactors;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
-import com.awave.apps.droider.Elements.MainScreen.Feed;
+import com.awave.apps.droider.Feed.View.FeedFragment;
 
 
 public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
@@ -45,9 +45,9 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         if (newState == 0) {
             if ((mActivity.getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-                doubleColsLoading(mActivity, recyclerView, Feed.sStaggeredGridLayoutManager);
+                doubleColsLoading(mActivity, recyclerView, FeedFragment.sStaggeredGridLayoutManager);
             } else {
-                singleColsLoading(mActivity, recyclerView, Feed.sLinearLayoutManager);
+                singleColsLoading(mActivity, recyclerView, FeedFragment.sLinearLayoutManager);
             }
         }
     }

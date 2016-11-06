@@ -1,9 +1,9 @@
-package com.awave.apps.droider.Utils.Feed;
+package com.awave.apps.droider.Feed.Interactors;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-
+//TODO Сделать сохранение статей свайпом
 public class FeedItemTouchHelper extends ItemTouchHelper.Callback {
     private static final String TAG = "FeedItemTouchHelper";
 

@@ -1,6 +1,6 @@
-package com.awave.apps.droider.Utils.Feed;
+package com.awave.apps.droider.Model;
 
-public class FeedItem {
+public class FeedModel {
     private static final String TAG = "FeedItem";
 
     private String mTitle;

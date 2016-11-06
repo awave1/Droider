@@ -1,11 +1,16 @@
 package com.awave.apps.droider;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.support.annotation.AttrRes;
 import android.support.annotation.StyleRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+
+import com.awave.apps.droider.Utils.Utils;
 
 import java.util.HashMap;
 
@@ -41,5 +46,32 @@ public class DroiderBaseActivity extends AppCompatActivity {
         // OH, and don't forget to recycle the TypedArray
         attributesTypedArray.recycle();
         return attributeValue;
+    }
+
+    public void initInternetConnectionDialog(final Context context) {
+
+        new AlertDialog.Builder(context).setTitle("Соединение нестабильно или прервано")
+                .setMessage("Проверьте своё соединение с интернетом и перезайдите в приложение")
+
+                .setPositiveButton("Перезайти", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                                startActivity(getIntent());
+                            }
+                        })
+                .setNegativeButton("Выйти", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNeutralButton("Включить Wi-Fi?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utils.enableWiFi(context, true);
+                    }
+                })
+                .create().show();
     }
 }

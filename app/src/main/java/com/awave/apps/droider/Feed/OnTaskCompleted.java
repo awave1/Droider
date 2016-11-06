@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Utils.Feed;
+package com.awave.apps.droider.Feed;
 
 
 public interface OnTaskCompleted {

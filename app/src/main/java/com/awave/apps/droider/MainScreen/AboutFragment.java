@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Elements.MainScreen;
+package com.awave.apps.droider.MainScreen;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

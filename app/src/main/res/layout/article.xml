@@ -16,7 +16,7 @@
             android:layout_marginTop="@dimen/collapsing_toolbar_coordinator_layout_margin_top"
             android:background="?android:attr/colorBackground"
             android:fitsSystemWindows="true"
-            tools:context=".Elements.Article.ArticleActivity">
+            tools:context=".Article.ArticleActivity">
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/appbar_article"

@@ -14,18 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.awave.apps.droider.Elements.Article.ArticleActivity;
-import com.awave.apps.droider.Elements.Article.ArticleParser;
+import com.awave.apps.droider.Article.ArticleActivity;
+import com.awave.apps.droider.Article.ArticleParser;
+import com.awave.apps.droider.Model.FeedModel;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Feed.FeedItem;
-import com.awave.apps.droider.Utils.Helper;
+import com.awave.apps.droider.Utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
-    private static ArrayList<FeedItem> feedItemArrayList;
+    private static ArrayList<FeedModel> feedModelArrayList;
     private static Activity activity;
     private static Drawable headerImageDrawable;
     private String TAG = FeedRecyclerViewAdapter.class.getSimpleName();
@@ -33,10 +33,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
     private float touchYCoordinate;
     private float touchXCoordinate;
 
-    public FeedRecyclerViewAdapter(Activity activity, ArrayList<FeedItem> feedItemArrayList,
+    public FeedRecyclerViewAdapter(Activity activity, ArrayList<FeedModel> feedModelArrayList,
                                    boolean isPodcast) {
         FeedRecyclerViewAdapter.activity = activity;
-        FeedRecyclerViewAdapter.feedItemArrayList = feedItemArrayList;
+        FeedRecyclerViewAdapter.feedModelArrayList = feedModelArrayList;
         this.isPodcast = isPodcast;
     }
 
@@ -57,19 +57,19 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
     @Override
     public void onBindViewHolder(final FeedViewHolder feedViewHolder, final int i) {
 
-        final FeedItem feedItem = feedItemArrayList.get(i);
-        feedViewHolder.getCardTitleTextView().setText(feedItem.getTitle());
-        feedViewHolder.getCardDescriptionTextView().setText(feedItem.getDescription());
-        feedViewHolder.getSiteUrlTextView().setText(feedItem.getUrl());
+        final FeedModel feedModel = feedModelArrayList.get(i);
+        feedViewHolder.getCardTitleTextView().setText(feedModel.getTitle());
+        feedViewHolder.getCardDescriptionTextView().setText(feedModel.getDescription());
+        feedViewHolder.getSiteUrlTextView().setText(feedModel.getUrl());
 
         if (isPodcast) {
             assert feedViewHolder.getCardImageView() != null;
-            Glide.with(activity).load(R.drawable.dr_cast).into(feedViewHolder.getCardImageView());
+            Glide.with(activity).load(feedModel.getDrCastImg()).into(feedViewHolder.getCardImageView());
         } else {
-            Glide.with(activity).load(feedItem.getImgUrl()).into(feedViewHolder.getCardImageView());
+            Glide.with(activity).load(feedModel.getImgUrl()).into(feedViewHolder.getCardImageView());
         }
 
-        final String url = feedItem.getUrl();
+        final String url = feedModel.getUrl();
 
         feedViewHolder.getCardView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -86,11 +86,11 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
                 try {
                     new ArticleParser(activity).execute(url);
                     Intent articleIntent = new Intent(activity, ArticleActivity.class);
-                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
-                    articleIntent.putExtra(Helper.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
-                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_URL, url);
-                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
-                    articleIntent.putExtra(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
+                    articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, url);
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
                     activity.startActivity(articleIntent);
                     FeedRecyclerViewAdapter.setHeaderImageDrawable(feedViewHolder.getCardImageView().getDrawable());
                 } catch (NullPointerException npe) {
@@ -110,7 +110,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
             public boolean onLongClick(View view) {
                 Log.d(TAG, "onLingClick cardview");
                 ClipboardManager clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData copyLink = ClipData.newPlainText("", feedItem.getUrl());
+                ClipData copyLink = ClipData.newPlainText("", feedModel.getUrl());
                 clipboardManager.setPrimaryClip(copyLink);
                 Toast.makeText(view.getContext(), R.string.main, Toast.LENGTH_SHORT).show();
                 return true;
@@ -120,7 +120,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
 
     @Override
     public int getItemCount() {
-        return feedItemArrayList.size();
+        return feedModelArrayList.size();
     }
 
 }

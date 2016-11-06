@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.awave.apps.droider.Feed.View.FeedFragment;
 import com.awave.apps.droider.R;
 
 import java.util.Timer;
@@ -85,7 +86,7 @@ public class NotifyService extends Service {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(
                         getApplicationContext()
                 );
-                Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent notifyIntent = new Intent(getApplicationContext(), FeedFragment.class);
                 PendingIntent contextIntent = PendingIntent.getActivity(
                         getApplicationContext(), 0, notifyIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT

@@ -1,4 +1,4 @@
-package com.awave.apps.droider.Elements.Article;
+package com.awave.apps.droider.Article;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -37,7 +37,7 @@ import android.widget.TextView;
 import com.awave.apps.droider.DroiderBaseActivity;
 import com.awave.apps.droider.Main.FeedRecyclerViewAdapter;
 import com.awave.apps.droider.R;
-import com.awave.apps.droider.Utils.Helper;
+import com.awave.apps.droider.Utils.Utils;
 import com.awave.apps.droider.databinding.ArticleBinding;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -129,11 +129,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private void createCircularRevealAnimation(View animatedView) {
         animatedView.setVisibility(View.VISIBLE);
         Bundle extras = getIntent().getExtras();
-        float touchXCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
-        float touchYCoordinate = extras.getFloat(Helper.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
+        float touchXCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
+        float touchYCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
         Animator animator = ViewAnimationUtils.createCircularReveal(animatedView,
                 (int) touchXCoordinate, (int) touchYCoordinate, 0,
-                Helper.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
+                Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.setDuration(500);
         animator.start();
@@ -207,18 +207,18 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             String outsideUrl = getIntent().getData().toString();
             ArticleParser.execute(outsideUrl);
         } else {
-            articleTitle = extras.getString(Helper.EXTRA_ARTICLE_TITLE);
-            shortDescription = extras.getString(Helper.EXTRA_SHORT_DESCRIPTION);
+            articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
+            shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 if (isBlur)
-                    binding.articleHeaderContent.setBackgroundDrawable(Helper.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
+                    binding.articleHeaderContent.setBackgroundDrawable(Utils.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
                 else
                     binding.articleHeaderContent.setBackgroundDrawable(FeedRecyclerViewAdapter.getHeaderImageDrawable());
             } else {
                 try {
                     if (isBlur)
-                        binding.articleHeaderContent.setBackground(Helper.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
+                        binding.articleHeaderContent.setBackground(Utils.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
                     else
                         binding.articleHeaderContent.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
                 } catch (NullPointerException npe) {
@@ -320,12 +320,12 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
         switch (item.getItemId()) {
             case R.id.action_open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Helper.EXTRA_ARTICLE_URL))));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Utils.EXTRA_ARTICLE_URL))));
                 break;
             case R.id.action_share:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, articleTitle + ":  " + extras.getString(Helper.EXTRA_ARTICLE_URL));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, articleTitle + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"));
         }
@@ -365,7 +365,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private void setupPaletteBackground(boolean isTransparent) {
         if ((isPalette && activeTheme == R.style.RedTheme) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
-                Palette p = new Palette.Builder(Helper.drawableToBitmap(binding.articleHeaderContent.getBackground())).generate();
+                Palette p = new Palette.Builder(Utils.drawableToBitmap(binding.articleHeaderContent.getBackground())).generate();
                 if (p.getLightMutedSwatch() != null && !isTransparent) {
                     binding.toolbarArticle.setBackgroundColor(p.getLightMutedSwatch().getRgb());
                     binding.articleBackgroundNSV.setBackgroundColor(p.getLightMutedSwatch().getRgb());
