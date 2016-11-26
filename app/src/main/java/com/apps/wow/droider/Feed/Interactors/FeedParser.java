@@ -52,13 +52,15 @@ public class FeedParser extends AsyncTask<String, Void, Void> {
 
                 if (!isPodcast) {
                     try {
-                        if (element.children().size() >= 3 && element.child(1).getElementsByTag("iframe").attr("src").contains("youtube")) {
-                            Log.d(TAG, "onPostExecute: set image from youtube");
-                            feedModel.setImgUrl(Utils.getYoutubeImg(element.child(1).getElementsByTag("iframe").attr("src")));
+                        Log.d(TAG, "doInBackground: " + element.getElementsByTag("img").attr("src"));
+                        Log.d(TAG, "doInBackground: youtube " + element.getElementsByAttributeValueContaining("src", "www.youtube.com").attr("src"));
+                        if (!element.getElementsByAttributeValueContaining("src", "www.youtube.com").attr("src").isEmpty()) {
+                            Log.d(TAG, "onPostExecute: set image from youtube" +  element.getElementsByAttributeValueContaining("src", "www.youtube.com").attr("src"));
+                            feedModel.setImgUrl(Utils.getYoutubeImg(element.getElementsByAttributeValueContaining("src", "www.youtube.com").attr("src")));
                         } else if (element.child(1).getElementsByTag("img").attr("src").contains("\u0060")) {
-                            feedModel.setImgUrl(element.child(1).getElementsByTag("img").attr("src").replace("\u0060", "%60"));
+                            feedModel.setImgUrl(element.getElementsByTag("img").attr("src").replace("\u0060", "%60"));
                         } else {
-                            feedModel.setImgUrl(element.child(1).getElementsByTag("img").attr("src"));
+                            feedModel.setImgUrl(element.getElementsByTag("img").attr("src"));
                         }
                     } catch (IndexOutOfBoundsException ioobe) {
                         ioobe.printStackTrace();
