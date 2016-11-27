@@ -84,7 +84,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
             @Override
             public void onClick(View v) {
                 try {
-                    new ArticleParser(activity).execute(url);
                     Intent articleIntent = new Intent(activity, ArticleActivity.class);
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE, feedViewHolder.getCardTitleTextView().getText().toString());
                     articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, feedViewHolder.getCardDescriptionTextView().getText().toString());

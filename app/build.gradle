@@ -7,7 +7,7 @@ android {
         applicationId "com.apps.wow.droider"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 21
+        versionCode 22
         versionName '5.1'
         renderscriptTargetApi 17
         renderscriptSupportModeEnabled true

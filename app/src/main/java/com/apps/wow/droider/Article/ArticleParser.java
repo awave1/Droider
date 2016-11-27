@@ -42,10 +42,12 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
     @Override
     protected String doInBackground(String... strings) {
         try {
+            Log.d(TAG, "doInBackground: url: " + strings[0]);
             Document document = Jsoup.connect(strings[0]).timeout(10000).get();
             elements = document.select(".entry p, .entry ul li, .entry ol li");
 
             isYoutube = elements.get(1).html().contains("iframe");
+            setYoutube(isYoutube);
             Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
 
             Elements imgs = document.select(".entry img");
@@ -135,7 +137,12 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
     }
 
     boolean isYoutube() {
+        Log.d(TAG, "isYoutube: " + isYoutube);
         return isYoutube;
+    }
+
+    public void setYoutube(boolean youtube) {
+        isYoutube = youtube;
     }
 
     String getYouTubeVideoURL() {

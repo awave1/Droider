@@ -123,7 +123,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     private void createFadeAnimation(View animatedView) {
         ObjectAnimator objectAnimator = ObjectAnimator
                 .ofFloat(animatedView, "alpha", 0f, 1f);
-        objectAnimator.setDuration(500);
+        objectAnimator.setDuration(320);
         objectAnimator.start();
     }
 
@@ -136,7 +136,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                 (int) touchXCoordinate, (int) touchYCoordinate, 0,
                 Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
         animator.setInterpolator(new AccelerateInterpolator());
-        animator.setDuration(500);
+        animator.setDuration(320);
         animator.start();
     }
 
@@ -177,17 +177,6 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
         getArticleHeader().setText(articleTitle);
         binding.articleShortDescription.setText(shortDescription);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (ArticleParser.isYoutube()) {
-                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
-                    youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
-                    setupYoutubePlayer();
-                }
-            }
-        }, 750);
     }
 
     @Override
@@ -199,6 +188,8 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                 android.R.attr.textColorPrimary, activeTheme));
         webViewLinkColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
                 R.attr.colorPrimary, activeTheme));
+
+        Log.d(TAG, "themeSetup: bg color: " + webViewBackgroundColor);
     }
 
     private void intentExtraChecking() {
@@ -208,8 +199,21 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             String outsideUrl = getIntent().getData().toString();
             ArticleParser.execute(outsideUrl);
         } else {
+            Log.d(TAG, "intentExtraChecking: inner");
+            ArticleParser.execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
             articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
             shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (ArticleParser.isYoutube()) {
+                        /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
+                        youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
+                        setupYoutubePlayer();
+                    }
+                }
+            }, 750);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 if (isBlur)
@@ -260,6 +264,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
     private synchronized void setupYoutubePlayer() {
         youtubeFrame.setVisibility(View.VISIBLE);
+        Log.d(TAG, "setupYoutubePlayer: ");
         YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
         youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
@@ -335,6 +340,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setupArticleWebView(WebView w) {
+        Log.d(TAG, "setupArticleWebView: ");
         w.setBackgroundColor(webViewBackgroundColor);
 
         WebChromeClient client = new WebChromeClient();

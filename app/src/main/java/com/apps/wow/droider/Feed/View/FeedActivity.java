@@ -177,7 +177,7 @@ public class FeedActivity extends DroiderBaseActivity implements NavigationView.
 
         if (fragment != null) {
             fragmentTransaction.setCustomAnimations(
-                    android.R.animator.fade_in, android.R.animator.fade_out);
+                    R.animator.frag_in, R.animator.frag_out);
             if (isBackStackNeeded) {
                 fragmentTransaction.addToBackStack(fragment.getTag());
                 isBackStackNeeded = false;
