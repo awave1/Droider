@@ -1,4 +1,4 @@
-package com.apps.wow.droider.Feed.View;
+package com.apps.wow.droider.Feed;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -15,9 +15,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.apps.wow.droider.Adapters.NotifyService;
 import com.apps.wow.droider.DroiderBaseActivity;
+import com.apps.wow.droider.Feed.View.FeedFragment;
 import com.apps.wow.droider.MainScreen.AboutFragment;
 import com.apps.wow.droider.MainScreen.Preferences;
 import com.apps.wow.droider.R;
@@ -121,42 +121,42 @@ public class FeedActivity extends DroiderBaseActivity implements NavigationView.
 
         switch (menuItem.getItemId()) {
             case R.id.home_page_tab:
-                fragment = FeedFragment.instance(Utils.HOME_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
                 activeFeedTitle = getString(R.string.drawer_item_home);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.news_tab:
-                fragment = FeedFragment.instance(Utils.NEWS_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
                 activeFeedTitle = getString(R.string.drawer_item_news);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.apps_tab:
-                fragment = FeedFragment.instance(Utils.APPS_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
                 activeFeedTitle = getString(R.string.drawer_item_apps);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.games_tab:
-                fragment = FeedFragment.instance(Utils.GAMES_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
                 activeFeedTitle = getString(R.string.drawer_item_games);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.video_tab:
-                fragment = FeedFragment.instance(Utils.VIDEOS_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
                 activeFeedTitle = getString(R.string.drawer_item_videos);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.droider_cast_tab:
-                fragment = FeedFragment.instance(Utils.DROIDER_CAST_URL);
+                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
                 activeFeedTitle = getString(R.string.drawer_item_drcast);
                 if (!Utils.isOnline(this))

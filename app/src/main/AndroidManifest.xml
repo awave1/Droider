@@ -24,7 +24,7 @@
         </service>
 
         <activity
-            android:name="com.apps.wow.droider.Feed.View.FeedActivity"
+            android:name="com.apps.wow.droider.Feed.FeedActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait">

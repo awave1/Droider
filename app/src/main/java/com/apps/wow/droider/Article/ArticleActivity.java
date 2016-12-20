@@ -1,9 +1,5 @@
 package com.apps.wow.droider.Article;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -37,34 +33,33 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.ArticleBinding;
-
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
-    private String articleTitle;
-    private String shortDescription;
+    private static ArticleBinding binding;
     public String webViewTextColor;
     public String webViewLinkColor;
-    private FrameLayout youtubeFrame;
     public boolean isBlur;
+    private String articleTitle;
+    private String shortDescription;
+    private FrameLayout youtubeFrame;
     private boolean isPalette;
     private Bundle extras;
     private int webViewBackgroundColor;
     private int currentNightMode;
     private boolean isAnimationPlayed = false;
     private ArticleParser ArticleParser;
-    @SuppressLint("StaticFieldLeak")
-    private static ArticleBinding binding;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +72,6 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         getSharedPreferences();
 
         binding = DataBindingUtil.setContentView(ArticleActivity.this, R.layout.article);
-
 
         ArticleParser = new ArticleParser(this);
 
@@ -101,7 +95,11 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     protected void onStart() {
         super.onStart();
         if (!isAnimationPlayed) {
-            playActivityAnimation();
+            try {
+                playActivityAnimation();
+            } catch (UnsupportedOperationException | IllegalArgumentException e) {
+                e.printStackTrace();
+            }
             isAnimationPlayed = true;
         }
     }
@@ -114,6 +112,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
                     createFadeAnimation(animatedView);
                 } else {
+
                     createCircularRevealAnimation(animatedView);
                 }
             }
@@ -236,7 +235,6 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     }
 
     private void viewInitialisation() {
-        /** Обнаружение всех View **/
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             binding.articleCoordinatorLayout.setAlpha(0);
         } else {

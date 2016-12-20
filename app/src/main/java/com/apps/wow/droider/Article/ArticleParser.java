@@ -2,20 +2,18 @@ package com.apps.wow.droider.Article;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.RSIllegalArgumentException;
 import android.util.Log;
 import android.view.View;
-
 import com.apps.wow.droider.Utils.Utils;
-import com.bumptech.glide.Glide;
-
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 
 public class ArticleParser extends AsyncTask<String, Integer, String> {
@@ -27,7 +25,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
     private String img = "";
     private String title = "";
     private String descr = "";
-    private Bitmap bitmap = null;
+    private Bitmap mBitmap = null;
     private boolean outIntent;
     private boolean isYoutube;
     private String YouTubeVideoURL;
@@ -35,7 +33,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
     private String TAG = "ArticleParser";
 
 
-    public ArticleParser(Activity a) {
+    ArticleParser(Activity a) {
         this.activity = a;
     }
 
@@ -47,7 +45,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             elements = document.select(".entry p, .entry ul li, .entry ol li");
 
             isYoutube = elements.get(1).html().contains("iframe");
-            setYoutube(isYoutube);
+            setIsYoutube(isYoutube);
             Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
 
             Elements imgs = document.select(".entry img");
@@ -70,11 +68,23 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
                     img = elements.get(1).select(".article_image img").attr("src");
                 }
                 descr = elements.get(0).text() + " " + elements.get(2).text();
-                try {
-                    bitmap = Glide.with(activity).load(img).asBitmap().into(-1, -1).get(); // -1, -1 дает возможность загрузить фулл сайз.
-                } catch (InterruptedException | ExecutionException e) {
-                    Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )", e.getCause());
-                }
+
+                Picasso.with(activity).load(img).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        mBitmap = bitmap;
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )");
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
             }
 
 //                Log.d(TAG, "doInBackground: " + elements.toString());
@@ -100,12 +110,12 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             try {
                 //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
                 if (Article.isBlur)
-                    Article.getArticleImg().setImageBitmap(Utils.applyBlur(bitmap, activity));
+                    Article.getArticleImg().setImageBitmap(Utils.applyBlur(mBitmap, activity));
                 else
-                    Article.getArticleImg().setImageBitmap(bitmap);
+                    Article.getArticleImg().setImageBitmap(mBitmap);
             } catch (NullPointerException | RSIllegalArgumentException npe) {
                 npe.printStackTrace();
-                Article.getArticleImg().setImageBitmap(bitmap);
+                Article.getArticleImg().setImageBitmap(mBitmap);
             }
             Article.getArticleHeader().setText(this.title);
             Article.setArticleTitle(title);
@@ -120,7 +130,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
         }
     }
 
-    String setupHtml(String html) {
+    private String setupHtml(String html) {
         String head = "<head>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                 "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
@@ -141,7 +151,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
         return isYoutube;
     }
 
-    public void setYoutube(boolean youtube) {
+    private void setIsYoutube(boolean youtube) {
         isYoutube = youtube;
     }
 

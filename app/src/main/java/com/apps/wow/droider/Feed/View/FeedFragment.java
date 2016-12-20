@@ -12,18 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
 import com.apps.wow.droider.Feed.OnTaskCompleted;
 import com.apps.wow.droider.Feed.Presentor.FeedPresenterImpl;
-import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.Model.NewFeedModel;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
-
-import java.util.ArrayList;
 
 
 public class FeedFragment extends android.app.Fragment implements
@@ -54,12 +51,13 @@ public class FeedFragment extends android.app.Fragment implements
         presenter.attachView(FeedFragment.this, this, this);
         orientationDebugging();
 
-        if (Utils.DROIDER_CAST_URL.equals(getArguments().getString(Utils.EXTRA_ARTICLE_URL)))
-            isPodCast = true;
+        //if (Utils.DROIDER_CAST_URL.equals(getArguments().getString(Utils.EXTRA_ARTICLE_URL)))
+        //    isPodCast = true;
 
         swipeRefreshLayoutSetup();
 
-        presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
+        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, 10, 0);
+        //presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
 
         return binding.getRoot();
     }
@@ -71,10 +69,10 @@ public class FeedFragment extends android.app.Fragment implements
     }
 
     @Override
-    public void onLoadComplete(ArrayList<FeedModel> list) {
+    public void onLoadComplete(NewFeedModel model) {
         if (feedRecyclerViewAdapter == null) {
             binding.feedRecyclerView.setHasFixedSize(true);
-            feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(getActivity(), list, isPodCast);
+            feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(model, isPodCast);
             binding.feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
             initLayoutManager();
         }
@@ -132,7 +130,7 @@ public class FeedFragment extends android.app.Fragment implements
     }
 
     private void initLayoutManager() {
-        if (isAdded()) {
+        if (isAdded() && getActivity() != null) {
             onLoadingFeed();
             if ((getActivity().getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
