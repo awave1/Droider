@@ -67,6 +67,8 @@ dependencies {
     compile 'com.arello-mobile:moxy-android:1.3.2'
     provided 'com.arello-mobile:moxy-compiler:1.3.2'
 
+    // Apache
+    compile 'org.apache.commons:commons-lang3:3.5'
 
     testCompile 'junit:junit:4.12'
 }

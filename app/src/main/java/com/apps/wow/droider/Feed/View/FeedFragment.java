@@ -22,6 +22,8 @@ import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
 
+import okhttp3.internal.Util;
+
 
 public class FeedFragment extends android.app.Fragment implements
         FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -56,7 +58,7 @@ public class FeedFragment extends android.app.Fragment implements
 
         swipeRefreshLayoutSetup();
 
-        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, 10, 0);
+        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, 0);
         //presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
 
         return binding.getRoot();
@@ -71,10 +73,16 @@ public class FeedFragment extends android.app.Fragment implements
     @Override
     public void onLoadComplete(NewFeedModel model) {
         if (feedRecyclerViewAdapter == null) {
+            Log.d(TAG, "onLoadComplete: is null");
+
+
             binding.feedRecyclerView.setHasFixedSize(true);
             feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(model, isPodCast);
             binding.feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
             initLayoutManager();
+        } else {
+            feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
+            feedRecyclerViewAdapter.notifyDataSetChanged();
         }
         onTaskCompleted();
     }
@@ -105,6 +113,10 @@ public class FeedFragment extends android.app.Fragment implements
                     presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
                     FeedOrientation.nextPage_portrait = 1;
                     FeedOrientation.nextPage_landscape = 1;
+
+                    FeedOrientation.offsetPortrait = 0;
+                    FeedOrientation.offsetLandscape = 0;
+
                 } else {
                     ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
                 }
@@ -157,8 +169,7 @@ public class FeedFragment extends android.app.Fragment implements
                 new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadMore(getArguments().getString(Utils.EXTRA_ARTICLE_URL)
-                                + FeedOrientation.nextPage_landscape);
+                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape);
                         onLoadingFeed();
                     }
                 });
@@ -171,8 +182,7 @@ public class FeedFragment extends android.app.Fragment implements
                 new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadMore(getArguments().getString(Utils.EXTRA_ARTICLE_URL)
-                                + FeedOrientation.nextPage_portrait);
+                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
                         onLoadingFeed();
                     }
                 });

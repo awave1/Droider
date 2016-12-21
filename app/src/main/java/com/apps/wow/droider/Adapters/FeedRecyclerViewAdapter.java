@@ -18,6 +18,9 @@ import com.apps.wow.droider.Model.Post;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.squareup.picasso.Picasso;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.ArrayList;
 
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder> {
@@ -35,6 +38,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
     this.isPodcast = isPodcast;
   }
 
+
+
   public static Drawable getHeaderImageDrawable() {
     return headerImageDrawable;
   }
@@ -51,20 +56,20 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
   @Override public void onBindViewHolder(final FeedViewHolder feedViewHolder, final int i) {
 
     final Post post = feedModel.getPosts().get(i);
-    feedViewHolder.getCardTitleTextView().setText(post.getTitle());
-    feedViewHolder.getCardDescriptionTextView().setText(post.getDescription());
+    feedViewHolder.getCardTitleTextView().setText(
+            StringEscapeUtils.unescapeHtml4(post.getTitle())
+    );
+
+    if (!post.getDescription().isEmpty()) {
+      feedViewHolder.getCardDescriptionTextView().setText(
+              StringEscapeUtils.unescapeHtml4(post.getDescription())
+      );
+    } else {
+      feedViewHolder.getCardDescriptionTextView().setVisibility(View.GONE);
+    }
+
     feedViewHolder.getSiteUrlTextView().setText(post.getUrl());
 
-    //if (isPodcast) {
-    //  assert feedViewHolder.getCardImageView() != null;
-    //  Picasso.with(feedViewHolder.getCardImageView().getContext())
-    //      .load(post.getDrCastImg())
-    //      .into(feedViewHolder.getCardImageView());
-    //} else {
-    //  Picasso.with(feedViewHolder.getCardImageView().getContext())
-    //      .load(post.getImgUrl())
-    //      .into(feedViewHolder.getCardImageView());
-    //}
 
     Picasso.with(feedViewHolder.getCardImageView().getContext())
         .load(post.getPictureWide())
@@ -124,5 +129,9 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
 
   @Override public int getItemCount() {
     return feedModel.getPosts().size();
+  }
+
+  public NewFeedModel getFeedModel() {
+    return feedModel;
   }
 }

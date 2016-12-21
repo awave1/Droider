@@ -10,6 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import com.apps.wow.droider.Feed.View.FeedFragment;
+import com.apps.wow.droider.Utils.Utils;
 
 
 public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
@@ -17,6 +18,10 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
     private SwipeRefreshLayout swipeRefresher;
     public static short nextPage_portrait = 1;
     public static short nextPage_landscape = 1;
+
+    public static int offsetPortrait = 0;
+    public static int offsetLandscape = 1;
+
     private Activity mActivity;
     // Portrait
     private int previousTotal_portrait = 0;
@@ -72,6 +77,7 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
                 (totalItemCount_portrait - visibleItemCount_portrait) <= (firstVisibleItem_portrait + visibleThreshold_portrait)) {
             Log.d(TAG, "singleColsLoading: end has been reached, loading next page");
             nextPage_portrait++;
+            offsetPortrait += Utils.DEFAULT_COUNT;
             loadNextPage();
             isLoading_portrait = true;
         }

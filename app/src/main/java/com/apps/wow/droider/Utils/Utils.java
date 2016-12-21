@@ -41,6 +41,8 @@ public class Utils {
   public static final String CATEGORY_FROM_INTERNET = "17463";
   public static final String CATEGORY_VIDEO = "260";
 
+  public static final int DEFAULT_COUNT = 10;
+
   public static final String EXTRA_ARTICLE_TITLE =
       "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
   public static final String EXTRA_ARTICLE_URL =
