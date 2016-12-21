@@ -1,5 +1,7 @@
 package com.apps.wow.droider.Feed.Presentor;
 
+import android.util.Log;
+
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.OnTaskCompleted;
 import com.apps.wow.droider.Feed.View.FeedFragment;
@@ -16,6 +18,7 @@ import rx.schedulers.Schedulers;
 
 public class FeedPresenterImpl implements FeedPresenter {
 
+    private static final String TAG = "FeedPresenterImpl";
   FeedView view;
   FeedFragment feedFragment;
   OnTaskCompleted taskCompleted;

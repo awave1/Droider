@@ -36,10 +36,15 @@ public class FeedFragment extends android.app.Fragment implements
     private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
     private boolean isPodCast = false;
 
-    public static FeedFragment instance(String feedUrl) {
+    private String currentCategory;
+
+    public static FeedFragment instance(String category) {
         FeedFragment feedFragment = new FeedFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.EXTRA_ARTICLE_URL, feedUrl);
+        // todo remove this
+        bundle.putString(Utils.EXTRA_ARTICLE_URL, category);
+
+        bundle.putString(Utils.EXTRA_CATEGORY, category);
         feedFragment.setArguments(bundle);
         feedFragment.setRetainInstance(true);
         return feedFragment;
@@ -57,8 +62,9 @@ public class FeedFragment extends android.app.Fragment implements
         //    isPodCast = true;
 
         swipeRefreshLayoutSetup();
+        currentCategory = this.getArguments().getString(Utils.EXTRA_CATEGORY);
+        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, 0);
 
-        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, 0);
         //presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
 
         return binding.getRoot();
@@ -110,12 +116,22 @@ public class FeedFragment extends android.app.Fragment implements
             @Override
             public void run() {
                 if (Utils.isOnline(getActivity())) {
-                    presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
                     FeedOrientation.nextPage_portrait = 1;
                     FeedOrientation.nextPage_landscape = 1;
 
                     FeedOrientation.offsetPortrait = 0;
                     FeedOrientation.offsetLandscape = 0;
+
+                    feedRecyclerViewAdapter.getFeedModel().getPosts().clear();
+                    feedRecyclerViewAdapter.notifyDataSetChanged();
+
+                    if ((getActivity().getResources().getConfiguration().screenLayout &
+                            Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE)
+                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape);
+                    else
+                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
+                    if (!feedRecyclerViewAdapter.getFeedModel().getPosts().isEmpty())
+                        onTaskCompleted();
 
                 } else {
                     ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
@@ -182,8 +198,10 @@ public class FeedFragment extends android.app.Fragment implements
                 new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
+                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
                         onLoadingFeed();
+                        if (!feedRecyclerViewAdapter.getFeedModel().getPosts().isEmpty())
+                            onTaskCompleted();
                     }
                 });
     }

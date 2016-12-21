@@ -127,53 +127,98 @@ public class FeedActivity extends DroiderBaseActivity implements NavigationView.
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
-            case R.id.news_tab:
-                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
-                activeFeedTitle = getString(R.string.drawer_item_news);
+            case R.id.android_tab:
+                fragment = FeedFragment.instance(Utils.CATEGORY_ANDROID);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_android));
+                activeFeedTitle = getString(R.string.drawer_item_android);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
-            case R.id.apps_tab:
-                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
-                activeFeedTitle = getString(R.string.drawer_item_apps);
+            case R.id.apple_tab:
+                fragment = FeedFragment.instance(Utils.CATEGORY_APPLE);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_apple));
+                activeFeedTitle = getString(R.string.drawer_item_apple);
+                if (!Utils.isOnline(this))
+                    initInternetConnectionDialog(this);
+                break;
+            case R.id.gadgets_tab:
+                fragment = FeedFragment.instance(Utils.CATEGORY_GAGETS);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_gadgets));
+                activeFeedTitle = getString(R.string.drawer_item_gadgets);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
             case R.id.games_tab:
-                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+                fragment = FeedFragment.instance(Utils.CATEGORY_NEW_GAMES);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
                 activeFeedTitle = getString(R.string.drawer_item_games);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
                 break;
-            case R.id.video_tab:
-                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
-                activeFeedTitle = getString(R.string.drawer_item_videos);
+            case R.id.welcome_to_the_internet_tab:
+                fragment = FeedFragment.instance(Utils.CATEGORY_FROM_INTERNET);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_internet));
+                activeFeedTitle = getString(R.string.drawer_item_internet);
                 if (!Utils.isOnline(this))
                     initInternetConnectionDialog(this);
-                break;
-            case R.id.droider_cast_tab:
-                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
-                activeFeedTitle = getString(R.string.drawer_item_drcast);
-                if (!Utils.isOnline(this))
-                    initInternetConnectionDialog(this);
-                break;
-
-            case R.id.settings_tab:
-                fragment = new Preferences();
-                getSupportActionBar().setTitle(R.string.drawer_item_settings);
-                isBackStackNeeded = true;
-                break;
-            case R.id.info_tab:
-                fragment = new AboutFragment();
-                getSupportActionBar().setTitle(getString(R.string.drawer_item_about));
-                isBackStackNeeded = true;
                 break;
         }
+
+//        switch (menuItem.getItemId()) {
+//            case R.id.home_page_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
+//                activeFeedTitle = getString(R.string.drawer_item_home);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//            case R.id.news_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
+//                activeFeedTitle = getString(R.string.drawer_item_news);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//            case R.id.apps_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
+//                activeFeedTitle = getString(R.string.drawer_item_apps);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//            case R.id.games_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
+//                activeFeedTitle = getString(R.string.drawer_item_games);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//            case R.id.video_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
+//                activeFeedTitle = getString(R.string.drawer_item_videos);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//            case R.id.droider_cast_tab:
+//                fragment = FeedFragment.instance(Utils.CATEGORY_MAIN);
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
+//                activeFeedTitle = getString(R.string.drawer_item_drcast);
+//                if (!Utils.isOnline(this))
+//                    initInternetConnectionDialog(this);
+//                break;
+//
+//            case R.id.settings_tab:
+//                fragment = new Preferences();
+//                getSupportActionBar().setTitle(R.string.drawer_item_settings);
+//                isBackStackNeeded = true;
+//                break;
+//            case R.id.info_tab:
+//                fragment = new AboutFragment();
+//                getSupportActionBar().setTitle(getString(R.string.drawer_item_about));
+//                isBackStackNeeded = true;
+//                break;
+//        }
 
         if (fragment != null) {
             fragmentTransaction.setCustomAnimations(

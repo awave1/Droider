@@ -6,27 +6,33 @@
             android:id="@+id/home_page_tab"
             android:icon="@drawable/ic_home_24dp"
             android:title="@string/drawer_item_home" />
+
         <item
-            android:id="@+id/news_tab"
-            android:icon="@drawable/ic_public_24dp"
-            android:title="@string/drawer_item_news" />
+            android:id="@+id/android_tab"
+            android:icon="@drawable/ic_android"
+            android:title="@string/drawer_item_android" />
+
         <item
-            android:id="@+id/apps_tab"
-            android:icon="@drawable/ic_apps_24dp"
-            android:title="@string/drawer_item_apps" />
+            android:id="@+id/apple_tab"
+            android:icon="@drawable/ic_apple"
+            android:title="@string/drawer_item_apple" />
+
+        <item
+            android:id="@+id/gadgets_tab"
+            android:icon="@drawable/ic_gadgets"
+            android:title="@string/drawer_item_gadgets" />
+
         <item
             android:id="@+id/games_tab"
             android:icon="@drawable/ic_games_24dp"
             android:title="@string/drawer_item_games" />
-        <item
-            android:id="@+id/video_tab"
-            android:icon="@drawable/ic_video_collection_24dp"
-            android:title="@string/drawer_item_videos" />
 
         <item
-            android:id="@+id/droider_cast_tab"
-            android:icon="@drawable/ic_mic_black_24dp"
-            android:title="@string/drawer_item_drcast" />
+            android:id="@+id/welcome_to_the_internet_tab"
+            android:icon="@drawable/ic_public_24dp"
+            android:title="@string/drawer_item_internet" />
+
+
     </group>
 
     <item android:title="@string/drawer_item_section_header">

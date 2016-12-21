@@ -47,6 +47,7 @@ public class Utils {
       "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
   public static final String EXTRA_ARTICLE_URL =
       "com.awave.apps.droider.Elements.EXTRA_ARTICLE_URL";
+  public static final String EXTRA_CATEGORY = "com.awave.apps.droider.CATEGORY";
   public static final String EXTRA_SHORT_DESCRIPTION =
       "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
   public static final String EXTRA_ARTICLE_X_TOUCH_COORDINATE = "EXTRA_ARTICLE_X_TOUCH_COORDINATE";

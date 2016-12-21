@@ -42,15 +42,16 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
         try {
             Log.d(TAG, "doInBackground: url: " + strings[0]);
             Document document = Jsoup.connect(strings[0]).timeout(10000).get();
-            elements = document.select(".entry p, .entry ul li, .entry ol li");
+//            elements = document.select(".entry p, .entry ul li, .entry ol li");
+            elements = document.select("article[id^=post] .article-body");
 
-            isYoutube = elements.get(1).html().contains("iframe");
+//            isYoutube = elements.get(1).html().contains("iframe");
             setIsYoutube(isYoutube);
             Log.d(TAG, "doInBackground: isYoutube  " + isYoutube);
 
             Elements imgs = document.select(".entry img");
             Elements iframe = document.select(".entry iframe, .entry p iframe ");
-            Elements titleDiv = document.select(".title a");
+            Elements titleDiv = document.select(".headline__content__title");
 
             iframe.wrap("<div class=\"iframe_container\"></div>");
             imgs.wrap("<div class=\"article_image\"></div>");
@@ -62,39 +63,39 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             }
             if (outIntent) {
                 this.title = titleDiv.text();
-                if (isYoutube) {
-                    img = Utils.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
-                } else {
-                    img = elements.get(1).select(".article_image img").attr("src");
-                }
-                descr = elements.get(0).text() + " " + elements.get(2).text();
-
-                Picasso.with(activity).load(img).into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        mBitmap = bitmap;
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-                        Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )");
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+//                if (isYoutube) {
+//                    img = Utils.getYoutubeImg(elements.get(1).select(".iframe_container iframe").attr("src"));
+//                } else {
+//                    img = elements.get(1).select(".article_image img").attr("src");
+//                }
+//                descr = elements.get(0).text() + " " + elements.get(2).text();
+//
+//                Picasso.with(activity).load(img).into(new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        mBitmap = bitmap;
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(Drawable errorDrawable) {
+//                        Log.e(TAG, "doInBackground: Error fetching bitmap from url! (url: " + img + " )");
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                    }
+//                });
             }
 
 //                Log.d(TAG, "doInBackground: " + elements.toString());
-            elements.remove(0);
+//            elements.remove(0);
 //                Log.d(TAG, "doInBackground: without element(0) " + elements.toString());
-            if (!elements.isEmpty() && elements.get(1).hasText()) {
+//            if (!elements.isEmpty() && elements.get(1).hasText()) {
 //                    Log.d(TAG, "doInBackground: HASTEXT" + elements.get(1).hasText());
-                elements.remove(1);
+//                elements.remove(1);
 //                    Log.d(TAG, "doInBackground:  without element(1) " + elements.toString());
-            }
+//            }
             html = setupHtml(elements.toString());
         } catch (IOException e) {
             Log.e(TAG, "Failed to fetch html", e.getCause());
