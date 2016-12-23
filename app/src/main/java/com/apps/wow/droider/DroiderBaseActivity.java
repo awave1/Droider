@@ -31,7 +31,7 @@ public class DroiderBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Obtain the FirebaseAnalytics instance.
+        // Obtain the FirebaseAnalytics newInstance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 

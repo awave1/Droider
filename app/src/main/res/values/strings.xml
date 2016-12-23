@@ -5,9 +5,10 @@
     <string name="drawer_item_home">Главная</string>
     <string name="drawer_item_internet">Интернет</string>
     <string name="drawer_item_android">Android</string>
-    <string name="drawer_item_games">Игры</string>
     <string name="drawer_item_apple">Apple</string>
     <string name="drawer_item_gadgets">Гаджеты</string>
+    <string name="drawer_item_video">Видео</string>
+    <string name="drawer_item_games">Игры</string>
     <string name="drawer_item_settings">Настройки</string>
     <string name="drawer_item_about">О проекте</string>
     <string name="share">Поделиться</string>

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
@@ -21,8 +22,6 @@ import com.apps.wow.droider.Model.NewFeedModel;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
-
-import okhttp3.internal.Util;
 
 
 public class FeedFragment extends android.app.Fragment implements
@@ -38,7 +37,7 @@ public class FeedFragment extends android.app.Fragment implements
 
     private String currentCategory;
 
-    public static FeedFragment instance(String category) {
+    public static FeedFragment newInstance(String category) {
         FeedFragment feedFragment = new FeedFragment();
         Bundle bundle = new Bundle();
         // todo remove this
@@ -166,8 +165,7 @@ public class FeedFragment extends android.app.Fragment implements
             } else {
                 setSingleColFeedMode();
             }
-        }
-        else {
+        } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

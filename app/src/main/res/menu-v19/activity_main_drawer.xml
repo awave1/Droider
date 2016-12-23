@@ -18,6 +18,11 @@
             android:title="@string/drawer_item_apple" />
 
         <item
+            android:id="@+id/video_tab"
+            android:icon="@drawable/ic_video_collection_24dp"
+            android:title="@string/drawer_item_video" />
+
+        <item
             android:id="@+id/gadgets_tab"
             android:icon="@drawable/ic_gadgets"
             android:title="@string/drawer_item_gadgets" />
@@ -47,10 +52,5 @@
                 android:title="@string/drawer_item_about" />
         </menu>
     </item>
-
-    <!-- Needed for Transparent Navigation bar -->
-    <group android:enabled="false">
-        <item android:title="" />
-    </group>
 
 </menu>
