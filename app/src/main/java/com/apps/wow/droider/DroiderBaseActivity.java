@@ -1,7 +1,5 @@
 package com.apps.wow.droider;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
@@ -15,18 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.apps.wow.droider.Utils.Utils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.HashMap;
 
 public class DroiderBaseActivity extends AppCompatActivity {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-    protected int activeTheme;
-    private HashMap<String, Integer> themesHashMap;
-
     static {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
     }
+
+    protected int activeTheme;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private HashMap<String, Integer> themesHashMap = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,14 +35,13 @@ public class DroiderBaseActivity extends AppCompatActivity {
     }
 
     protected void themeSetup() {
-        if ((themesHashMap == null) || themesHashMap.isEmpty()) {
-            themesHashMap = new HashMap<>();
-            themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_light), com.apps.wow.droider.R.style.RedTheme);
-            themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_dark), com.apps.wow.droider.R.style.RedThemeDark);
-            themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_adaptive), com.apps.wow.droider.R.style.AdaptiveTheme);
-        }
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_light), com.apps.wow.droider.R.style.RedTheme);
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_dark), com.apps.wow.droider.R.style.RedThemeDark);
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_adaptive), com.apps.wow.droider.R.style.AdaptiveTheme);
+
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString(
                 getString(com.apps.wow.droider.R.string.pref_theme_key), getString(com.apps.wow.droider.R.string.pref_theme_entry_light));
+
         activeTheme = themesHashMap.get(themeName);
         setTheme(activeTheme);
     }
@@ -66,12 +64,12 @@ public class DroiderBaseActivity extends AppCompatActivity {
                 .setMessage("Проверьте своё соединение с интернетом и перезайдите в приложение")
 
                 .setPositiveButton("Перезайти", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                                startActivity(getIntent());
-                            }
-                        })
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        startActivity(getIntent());
+                    }
+                })
                 .setNegativeButton("Выйти", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

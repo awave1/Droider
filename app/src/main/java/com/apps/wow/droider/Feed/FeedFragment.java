@@ -1,4 +1,4 @@
-package com.apps.wow.droider.Feed.View;
+package com.apps.wow.droider.Feed;
 
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -14,11 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
+import com.apps.wow.droider.BuildConfig;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
-import com.apps.wow.droider.Feed.OnTaskCompleted;
 import com.apps.wow.droider.Feed.Presentor.FeedPresenterImpl;
-import com.apps.wow.droider.Model.NewFeedModel;
+import com.apps.wow.droider.Feed.View.FeedView;
+import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
@@ -33,17 +34,15 @@ public class FeedFragment extends android.app.Fragment implements
     private FeedPresenterImpl presenter;
     private FeedFragmentBinding binding;
     private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
-    private boolean isPodCast = false;
 
     private String currentCategory;
+    private String currentSlug;
 
-    public static FeedFragment newInstance(String category) {
+    public static FeedFragment newInstance(String category, String slug) {
         FeedFragment feedFragment = new FeedFragment();
         Bundle bundle = new Bundle();
-        // todo remove this
-        bundle.putString(Utils.EXTRA_ARTICLE_URL, category);
-
         bundle.putString(Utils.EXTRA_CATEGORY, category);
+        bundle.putString(Utils.EXTRA_SLUG, slug);
         feedFragment.setArguments(bundle);
         feedFragment.setRetainInstance(true);
         return feedFragment;
@@ -54,21 +53,16 @@ public class FeedFragment extends android.app.Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false);
         presenter = new FeedPresenterImpl();
-        presenter.attachView(FeedFragment.this, this, this);
+        presenter.attachView(FeedFragment.this, this, this); //first this = View interface, Second this = onTaskCompleted
         orientationDebugging();
 
-        //if (Utils.DROIDER_CAST_URL.equals(getArguments().getString(Utils.EXTRA_ARTICLE_URL)))
-        //    isPodCast = true;
-
         swipeRefreshLayoutSetup();
-        currentCategory = this.getArguments().getString(Utils.EXTRA_CATEGORY);
-        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, 0);
-
-        //presenter.getDataWithClearing(getArguments().getString(Utils.EXTRA_ARTICLE_URL));
+        currentCategory = getArguments().getString(Utils.EXTRA_CATEGORY);
+        currentSlug = getArguments().getString(Utils.EXTRA_SLUG);
+        presenter.loadData(currentCategory, currentSlug, Utils.DEFAULT_COUNT, 0, true);
 
         return binding.getRoot();
     }
-
 
     @Override
     public void onLoadingFeed() {
@@ -76,18 +70,20 @@ public class FeedFragment extends android.app.Fragment implements
     }
 
     @Override
-    public void onLoadComplete(NewFeedModel model) {
-        if (feedRecyclerViewAdapter == null) {
-            Log.d(TAG, "onLoadComplete: is null");
-
+    public void onLoadCompleted(FeedModel model, boolean clear) {
+        //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
+        // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
+        if (feedRecyclerViewAdapter == null || clear) {
+            Log.d(TAG, "onLoadCompleted: is null");
+            FeedOrientation.offsetPortrait = 0;
+            FeedOrientation.offsetLandscape = 0;
 
             binding.feedRecyclerView.setHasFixedSize(true);
-            feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(model, isPodCast);
+            feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(model);
             binding.feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
             initLayoutManager();
         } else {
-            feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
-            feedRecyclerViewAdapter.notifyDataSetChanged();
+                feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
         }
         onTaskCompleted();
     }
@@ -95,9 +91,18 @@ public class FeedFragment extends android.app.Fragment implements
     @Override
     public void onLoadFailed() {
         onTaskCompleted();
-        ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
+        if (getActivity() != null)
+            ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
     }
 
+    @Override
+    public void onRefresh() {
+        if ((getActivity().getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE)
+            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, true);
+        else
+            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, true);
+    }
 
     private void swipeRefreshLayoutSetup() {
         binding.feedSwipeRefresh.setOnRefreshListener(this);
@@ -109,35 +114,6 @@ public class FeedFragment extends android.app.Fragment implements
         binding.feedSwipeRefresh.setSize(SwipeRefreshLayout.DEFAULT);
     }
 
-    @Override
-    public void onRefresh() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (Utils.isOnline(getActivity())) {
-                    FeedOrientation.nextPage_portrait = 1;
-                    FeedOrientation.nextPage_landscape = 1;
-
-                    FeedOrientation.offsetPortrait = 0;
-                    FeedOrientation.offsetLandscape = 0;
-
-                    feedRecyclerViewAdapter.getFeedModel().getPosts().clear();
-                    feedRecyclerViewAdapter.notifyDataSetChanged();
-
-                    if ((getActivity().getResources().getConfiguration().screenLayout &
-                            Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE)
-                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape);
-                    else
-                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
-                    if (!feedRecyclerViewAdapter.getFeedModel().getPosts().isEmpty())
-                        onTaskCompleted();
-
-                } else {
-                    ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
-                }
-            }
-        });
-    }
 
     @Override
     public synchronized void onTaskCompleted() {
@@ -148,17 +124,11 @@ public class FeedFragment extends android.app.Fragment implements
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                binding.feedSwipeRefresh.setRefreshing(true);
-            }
-        });
+        binding.feedSwipeRefresh.setRefreshing(true);
     }
 
     private void initLayoutManager() {
         if (isAdded() && getActivity() != null) {
-            onLoadingFeed();
             if ((getActivity().getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
                 setDoubleColFeedMode();
@@ -183,7 +153,8 @@ public class FeedFragment extends android.app.Fragment implements
                 new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape);
+                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN,
+                                Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, false);
                         onLoadingFeed();
                     }
                 });
@@ -196,7 +167,8 @@ public class FeedFragment extends android.app.Fragment implements
                 new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait);
+                        presenter.loadData(currentCategory, Utils.SLUG_MAIN,
+                                Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, false);
                         onLoadingFeed();
                         if (!feedRecyclerViewAdapter.getFeedModel().getPosts().isEmpty())
                             onTaskCompleted();
@@ -205,15 +177,9 @@ public class FeedFragment extends android.app.Fragment implements
     }
 
     private void orientationDebugging() {
-        Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources()
-                .getConfiguration().orientation);
-        Log.d(TAG, "onCreateView: getArguments().getString(EXTRA_ARTICLE_URL) = " + getArguments()
-                .getString(Utils.EXTRA_ARTICLE_URL));
-    }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onCreateView: orientation = " + getActivity().getResources()
+                    .getConfiguration().orientation);
+        }
     }
 }

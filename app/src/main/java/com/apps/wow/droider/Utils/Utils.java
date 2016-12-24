@@ -14,7 +14,9 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
+
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -32,6 +34,7 @@ public class Utils {
   public static final String SLUG_NEW_GAMES = "new_games";
   public static final String SLUG_FROM_INTERNET = "from_internet";
   public static final String SLUG_VIDEO = "video";
+  public static final String SLUG_PODCAST = "podcast";
 
   public static final String CATEGORY_MAIN= "0";
   public static final String CATEGORY_ANDROID = "17459";
@@ -40,14 +43,17 @@ public class Utils {
   public static final String CATEGORY_NEW_GAMES = "17932";
   public static final String CATEGORY_FROM_INTERNET = "17463";
   public static final String CATEGORY_VIDEO = "260";
+  public static final String CATEGORY_PODCAST = "17931";
 
-  public static final int DEFAULT_COUNT = 10;
+
+  public static final int DEFAULT_COUNT = 20;
 
   public static final String EXTRA_ARTICLE_TITLE =
-      "com.awave.apps.droider.Elements.EXTRA_ARTICLE_TITLE";
+      "com.apps.wow.droider.Elements.EXTRA_ARTICLE_TITLE";
   public static final String EXTRA_ARTICLE_URL =
-      "com.awave.apps.droider.Elements.EXTRA_ARTICLE_URL";
-  public static final String EXTRA_CATEGORY = "com.awave.apps.droider.CATEGORY";
+      "com.apps.wow.droider.Elements.EXTRA_ARTICLE_URL";
+  public static final String EXTRA_CATEGORY = "com.apps.wow.droider.CATEGORY";
+  public static final String EXTRA_SLUG = "com.apps.wow.droider.EXTRA_SLUG";
   public static final String EXTRA_SHORT_DESCRIPTION =
       "com.awave.droider.Elements.EXTRA_SHORT_DESCRIPTION";
   public static final String EXTRA_ARTICLE_X_TOUCH_COORDINATE = "EXTRA_ARTICLE_X_TOUCH_COORDINATE";
@@ -69,10 +75,13 @@ public class Utils {
   }
 
   public static boolean isOnline(Context context) {
-    ConnectivityManager connectivity =
-        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo netInfo = connectivity.getActiveNetworkInfo();
-    return netInfo != null && netInfo.isConnectedOrConnecting();
+    if (context != null) {
+      ConnectivityManager connectivity =
+              (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = connectivity.getActiveNetworkInfo();
+      return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+    return false;
   }
 
   public static void enableWiFi(Context c, boolean wifi) {

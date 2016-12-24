@@ -7,10 +7,9 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 
 import com.apps.wow.droider.Adapters.NotifyService;
 import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.Feed.View.FeedFragment;
 import com.apps.wow.droider.MainScreen.AboutFragment;
 import com.apps.wow.droider.MainScreen.Preferences;
 import com.apps.wow.droider.R;
@@ -30,10 +28,9 @@ public class FeedActivity extends DroiderBaseActivity
     private String TAG = FeedActivity.class.getSimpleName();
 
     private ActivityFeedBinding binding;
-    private DrawerLayout drawerLayout;
     private String activeFeedTitle;
-    private Toolbar toolbar;
     private String mTitle = "Главная";
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +70,8 @@ public class FeedActivity extends DroiderBaseActivity
     public void onBackPressed() {
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle(activeFeedTitle);
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (binding.navDrawer.isDrawerOpen(GravityCompat.START)) {
+            binding.navDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -85,8 +82,12 @@ public class FeedActivity extends DroiderBaseActivity
         if (!Utils.isOnline(this)) {
             initInternetConnectionDialog(this);
         } else {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
+                activeFeedTitle = getString(R.string.drawer_item_home);
+            }
             getFragmentManager().beginTransaction()
-                    .replace(R.id.container_main, FeedFragment.newInstance(Utils.HOME_URL))
+                    .replace(R.id.container_main, FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN))
                     .commit();
         }
     }
@@ -101,17 +102,16 @@ public class FeedActivity extends DroiderBaseActivity
     }
 
     private void navigationDrawerSetup() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.nav_drawer);
-        ActionBarDrawerToggle actionBarDrawerToggle =
-                new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,
+        actionBarDrawerToggle =
+                new ActionBarDrawerToggle(this, binding.navDrawer, binding.toolbar, R.string.drawer_open,
                         R.string.drawer_close);
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        binding.navDrawer.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        drawerLayout.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, activeTheme));
+        binding.navDrawer.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, activeTheme));
     }
 
     @Override
@@ -123,46 +123,52 @@ public class FeedActivity extends DroiderBaseActivity
 
         switch (menuItem.getItemId()) {
             case R.id.home_page_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
                 activeFeedTitle = getString(R.string.drawer_item_home);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
             case R.id.android_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_ANDROID);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_ANDROID, Utils.SLUG_ANDROID);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_android));
                 activeFeedTitle = getString(R.string.drawer_item_android);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
             case R.id.apple_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_APPLE);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_APPLE, Utils.SLUG_APPLE);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_apple));
                 activeFeedTitle = getString(R.string.drawer_item_apple);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
             case R.id.gadgets_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_GAGETS);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_GAGETS, Utils.SLUG_GAGETS);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_gadgets));
                 activeFeedTitle = getString(R.string.drawer_item_gadgets);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
 
             case R.id.video_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_VIDEO);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_VIDEO, Utils.SLUG_VIDEO);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_video));
                 activeFeedTitle = getString(R.string.drawer_item_video);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
             case R.id.games_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_NEW_GAMES);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_NEW_GAMES, Utils.SLUG_NEW_GAMES);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
                 activeFeedTitle = getString(R.string.drawer_item_games);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
             case R.id.welcome_to_the_internet_tab:
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_FROM_INTERNET);
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_FROM_INTERNET, Utils.SLUG_FROM_INTERNET);
                 getSupportActionBar().setTitle(getString(R.string.drawer_item_internet));
                 activeFeedTitle = getString(R.string.drawer_item_internet);
+                if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
+                break;
+            case R.id.droider_cast_tab:
+                fragment = FeedFragment.newInstance(Utils.CATEGORY_PODCAST, Utils.SLUG_PODCAST);
+                getSupportActionBar().setTitle(getString(R.string.drawer_item_dr_cast));
+                activeFeedTitle = getString(R.string.drawer_item_dr_cast);
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this);
                 break;
 
@@ -178,53 +184,6 @@ public class FeedActivity extends DroiderBaseActivity
                 break;
         }
 
-        //        switch (menuItem.getItemId()) {
-        //            case R.id.home_page_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_home));
-        //                activeFeedTitle = getString(R.string.drawer_item_home);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //            case R.id.news_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_news));
-        //                activeFeedTitle = getString(R.string.drawer_item_news);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //            case R.id.apps_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_apps));
-        //                activeFeedTitle = getString(R.string.drawer_item_apps);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //            case R.id.games_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_games));
-        //                activeFeedTitle = getString(R.string.drawer_item_games);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //            case R.id.video_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_videos));
-        //                activeFeedTitle = getString(R.string.drawer_item_videos);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //            case R.id.droider_cast_tab:
-        //                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN);
-        //                getSupportActionBar().setTitle(getString(R.string.drawer_item_drcast));
-        //                activeFeedTitle = getString(R.string.drawer_item_drcast);
-        //                if (!Utils.isOnline(this))
-        //                    initInternetConnectionDialog(this);
-        //                break;
-        //
-
-        //        }
-
         if (fragment != null) {
             fragmentTransaction.setCustomAnimations(R.animator.frag_in, R.animator.frag_out);
             if (isBackStackNeeded) {
@@ -234,14 +193,14 @@ public class FeedActivity extends DroiderBaseActivity
             fragmentTransaction.replace(R.id.container_main, fragment).commit();
         }
 
-        drawerLayout.closeDrawer(GravityCompat.START);
+        binding.navDrawer.closeDrawer(GravityCompat.START);
         return super.onOptionsItemSelected(menuItem);
     }
 
     private void toolbarSetup() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.text_color_toolbar_red));
-        setSupportActionBar(toolbar);
+
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.text_color_toolbar_red));
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(mTitle);
@@ -254,6 +213,12 @@ public class FeedActivity extends DroiderBaseActivity
     public void restoreActionBar() {
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle(mTitle);
+        binding.toolbar.setTitle(mTitle);
+    }
+
+    @Override
+    protected void onDestroy() {
+        binding.navDrawer.removeDrawerListener(actionBarDrawerToggle);
+        super.onDestroy();
     }
 }

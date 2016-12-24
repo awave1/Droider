@@ -1,6 +1,7 @@
 package com.apps.wow.droider.api;
 
-import com.apps.wow.droider.Model.NewFeedModel;
+import com.apps.wow.droider.Model.FeedModel;
+
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -13,10 +14,10 @@ import rx.Observable;
 public interface DroiderApi {
 
     @GET("/wp-content/themes/droider/feed.php?category=0&slug=main&count=12&offset=24")
-    Observable<Response<NewFeedModel>> getFeed(@Query("category") String category,
-                                               @Query("slug") String slug,
-                                               @Query("count") int count,
-                                               @Query("offset") int offset);
+    Observable<Response<FeedModel>> getFeed(@Query("category") String category,
+                                            @Query("slug") String slug,
+                                            @Query("count") int count,
+                                            @Query("offset") int offset);
 
 
 }

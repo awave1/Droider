@@ -37,6 +37,10 @@
             android:icon="@drawable/ic_public_24dp"
             android:title="@string/drawer_item_internet" />
 
+        <item
+            android:id="@+id/droider_cast_tab"
+            android:icon="@drawable/ic_dr_cast_for_menu"
+            android:title="@string/drawer_item_dr_cast" />
 
     </group>
 
@@ -50,6 +54,7 @@
                 android:id="@+id/info_tab"
                 android:icon="@drawable/ic_info_outline_24dp"
                 android:title="@string/drawer_item_about" />
+
         </menu>
     </item>
 
