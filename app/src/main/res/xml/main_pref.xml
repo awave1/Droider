@@ -7,7 +7,7 @@
             android:defaultValue="false"
             android:key="@string/pref_notifications_key"
             android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_notifications_title" />
+            android:title="@string/pref_notifications_title"/>
 
         <ListPreference
             android:dependency="@string/pref_notifications_key"
@@ -16,7 +16,7 @@
             android:key="@string/pref_interval_key"
             android:summary="@string/pref_notifications_interval_summary"
             android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_notifications_interval_title" />
+            android:title="@string/pref_notifications_interval_title"/>
 
     </PreferenceCategory>
 
@@ -29,7 +29,7 @@
             android:key="@string/pref_theme_key"
             android:summary="@string/pref_theme_summary"
             android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_theme_title" />
+            android:title="@string/pref_theme_title"/>
 
     </PreferenceCategory>
 
@@ -42,7 +42,7 @@
             android:key="beta_enableBlur"
             android:summary="@string/pref_blur_summary"
             android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_blur_title" />
+            android:title="@string/pref_blur_title"/>
 
     </PreferenceCategory>
 

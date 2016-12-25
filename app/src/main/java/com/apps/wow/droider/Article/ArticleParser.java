@@ -2,24 +2,24 @@ package com.apps.wow.droider.Article;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.RSIllegalArgumentException;
 import android.util.Log;
 import android.view.View;
+
 import com.apps.wow.droider.Utils.Utils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import java.io.IOException;
 
 
 public class ArticleParser extends AsyncTask<String, Integer, String> {
 
     private Activity activity;
-    private ArticleActivity Article = new ArticleActivity();
+
 
     private String html = "";
     private String img = "";
@@ -106,25 +106,25 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String aVoid) {
-        Article.getProgressBar().setVisibility(View.GONE);
+        ((ArticleActivity) activity).getProgressBar().setVisibility(View.GONE);
         if (outIntent) {
             try {
                 //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
-                if (Article.isBlur)
-                    Article.getArticleImg().setImageBitmap(Utils.applyBlur(mBitmap, activity));
+                if (((ArticleActivity) activity).isBlur())
+                    ((ArticleActivity) activity).getArticleImg().setImageBitmap(Utils.applyBlur(mBitmap, activity));
                 else
-                    Article.getArticleImg().setImageBitmap(mBitmap);
+                    ((ArticleActivity) activity).getArticleImg().setImageBitmap(mBitmap);
             } catch (NullPointerException | RSIllegalArgumentException npe) {
                 npe.printStackTrace();
-                Article.getArticleImg().setImageBitmap(mBitmap);
+                ((ArticleActivity) activity).getArticleImg().setImageBitmap(mBitmap);
             }
-            Article.getArticleHeader().setText(this.title);
-            Article.setArticleTitle(title);
-            Article.getmArticleShortDescription().setText(this.descr);
+            ((ArticleActivity) activity).getArticleHeader().setText(this.title);
+            ((ArticleActivity) activity).setArticleTitle(title);
+            ((ArticleActivity) activity).getArticleShortDescription().setText(this.descr);
         }
 
         try {
-            Article.getmArticle().loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
+            ((ArticleActivity) activity).getArticle().loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
             Log.d(TAG, "onPostExecute: " + html);
         } catch (StringIndexOutOfBoundsException e) {
             Log.e(TAG, "onPostExecute: Error loading html content", e.getCause());
@@ -136,11 +136,11 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                 "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
                 "<style>" +
-                "body{margin:0;padding-top:8dp;font-family:\"Roboto\", sans-serif; font-size: 14px; color:" + Article.webViewTextColor + "}" +
+                "body{margin:0;padding-top:8dp;font-family:\"Roboto\", sans-serif; font-size: 14px; color:" + ((ArticleActivity) activity).getWebViewTextColor() + "}" +
                 ".container{padding-left:16px;padding-right:16px; padding-bottom:36px;}" +
                 ".article_image{margin-left:-16px;margin-right:-16px;}" +
                 ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
-                "a {color:" + Article.webViewLinkColor + ";}" +
+                "a {color:" + ((ArticleActivity) activity).getWebViewLinkColor() + ";}" +
                 "iframe{max-width: 100%; width: 100%; height: 260px; allowfullscreen; }" +
                 "img{max-width: 100%; width: 100vW; height: auto;}" +
                 "</style></head>";

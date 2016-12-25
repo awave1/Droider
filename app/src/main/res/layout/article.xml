@@ -162,6 +162,7 @@
                                     android:id="@+id/article"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:background="?android:attr/colorForegroundInverse"
                                     android:textSize="14sp"
                                     tools:text="article"
                                     />
