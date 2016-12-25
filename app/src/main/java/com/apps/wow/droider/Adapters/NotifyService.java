@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.apps.wow.droider.Feed.View.FeedFragment;
+import com.apps.wow.droider.Feed.FeedFragment;
 import com.apps.wow.droider.R;
 
 import java.util.Timer;

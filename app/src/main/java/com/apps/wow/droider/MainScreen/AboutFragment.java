@@ -29,7 +29,10 @@ public class AboutFragment extends android.app.Fragment {
             (LayoutInflater inflater, @Nullable ViewGroup container,
              @Nullable Bundle savedInstanceState) {
 
+        //TODO переделать через байндинг
         View returnView = inflater.inflate(R.layout.about_fragment, container, false);
+
+        setRetainInstance(true);
 
         authorsRecyclerViewInit(returnView);
         developersRecyclerViewInit(returnView);

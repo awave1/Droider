@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.apps.wow.droider.Article.ArticleActivity;
-import com.apps.wow.droider.Model.NewFeedModel;
+import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.Model.Post;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
@@ -22,21 +22,16 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.util.ArrayList;
-
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
     private static Drawable headerImageDrawable;
-    private NewFeedModel feedModel;
-    private ArrayList<Post> postList;
+    private FeedModel feedModel;
     private String TAG = FeedRecyclerViewAdapter.class.getSimpleName();
-    private boolean isPodcast = false;
     private float touchYCoordinate;
     private float touchXCoordinate;
 
-    public FeedRecyclerViewAdapter(NewFeedModel feedModel, boolean isPodcast) {
+    public FeedRecyclerViewAdapter(FeedModel feedModel) {
         this.feedModel = feedModel;
-        this.isPodcast = isPodcast;
     }
 
     public static Drawable getHeaderImageDrawable() {
@@ -55,7 +50,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
 
     @Override
     public void onBindViewHolder(final FeedViewHolder feedViewHolder, final int i) {
-
         final Post post = feedModel.getPosts().get(i);
         feedViewHolder.getCardTitleTextView().setText(
                 StringEscapeUtils.unescapeHtml4(post.getTitle())
@@ -136,7 +130,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
         return feedModel.getPosts().size();
     }
 
-    public NewFeedModel getFeedModel() {
+    public FeedModel getFeedModel() {
         return feedModel;
     }
 }

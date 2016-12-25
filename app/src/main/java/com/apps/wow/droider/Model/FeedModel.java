@@ -1,52 +1,26 @@
+
 package com.apps.wow.droider.Model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
 public class FeedModel {
-    private static final String TAG = "FeedItem";
 
-    private String mTitle;
-    private String mDescription;
-    private String mUrl;
-    private String mImgUrl;
-    private int drCastImg;
+    @SerializedName("has_more")
+    @Expose
+    private Boolean hasMore;
+    @SerializedName("posts")
+    @Expose
+    private ArrayList<Post> posts = null;
 
-    public void setDrCastImg(int drCastImg) {
-        this.drCastImg = drCastImg;
+    //TODO заюзать
+    public Boolean getHasMore() {
+        return hasMore;
     }
 
-    public int getDrCastImg() {
-
-        return drCastImg;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public void setDescription(String description) {
-        mDescription = description;
-    }
-
-    public String getUrl() {
-        return mUrl;
-    }
-
-    public void setUrl(String url) {
-        mUrl = url;
-    }
-
-    public String getImgUrl() {
-        return mImgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        mImgUrl = imgUrl;
+    public ArrayList<Post> getPosts() {
+        return posts;
     }
 }
