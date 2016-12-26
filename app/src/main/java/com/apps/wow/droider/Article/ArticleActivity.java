@@ -49,10 +49,10 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
     private static final String TAG = "ArticleActivity";
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
-    private ArticleBinding binding;
     public String webViewTextColor;
     public String webViewLinkColor;
     public boolean isBlur;
+    private ArticleBinding binding;
     private String articleTitle;
     private String shortDescription;
     private FrameLayout youtubeFrame;
@@ -99,7 +99,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         if (!isAnimationPlayed) {
             try {
                 playActivityAnimation();
-            } catch (UnsupportedOperationException | IllegalArgumentException e) {
+            } catch (UnsupportedOperationException | IllegalArgumentException | IllegalStateException e) {
                 e.printStackTrace();
             }
             isAnimationPlayed = true;
@@ -111,7 +111,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         animatedView.post(new Runnable() {
             @Override
             public void run() {
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                     createFadeAnimation(animatedView);
                 } else {
 
