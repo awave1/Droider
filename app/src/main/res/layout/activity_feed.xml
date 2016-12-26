@@ -17,14 +17,44 @@
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/appbar"
                 android:background="?attr/colorPrimary">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                <android.support.design.widget.CollapsingToolbarLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"/>
+                    android:layout_height="wrap_content"
+                    android:id="@+id/popularContainer"
+                    app:contentScrim="?attr/colorPrimary"
+                    app:expandedTitleMarginStart="48dp"
+                    app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+                    app:expandedTitleMarginEnd="64dp"
+                    app:titleEnabled="false">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:paddingTop="?attr/actionBarSize"
+                        app:layout_collapseMode="parallax"
+                        app:layout_collapseParallaxMultiplier="0.2"
+                        android:id="@+id/popular_news"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"/>
+
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        app:layout_collapseMode="pin"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"/>
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+
             </android.support.design.widget.AppBarLayout>
 
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:paddingTop="?attr/actionBarSize"-->
+                <!--android:id="@+id/popular_news"-->
+                <!--android:visibility="visible"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="280dp"/>-->
+            <!---->
             <FrameLayout
                 android:id="@+id/container_main"
                 android:layout_width="match_parent"
