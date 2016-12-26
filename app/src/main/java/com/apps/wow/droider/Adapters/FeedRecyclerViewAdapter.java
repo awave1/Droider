@@ -94,9 +94,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, url);
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, post.getPictureWide());
                     feedViewHolder.getCardView().getContext().startActivity(articleIntent);
-                    FeedRecyclerViewAdapter.setHeaderImageDrawable(
-                            feedViewHolder.getCardImageView().getDrawable());
+//                    FeedRecyclerViewAdapter.setHeaderImageDrawable(
+//                            feedViewHolder.getCardImageView().getDrawable());
                 } catch (NullPointerException npe) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException

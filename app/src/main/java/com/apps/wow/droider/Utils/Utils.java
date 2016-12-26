@@ -59,6 +59,7 @@ public class Utils {
   public static final String EXTRA_ARTICLE_X_TOUCH_COORDINATE = "EXTRA_ARTICLE_X_TOUCH_COORDINATE";
   public static final String EXTRA_ARTICLE_Y_TOUCH_COORDINATE = "EXTRA_ARTICLE_Y_TOUCH_COORDINATE";
   private static final String TAG = "Helper";
+  public static final String EXTRA_ARTICLE_IMG_URL = "EXTRA_ARTICLE_IMG_URL";
   public static int CIRCULAR_REVIVAL_ANIMATION_RADIUS = 100;
 
   public static String getYoutubeImg(String src) {

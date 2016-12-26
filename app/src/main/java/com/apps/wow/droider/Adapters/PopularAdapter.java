@@ -80,10 +80,9 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, post.getUrl());
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
                     articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
+                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, post.getPictureWide());
                     holder.binding.getRoot().getContext().startActivity(articleIntent);
 
-                    FeedRecyclerViewAdapter.setHeaderImageDrawable(
-                            holder.binding.popularCardImage.getDrawable());
                 } catch (NullPointerException npe) {
                     // Ошибка происходит если пытаться отправить пикчу
                     // в статью. Сначала он выкидывал NullPointerException

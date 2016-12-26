@@ -42,6 +42,7 @@ import com.apps.wow.droider.databinding.ArticleBinding;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.squareup.picasso.Picasso;
 
 import io.codetail.animation.ViewAnimationUtils;
 
@@ -205,6 +206,9 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             ArticleParser.execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
             articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
             shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
+            Picasso.with(this)
+                    .load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
+                    .into(binding.articleHeaderImg);
 
             new Handler().postDelayed(new Runnable() {
                 @Override

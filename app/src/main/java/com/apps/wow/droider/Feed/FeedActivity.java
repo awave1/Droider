@@ -227,6 +227,7 @@ public class FeedActivity extends DroiderBaseActivity
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         activeFeedTitle = getString(R.string.drawer_item_home);
+        binding.popularNews.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     public void restoreActionBar() {
