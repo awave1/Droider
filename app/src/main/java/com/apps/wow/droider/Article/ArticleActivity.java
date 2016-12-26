@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.R;
@@ -41,13 +42,14 @@ import com.apps.wow.droider.databinding.ArticleBinding;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+
 import io.codetail.animation.ViewAnimationUtils;
 
 public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
-    private static ArticleBinding binding;
+    private ArticleBinding binding;
     public String webViewTextColor;
     public String webViewLinkColor;
     public boolean isBlur;
@@ -182,13 +184,14 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     protected void themeSetup() {
         super.themeSetup();
         currentNightMode = getResources().getConfiguration().uiMode;
-        webViewBackgroundColor = getThemeAttribute(android.R.attr.colorBackground, activeTheme);
-        webViewTextColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
-                android.R.attr.textColorPrimary, activeTheme));
-        webViewLinkColor = String.format("#%06X", 0xFFFFFF & getThemeAttribute(
-                R.attr.colorPrimary, activeTheme));
-
+        webViewBackgroundColor = getThemeAttribute(android.R.attr.colorForegroundInverse, activeTheme);
+        webViewTextColor = "#" + Integer.toHexString(getThemeAttribute(
+                android.R.attr.textColorPrimary, activeTheme)).substring(2);
+        webViewLinkColor = "#" + Integer.toHexString(getThemeAttribute(
+                R.attr.colorPrimary, activeTheme)).substring(2);
         Log.d(TAG, "themeSetup: bg color: " + webViewBackgroundColor);
+        Log.d(TAG, "themeSetup: webViewTextColor color: " + webViewTextColor);
+        Log.d(TAG, "themeSetup: webViewLinkColor color: " + webViewLinkColor);
     }
 
     private void intentExtraChecking() {
@@ -402,19 +405,27 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         return binding.articleHeaderImg;
     }
 
-    public String getArticleTitle() {
-        return articleTitle;
-    }
-
     public void setArticleTitle(String title) {
         articleTitle = title;
     }
 
-    public TextView getmArticleShortDescription() {
+    public TextView getArticleShortDescription() {
         return binding.articleShortDescription;
     }
 
-    public WebView getmArticle() {
+    public WebView getArticle() {
         return binding.article;
+    }
+
+    public boolean isBlur() {
+        return isBlur;
+    }
+
+    public String getWebViewTextColor() {
+        return webViewTextColor;
+    }
+
+    public String getWebViewLinkColor() {
+        return webViewLinkColor;
     }
 }

@@ -7,7 +7,6 @@
     <color name="colorPrimary_dark">#212121</color>
     <color name="colorPrimaryDark_dark">#000000</color>
     <color name="colorAccent_dark">#FF009688</color>
-    <color name="colorBackground_dark">#ff424242</color>
     <color name="textColorPrimary_dark">#ffffffff</color>
     <color name="textColorSecondary_dark">#b3ffffff</color>
     <color name="cardTitleTextColor_dark">#ffffff</color>
@@ -16,11 +15,13 @@
 
     <color name="colorControlNormal_dark">#ffffff</color>
 
+    <color name="colorControlNormal_dark1">#c9c9c9</color>
+
+
     <!--LightTheme-->
     <color name="colorPrimary_light">#BDBDBD</color>
     <color name="colorPrimaryDark_light">#424242</color>
     <color name="colorAccent_light">#FF009688</color>
-    <color name="colorBackground_light">#fafafa</color>
     <color name="textColorPrimary_light">#de000000</color>
     <color name="textColorSecondary_light">#8a000000</color>
     <color name="cardTitleTextColor_light">#ffffff</color>
@@ -36,6 +37,8 @@
     <color name="text_color_primary_red">#d9000000</color>
     <color name="text_color_secondary_red">#8C000000</color>
     <color name="text_color_toolbar_red">#ffffff</color>
+    <color name="colorForeground_light">#ffffff</color>
+
 
     <!-- RedDarkTheme -->
     <color name="color_primary_red_dark">#AD1457</color>
@@ -44,5 +47,6 @@
     <color name="text_color_primary_red_dark">#d9c9c9c9</color>
     <color name="text_color_secondary_red_dark">#69c9c9c9</color>
     <color name="text_color_toolbar_red_dark">#d9000000</color>
+    <color name="colorForeground_dark">#ff424242</color>
 
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     style="@style/CardStyle"
@@ -7,7 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -20,7 +21,7 @@
             android:fadingEdgeLength="40dp"
             android:requiresFadingEdge="vertical"
             android:scaleType="centerCrop"
-            android:src="@drawable/dr_cast" />
+            android:src="@drawable/dr_cast"/>
 
         <TextView
             android:id="@+id/feed_card_title"
@@ -34,7 +35,7 @@
             android:textColor="?android:textColorPrimary"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:text="Title!" />
+            tools:text="Title!"/>
 
         <TextView
             android:id="@+id/feed_card_description"
@@ -44,7 +45,7 @@
             android:layout_marginBottom="24dp"
             android:textColor="?android:textColorPrimary"
             android:textSize="14sp"
-            tools:text="Description!" />
+            tools:text="Description!"/>
 
     </LinearLayout>
 
@@ -53,6 +54,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_below="@+id/feed_card_image"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </android.support.v7.widget.CardView>
