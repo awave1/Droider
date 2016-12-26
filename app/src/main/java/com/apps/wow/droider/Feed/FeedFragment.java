@@ -7,6 +7,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
+import com.apps.wow.droider.Adapters.PopularAdapter;
 import com.apps.wow.droider.BuildConfig;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
@@ -34,6 +39,7 @@ public class FeedFragment extends android.app.Fragment implements
     private FeedPresenterImpl presenter;
     private FeedFragmentBinding binding;
     private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
+    private PopularAdapter popularAdapter;
 
     private String currentCategory;
     private String currentSlug;
@@ -60,6 +66,7 @@ public class FeedFragment extends android.app.Fragment implements
         currentCategory = getArguments().getString(Utils.EXTRA_CATEGORY);
         currentSlug = getArguments().getString(Utils.EXTRA_SLUG);
         presenter.loadData(currentCategory, currentSlug, Utils.DEFAULT_COUNT, 0, true);
+        presenter.loadPopular();
 
         return binding.getRoot();
     }
@@ -89,6 +96,20 @@ public class FeedFragment extends android.app.Fragment implements
     }
 
     @Override
+    public void onLoadCompleted(FeedModel model) {
+        FeedActivity parentActivity = (FeedActivity) getActivity();
+        final LinearLayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        SnapHelper snapHelper = new PagerSnapHelper();
+
+        parentActivity.binding.popularNews.setLayoutManager(layoutManager);
+        parentActivity.binding.popularNews.setAdapter(new PopularAdapter(model));
+        snapHelper.attachToRecyclerView(parentActivity.binding.popularNews);
+
+        onTaskCompleted();
+    }
+
+    @Override
     public void onLoadFailed() {
         onTaskCompleted();
         if (getActivity() != null)
@@ -102,6 +123,7 @@ public class FeedFragment extends android.app.Fragment implements
             presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, true);
         else
             presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, true);
+        presenter.loadPopular();
     }
 
     private void swipeRefreshLayoutSetup() {

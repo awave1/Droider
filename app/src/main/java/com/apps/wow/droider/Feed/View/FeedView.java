@@ -7,5 +7,7 @@ public interface FeedView {
 
     void onLoadCompleted(FeedModel model, boolean clear);
 
+    void onLoadCompleted(FeedModel model);
+
     void onLoadFailed();
 }

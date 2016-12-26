@@ -54,4 +54,31 @@ public class FeedPresenterImpl implements FeedPresenter {
                     }
                 });
     }
+
+    @Override
+    public void loadPopular() {
+        mView.onLoadingFeed();
+        api = Utils.createRxService(DroiderApi.class, Utils.HOME_URL, true);
+
+        api.getPopular()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<FeedModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<FeedModel> response) {
+                        if (response.isSuccessful())
+                            mView.onLoadCompleted(response.body());
+                    }
+                });
+    }
 }

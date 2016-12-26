@@ -19,5 +19,6 @@ public interface DroiderApi {
                                             @Query("count") int count,
                                             @Query("offset") int offset);
 
-
+    @GET("/wp-content/themes/droider/feed.php?category=0&slug=promotion")
+    Observable<Response<FeedModel>> getPopular();
 }

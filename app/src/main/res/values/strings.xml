@@ -94,6 +94,7 @@
     <string name="pref_notifications_key">notify</string>
     <string name="pref_interval_key">interval</string>
     <string name="pref_theme_key">theme</string>
+    <string name="popular_count" formatted="false">%s/%s</string>
     <!---->
 
 </resources>
