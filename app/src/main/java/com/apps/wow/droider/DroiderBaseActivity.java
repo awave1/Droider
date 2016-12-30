@@ -42,8 +42,13 @@ public class DroiderBaseActivity extends AppCompatActivity {
         String themeName = PreferenceManager.getDefaultSharedPreferences(this).getString(
                 getString(com.apps.wow.droider.R.string.pref_theme_key), getString(com.apps.wow.droider.R.string.pref_theme_entry_light));
 
-        activeTheme = themesHashMap.get(themeName);
-        setTheme(activeTheme);
+        try {
+            activeTheme = themesHashMap.get(themeName);
+            setTheme(activeTheme);
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            setTheme(com.apps.wow.droider.R.style.AdaptiveTheme);
+        }
     }
 
     protected int getThemeAttribute(@AttrRes int attributeInt, @StyleRes int theme) {

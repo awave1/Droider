@@ -18,7 +18,6 @@ public class FeedPresenterImpl implements FeedPresenter {
     FeedView mView;
     FeedFragment feedFragment;
     OnTaskCompleted taskCompleted;
-    boolean isPodCast;
     DroiderApi api;
 
     public void attachView(FeedFragment fragment, FeedView view, OnTaskCompleted onTaskCompleted) {
@@ -71,7 +70,7 @@ public class FeedPresenterImpl implements FeedPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+//                        mView.onLoadFailed();
                     }
 
                     @Override

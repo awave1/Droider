@@ -7,9 +7,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -90,7 +88,7 @@ public class FeedFragment extends android.app.Fragment implements
             binding.feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
             initLayoutManager();
         } else {
-                feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
+            feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
         }
         onTaskCompleted();
     }
@@ -139,9 +137,13 @@ public class FeedFragment extends android.app.Fragment implements
 
     @Override
     public synchronized void onTaskCompleted() {
-        feedRecyclerViewAdapter.notifyDataSetChanged();
-        if (binding.feedSwipeRefresh.isRefreshing())
-            binding.feedSwipeRefresh.setRefreshing(false);
+        if (feedRecyclerViewAdapter != null) {
+            feedRecyclerViewAdapter.notifyDataSetChanged();
+            if (binding.feedSwipeRefresh.isRefreshing())
+                binding.feedSwipeRefresh.setRefreshing(false);
+        }
+        else
+            onRefresh();
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
