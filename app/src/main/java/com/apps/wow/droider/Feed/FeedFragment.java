@@ -15,8 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
-import com.apps.wow.droider.Adapters.PopularAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
+import com.apps.wow.droider.Adapters.ArticleAdapter;
 import com.apps.wow.droider.BuildConfig;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
@@ -36,8 +36,8 @@ public class FeedFragment extends android.app.Fragment implements
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
     private FeedPresenterImpl presenter;
     private FeedFragmentBinding binding;
-    private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
-    private PopularAdapter popularAdapter;
+    private FeedAdapter feedAdapter;
+    private ArticleAdapter mArticleAdapter;
 
     private String currentCategory;
     private String currentSlug;
@@ -78,17 +78,17 @@ public class FeedFragment extends android.app.Fragment implements
     public void onLoadCompleted(FeedModel model, boolean clear) {
         //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
         // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
-        if (feedRecyclerViewAdapter == null || clear) {
+        if (feedAdapter == null || clear) {
             Log.d(TAG, "onLoadCompleted: is null");
             FeedOrientation.offsetPortrait = 0;
             FeedOrientation.offsetLandscape = 0;
 
             binding.feedRecyclerView.setHasFixedSize(true);
-            feedRecyclerViewAdapter = new FeedRecyclerViewAdapter(model);
-            binding.feedRecyclerView.setAdapter(feedRecyclerViewAdapter);
+            feedAdapter = new FeedAdapter(model);
+            binding.feedRecyclerView.setAdapter(feedAdapter);
             initLayoutManager();
         } else {
-            feedRecyclerViewAdapter.getFeedModel().getPosts().addAll(model.getPosts());
+            feedAdapter.getFeedModel().getPosts().addAll(model.getPosts());
         }
         onTaskCompleted();
     }
@@ -101,7 +101,7 @@ public class FeedFragment extends android.app.Fragment implements
         SnapHelper snapHelper = new PagerSnapHelper();
 
         parentActivity.binding.popularNews.setLayoutManager(layoutManager);
-        parentActivity.binding.popularNews.setAdapter(new PopularAdapter(model));
+        parentActivity.binding.popularNews.setAdapter(new ArticleAdapter(model.getPosts()));
         snapHelper.attachToRecyclerView(parentActivity.binding.popularNews);
 
         onTaskCompleted();
@@ -137,8 +137,8 @@ public class FeedFragment extends android.app.Fragment implements
 
     @Override
     public synchronized void onTaskCompleted() {
-        if (feedRecyclerViewAdapter != null) {
-            feedRecyclerViewAdapter.notifyDataSetChanged();
+        if (feedAdapter != null) {
+            feedAdapter.notifyDataSetChanged();
             if (binding.feedSwipeRefresh.isRefreshing())
                 binding.feedSwipeRefresh.setRefreshing(false);
         }
@@ -194,7 +194,7 @@ public class FeedFragment extends android.app.Fragment implements
                         presenter.loadData(currentCategory, Utils.SLUG_MAIN,
                                 Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, false);
                         onLoadingFeed();
-                        if (!feedRecyclerViewAdapter.getFeedModel().getPosts().isEmpty())
+                        if (!feedAdapter.getFeedModel().getPosts().isEmpty())
                             onTaskCompleted();
                     }
                 });

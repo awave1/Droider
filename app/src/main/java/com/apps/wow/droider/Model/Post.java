@@ -6,6 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Post {
 
+    // For similar articles
+    public Post(String title, String pictureWide, String url) {
+        this.title = title;
+        this.pictureWide = pictureWide;
+        this.url = url;
+    }
+
     @SerializedName("picture_basic")
     @Expose
     private String pictureBasic;

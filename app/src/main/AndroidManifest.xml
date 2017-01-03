@@ -46,17 +46,12 @@
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <feedItemArrayList
-                    android:host="droider.ru"
-                    android:scheme="http" />
-                <feedItemArrayList
-                    android:host="www.droider.ru"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
+                <data android:scheme="http" />
+                <data android:host="droider.ru"/>
+                <data android:host="www.droider.ru"/>
+                <data android:pathPrefix="/post/*"/>
             </intent-filter>
         </activity>
         <!--

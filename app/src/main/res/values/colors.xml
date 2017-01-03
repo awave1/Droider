@@ -49,4 +49,6 @@
     <color name="text_color_toolbar_red_dark">#d9000000</color>
     <color name="colorForeground_dark">#ff424242</color>
 
+    <color name="image_preview_bckg">#a6000000</color>
+
 </resources>

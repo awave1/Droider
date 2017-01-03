@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -19,6 +20,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,12 +31,13 @@ import android.view.animation.AccelerateInterpolator;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.apps.wow.droider.Adapters.FeedRecyclerViewAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
@@ -46,14 +49,17 @@ import com.squareup.picasso.Picasso;
 
 import io.codetail.animation.ViewAnimationUtils;
 
-public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout.OnOffsetChangedListener {
+public class ArticleActivity extends DroiderBaseActivity
+        implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
     public String webViewTextColor;
     public String webViewLinkColor;
-    public boolean isBlur;
-    private ArticleBinding binding;
+    public String webViewTableColor;
+    public String webViewTableHeaderColor;
+    public boolean hasBlur;
+    public ArticleBinding binding;
     private String articleTitle;
     private String shortDescription;
     private FrameLayout youtubeFrame;
@@ -90,7 +96,7 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     }
 
     private void getSharedPreferences() {
-        isBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
+        hasBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
         isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
     }
 
@@ -190,6 +196,15 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
                 android.R.attr.textColorPrimary, activeTheme)).substring(2);
         webViewLinkColor = "#" + Integer.toHexString(getThemeAttribute(
                 R.attr.colorPrimary, activeTheme)).substring(2);
+
+        if (activeTheme == R.style.RedTheme) {
+            webViewTableColor = "#F5F5F5";
+            webViewTableHeaderColor = "#EEEEEE";
+        } else {
+            webViewTableHeaderColor = "#212121";
+            webViewTableColor = "#616161";
+        }
+
         Log.d(TAG, "themeSetup: bg color: " + webViewBackgroundColor);
         Log.d(TAG, "themeSetup: webViewTextColor color: " + webViewTextColor);
         Log.d(TAG, "themeSetup: webViewLinkColor color: " + webViewLinkColor);
@@ -203,38 +218,44 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
             ArticleParser.execute(outsideUrl);
         } else {
             Log.d(TAG, "intentExtraChecking: inner");
-            ArticleParser.execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
+//            ArticleParser.execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
+            new NewArticleParser().with(this).execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
             articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
             shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
             Picasso.with(this)
                     .load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
                     .into(binding.articleHeaderImg);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (ArticleParser.isYoutube()) {
-                        /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
-                        youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
-                        setupYoutubePlayer();
-                    }
-                }
-            }, 750);
+//
+//            new Handler().postDelayed(() -> {
+//                if (ArticleParser.isYoutube()) {
+//                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
+//                    youtubeFrame = (FrameLayout) findViewById(R.id.YouTubeFrame);
+//                    setupYoutubePlayer();
+//                }
+//            }, 750);
+//
+            binding.similarArticles.setLayoutManager(new LinearLayoutManager(
+                    ArticleActivity.this,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+            ));
+//            new Handler().postDelayed(() ->
+//                   , 750);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                if (isBlur)
-                    binding.articleHeaderContent.setBackgroundDrawable(Utils.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
+                if (hasBlur)
+                    binding.articleHeaderContent.setBackgroundDrawable(Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
                 else
-                    binding.articleHeaderContent.setBackgroundDrawable(FeedRecyclerViewAdapter.getHeaderImageDrawable());
+                    binding.articleHeaderContent.setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable());
             } else {
                 try {
-                    if (isBlur)
-                        binding.articleHeaderContent.setBackground(Utils.applyBlur(FeedRecyclerViewAdapter.getHeaderImageDrawable(), this));
+                    if (hasBlur)
+                        binding.articleHeaderContent.setBackground(Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
                     else
-                        binding.articleHeaderContent.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
+                        binding.articleHeaderContent.setBackground(FeedAdapter.getHeaderImageDrawable());
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
-                    binding.articleHeaderContent.setBackground(FeedRecyclerViewAdapter.getHeaderImageDrawable());
+                    binding.articleHeaderContent.setBackground(FeedAdapter.getHeaderImageDrawable());
                 }
 
             }
@@ -352,6 +373,26 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
 
         WebSettings settings = w.getSettings();
         w.setWebChromeClient(client);
+
+        w.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, "shouldOverrideUrlLoading: url: " + url);
+                if (url.matches( "(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)")) {
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .addToBackStack("image_prev")
+                            .replace(R.id.image_preview, ImagePreviewFragment.newInstance(url))
+                            .commit();
+                    binding.articleBackgroundNSV.setNestedScrollingEnabled(false);
+                } else
+                    view.getContext().startActivity(
+                            new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+
+                return true;
+            }
+        });
+
         settings.setJavaScriptEnabled(true);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
@@ -359,6 +400,8 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);
         settings.setSaveFormData(true);
+
+//        w.addJavascriptInterface(new ArticleWebClient(this), "android");
     }
 
     private void calculateMinimumHeight() {
@@ -396,6 +439,13 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         }
     }
 
+    public void loadArticle(String html) {
+        binding.article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
+    }
+
+    public void setupCoverImage(Bitmap b) {
+        binding.articleHeaderImg.setImageBitmap(b);
+    }
 
     public ProgressBar getProgressBar() {
         return binding.articleProgressBar;
@@ -421,8 +471,8 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
         return binding.article;
     }
 
-    public boolean isBlur() {
-        return isBlur;
+    public boolean hasBlur() {
+        return hasBlur;
     }
 
     public String getWebViewTextColor() {
@@ -432,4 +482,13 @@ public class ArticleActivity extends DroiderBaseActivity implements AppBarLayout
     public String getWebViewLinkColor() {
         return webViewLinkColor;
     }
+
+    public String getWebViewTableColor() {
+        return webViewTableColor;
+    }
+
+    public String getWebViewTableHeaderColor() {
+        return webViewTableHeaderColor;
+    }
+
 }

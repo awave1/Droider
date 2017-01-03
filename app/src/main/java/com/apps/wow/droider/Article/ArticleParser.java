@@ -15,7 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-
+@Deprecated
 public class ArticleParser extends AsyncTask<String, Integer, String> {
 
     private Activity activity;
@@ -43,7 +43,9 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
             Log.d(TAG, "doInBackground: url: " + strings[0]);
             Document document = Jsoup.connect(strings[0]).timeout(10000).get();
 //            elements = document.select(".entry p, .entry ul li, .entry ol li");
+            document.select(".article-gallery__photos__item__content").remove();
             elements = document.select("article[id^=post] .article-body");
+            elements.select("img").attr("onClick", "showFull()");
 
 //            isYoutube = elements.get(1).html().contains("iframe");
             setIsYoutube(isYoutube);
@@ -110,7 +112,7 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
         if (outIntent) {
             try {
                 //ошибка вылетала(переполнение памяти из-за блюра) когда открываешь статью(к примеру ту же самую) через "открыть в браузере"
-                if (((ArticleActivity) activity).isBlur())
+                if (((ArticleActivity) activity).hasBlur())
                     ((ArticleActivity) activity).getArticleImg().setImageBitmap(Utils.applyBlur(mBitmap, activity));
                 else
                     ((ArticleActivity) activity).getArticleImg().setImageBitmap(mBitmap);
@@ -132,18 +134,71 @@ public class ArticleParser extends AsyncTask<String, Integer, String> {
     }
 
     private String setupHtml(String html) {
-        String head = "<head>" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-                "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
-                "<style>" +
-                "body{margin:0;padding-top:8dp;font-family:\"Roboto\", sans-serif; font-size: 14px; color:" + ((ArticleActivity) activity).getWebViewTextColor() + "}" +
-                ".container{padding-left:16px;padding-right:16px; padding-bottom:36px;}" +
-                ".article_image{margin-left:-16px;margin-right:-16px;}" +
-                ".iframe_container{margin-left:-16px;margin-right:-16px;position:relative;overflow:hidden;}" +
-                "a {color:" + ((ArticleActivity) activity).getWebViewLinkColor() + ";}" +
-                "iframe{max-width: 100%; width: 100%; height: 260px; allowfullscreen; }" +
-                "img{max-width: 100%; width: 100vW; height: auto;}" +
-                "</style></head>";
+        String head =
+                "<head>" +
+                        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+                        "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
+                        "<style>" +
+                        "body { " +
+                            "margin:0; padding-top:8dp; " +
+                            "font-family:\"Roboto\", sans-serif; " +
+                            "font-size: 14px; " +
+                            "color:" + ((ArticleActivity) activity).getWebViewTextColor() +
+                        "}" +
+                        ".container { " +
+                            "padding-left:16px; padding-right:16px; padding-bottom:36px;" +
+                        "}" +
+                        ".article_image { " +
+                            "margin-left:-16px;margin-right:-16px;" +
+                        "}" +
+                        ".iframe_container { " +
+                            "margin-left:-16px; margin-right:-16px; " +
+                            "position:relative; overflow:hidden;" +
+                        "}" +
+                        "a { " +
+                            "color:" + ((ArticleActivity) activity).getWebViewLinkColor() + ";" +
+                        "}" +
+                        "iframe { " +
+                            "max-width: 100%; width: 100%; height: 260px; allowfullscreen; " +
+                        "}" +
+                        "img { " +
+                            "max-width: 100%; width: 100vW; height: auto; margin-bottom:10px; " +
+                        "}" +
+                        "table { " +
+                            "border-collapse: collapse;" +
+                        "}" +
+                        "td { " +
+                            "padding: 3px;" +
+                            "font-size: 13px;" +
+                        "}" +
+                        ".article-gallery__photos .article-gallery__photos__list { " +
+                            "list-style-type: none; padding:0;margin:0; " +
+                        "}" +
+                        ".article-gallery__thumb { " +
+                            "display: none; " +
+                        "}" +
+                        ".article-table { " +
+                            "position: relative;" +
+                            "background:" + ((ArticleActivity) activity).getWebViewTableColor() + ";" +
+                        "}" +
+                        ".article-table__table { " +
+                            "width: 100%;" +
+                            "background: " + ((ArticleActivity) activity).getWebViewTableColor() + ";" +
+
+                        "}" +
+                        ".article-table__head { " +
+                            "background: " + ((ArticleActivity) activity).getWebViewTableHeaderColor() + ";" +
+                        "}" +
+                        "</style>" +
+                "</head>";
+
+        String script =
+                "<script type=\"text/javascript\">\n" +
+                "    function showAndroidToast() {\n" +
+                "        Android.showFull(\'hello\');\n" +
+                "    }\n" +
+                "</script>";
+
         return "<html>" + head + "<body><div class=\"container\">" + html + "</div></body></html>";
     }
 

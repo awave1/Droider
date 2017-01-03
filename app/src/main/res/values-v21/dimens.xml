@@ -5,7 +5,7 @@
     <dimen name="transparent_action_bar_margin">0dp</dimen>
     <dimen name="main_container_transparent_margin_top">56dp</dimen>
     <dimen name="main_container_transparent_margin_bottom">-49dp</dimen>
-    <dimen name="margin_below_article_transparent_navigation_bar_view">64dp</dimen>
+    <dimen name="margin_below_article_transparent_navigation_bar_view">50dp</dimen>
     <!---->
 
     <!-- Article Transparent UI KitKat workaround -->

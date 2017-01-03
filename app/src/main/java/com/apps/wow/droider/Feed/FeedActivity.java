@@ -6,37 +6,23 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.apps.wow.droider.Adapters.NotifyService;
-import com.apps.wow.droider.Adapters.PopularAdapter;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.MainScreen.AboutFragment;
 import com.apps.wow.droider.MainScreen.Preferences;
-import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.api.DroiderApi;
 import com.apps.wow.droider.databinding.ActivityFeedBinding;
-
-import retrofit2.Response;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class FeedActivity extends DroiderBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
