@@ -1,6 +1,5 @@
-package com.apps.wow.droider.Feed.Presentor;
+package com.apps.wow.droider.Feed.Presenter;
 
-import com.apps.wow.droider.Feed.FeedFragment;
 import com.apps.wow.droider.Feed.OnTaskCompleted;
 import com.apps.wow.droider.Feed.View.FeedView;
 import com.apps.wow.droider.Model.FeedModel;
@@ -16,14 +15,12 @@ public class FeedPresenterImpl implements FeedPresenter {
 
     private static final String TAG = "FeedPresenterImpl";
     FeedView mView;
-    FeedFragment feedFragment;
     OnTaskCompleted taskCompleted;
     DroiderApi api;
 
-    public void attachView(FeedFragment fragment, FeedView view, OnTaskCompleted onTaskCompleted) {
+    public void attachView(FeedView view, OnTaskCompleted onTaskCompleted) {
         this.mView = view;
         this.taskCompleted = onTaskCompleted;
-        this.feedFragment = fragment;
     }
 
     @Override

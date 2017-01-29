@@ -48,16 +48,8 @@ public class Post {
         return pictureBasic;
     }
 
-    public void setPictureBasic(String pictureBasic) {
-        this.pictureBasic = pictureBasic;
-    }
-
     public String getPictureWide() {
         return pictureWide;
-    }
-
-    public void setPictureWide(String pictureWide) {
-        this.pictureWide = pictureWide;
     }
 
     public String getTitle() {
@@ -80,40 +72,20 @@ public class Post {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public Boolean getIsImportant() {
         return isImportant;
     }
 
-    public void setIsImportant(Boolean isImportant) {
-        this.isImportant = isImportant;
-    }
-
     public Boolean getIsHot() {
         return isHot;
     }
 
-    public void setIsHot(Boolean isHot) {
-        this.isHot = isHot;
-    }
-
     public String getComments() {
         return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
     }
 
     public Integer getViews() {

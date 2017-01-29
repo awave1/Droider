@@ -1,4 +1,4 @@
-package com.apps.wow.droider.Feed.Presentor;
+package com.apps.wow.droider.Feed.Presenter;
 
  interface FeedPresenter {
 

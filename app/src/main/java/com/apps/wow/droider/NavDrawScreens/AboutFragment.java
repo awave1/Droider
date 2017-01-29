@@ -1,4 +1,4 @@
-package com.apps.wow.droider.MainScreen;
+package com.apps.wow.droider.NavDrawScreens;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

@@ -14,10 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -115,15 +114,14 @@ public class ArticleActivity extends DroiderBaseActivity
 
     private void playActivityAnimation() {
         final View animatedView = binding.articleCoordinatorLayout;
-        animatedView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    createFadeAnimation(animatedView);
-                } else {
-
+        animatedView.post(() -> {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                createFadeAnimation(animatedView);
+            } else {
+                //should fix
+                //Exception java.lang.IllegalStateException: Cannot start this animator on a detached view!
+                if (ViewCompat.isAttachedToWindow(animatedView))
                     createCircularRevealAnimation(animatedView);
-                }
             }
         });
     }
@@ -319,7 +317,6 @@ public class ArticleActivity extends DroiderBaseActivity
             setupPaletteBackground(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -368,17 +365,12 @@ public class ArticleActivity extends DroiderBaseActivity
     private void setupArticleWebView(WebView w) {
         Log.d(TAG, "setupArticleWebView: ");
         w.setBackgroundColor(webViewBackgroundColor);
-
-        WebChromeClient client = new WebChromeClient();
-
         WebSettings settings = w.getSettings();
-        w.setWebChromeClient(client);
-
-        w.setWebViewClient(new WebViewClient(){
+        w.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Log.d(TAG, "shouldOverrideUrlLoading: url: " + url);
-                if (url.matches( "(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)")) {
+                if (url.matches("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)")) {
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                             .addToBackStack("image_prev")
@@ -394,8 +386,6 @@ public class ArticleActivity extends DroiderBaseActivity
         });
 
         settings.setJavaScriptEnabled(true);
-        settings.setAllowFileAccess(false);
-        settings.setAllowContentAccess(false);
         settings.setLoadWithOverviewMode(true);
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);

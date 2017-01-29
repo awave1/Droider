@@ -18,8 +18,8 @@ import android.view.View;
 
 import com.apps.wow.droider.Adapters.NotifyService;
 import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.MainScreen.AboutFragment;
-import com.apps.wow.droider.MainScreen.Preferences;
+import com.apps.wow.droider.NavDrawScreens.AboutFragment;
+import com.apps.wow.droider.NavDrawScreens.Preferences;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.ActivityFeedBinding;

@@ -1,7 +1,6 @@
 package com.apps.wow.droider;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -68,25 +67,12 @@ public class DroiderBaseActivity extends AppCompatActivity {
         new AlertDialog.Builder(context).setTitle("Соединение нестабильно или прервано")
                 .setMessage("Проверьте своё соединение с интернетом и перезайдите в приложение")
 
-                .setPositiveButton("Перезайти", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        startActivity(getIntent());
-                    }
+                .setPositiveButton("Перезайти", (dialog, which) -> {
+                    finish();
+                    startActivity(getIntent());
                 })
-                .setNegativeButton("Выйти", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setNeutralButton("Включить Wi-Fi?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utils.enableWiFi(context, true);
-                    }
-                })
+                .setNegativeButton("Выйти", (dialog, which) -> finish())
+                .setNeutralButton("Включить Wi-Fi?", (dialog, which) -> Utils.enableWiFi(context, true))
                 .create().show();
     }
 }

@@ -1,4 +1,4 @@
-package com.apps.wow.droider.MainScreen;
+package com.apps.wow.droider.NavDrawScreens;
 
 import android.os.Bundle;
 import android.preference.Preference;

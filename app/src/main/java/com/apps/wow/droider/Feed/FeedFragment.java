@@ -15,12 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.apps.wow.droider.Adapters.FeedAdapter;
 import com.apps.wow.droider.Adapters.ArticleAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
 import com.apps.wow.droider.BuildConfig;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
-import com.apps.wow.droider.Feed.Presentor.FeedPresenterImpl;
+import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
 import com.apps.wow.droider.Feed.View.FeedView;
 import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.R;
@@ -57,7 +57,7 @@ public class FeedFragment extends android.app.Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false);
         presenter = new FeedPresenterImpl();
-        presenter.attachView(FeedFragment.this, this, this); //first this = View interface, Second this = onTaskCompleted
+        presenter.attachView(this, this); //first this = View interface, Second this = onTaskCompleted
         orientationDebugging();
 
         swipeRefreshLayoutSetup();
