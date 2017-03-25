@@ -1,5 +1,6 @@
 package com.apps.wow.droider.Feed;
 
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
 
 
-public class FeedFragment extends android.app.Fragment implements
+public class FeedFragment extends Fragment implements
         FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
@@ -37,7 +38,6 @@ public class FeedFragment extends android.app.Fragment implements
     private FeedPresenterImpl presenter;
     private FeedFragmentBinding binding;
     private FeedAdapter feedAdapter;
-    private ArticleAdapter mArticleAdapter;
 
     private String currentCategory;
     private String currentSlug;
@@ -116,7 +116,8 @@ public class FeedFragment extends android.app.Fragment implements
 
     @Override
     public void onRefresh() {
-        if ((getActivity().getResources().getConfiguration().screenLayout &
+        if (getActivity() != null && getActivity().getResources() != null
+                && (getActivity().getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE)
             presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, true);
         else
@@ -141,8 +142,7 @@ public class FeedFragment extends android.app.Fragment implements
             feedAdapter.notifyDataSetChanged();
             if (binding.feedSwipeRefresh.isRefreshing())
                 binding.feedSwipeRefresh.setRefreshing(false);
-        }
-        else
+        } else
             onRefresh();
     }
 

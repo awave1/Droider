@@ -48,7 +48,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.PopularV
     @Override
     public void onBindViewHolder(final PopularViewHolder holder, int position) {
         Post post = mData.get(position);
-
         Picasso.with(holder.binding.getRoot().getContext())
                 .load(post.getPictureWide())
                 .into(holder.binding.popularCardImage);
