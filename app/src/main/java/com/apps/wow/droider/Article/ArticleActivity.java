@@ -1,5 +1,16 @@
 package com.apps.wow.droider.Article;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+
+import com.apps.wow.droider.Adapters.FeedAdapter;
+import com.apps.wow.droider.DroiderBaseActivity;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.apps.wow.droider.databinding.ArticleBinding;
+import com.squareup.picasso.Picasso;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -36,37 +47,43 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.apps.wow.droider.Adapters.FeedAdapter;
-import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.databinding.ArticleBinding;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.squareup.picasso.Picasso;
-
 import io.codetail.animation.ViewAnimationUtils;
 
 public class ArticleActivity extends DroiderBaseActivity
         implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "ArticleActivity";
+
     private static final String YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4";
+
     public String webViewTextColor;
+
     public String webViewLinkColor;
+
     public String webViewTableColor;
+
     public String webViewTableHeaderColor;
+
     public boolean hasBlur;
+
     public ArticleBinding binding;
+
     private String articleTitle;
+
     private String shortDescription;
+
     private FrameLayout youtubeFrame;
+
     private boolean isPalette;
+
     private Bundle extras;
+
     private int webViewBackgroundColor;
+
     private int currentNightMode;
+
     private boolean isAnimationPlayed = false;
+
     private ArticleParser ArticleParser;
 
     @Override
@@ -95,8 +112,10 @@ public class ArticleActivity extends DroiderBaseActivity
     }
 
     private void getSharedPreferences() {
-        hasBlur = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beta_enableBlur", false);
-        isPalette = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("palette", false);
+        hasBlur = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("beta_enableBlur", false);
+        isPalette = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("palette", false);
     }
 
     @Override
@@ -120,15 +139,15 @@ public class ArticleActivity extends DroiderBaseActivity
             } else {
                 //should fix
                 //Exception java.lang.IllegalStateException: Cannot start this animator on a detached view!
-                if (ViewCompat.isAttachedToWindow(animatedView))
+                if (ViewCompat.isAttachedToWindow(animatedView)) {
                     createCircularRevealAnimation(animatedView);
+                }
             }
         });
     }
 
     private void createFadeAnimation(View animatedView) {
-        ObjectAnimator objectAnimator = ObjectAnimator
-                .ofFloat(animatedView, "alpha", 0f, 1f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(animatedView, "alpha", 0f, 1f);
         objectAnimator.setDuration(320);
         objectAnimator.start();
     }
@@ -138,9 +157,9 @@ public class ArticleActivity extends DroiderBaseActivity
         Bundle extras = getIntent().getExtras();
         float touchXCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
         float touchYCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
-        Animator animator = ViewAnimationUtils.createCircularReveal(animatedView,
-                (int) touchXCoordinate, (int) touchYCoordinate, 0,
-                Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
+        Animator animator = ViewAnimationUtils
+                .createCircularReveal(animatedView, (int) touchXCoordinate, (int) touchYCoordinate,
+                        0, Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.setDuration(320);
         animator.start();
@@ -150,20 +169,17 @@ public class ArticleActivity extends DroiderBaseActivity
         View view = findViewById(R.id.article_background_tint_view);
         if (activeTheme != R.style.AdaptiveTheme) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                view.setBackgroundDrawable(AppCompatResources
-                        .getDrawable(this, activeTheme == R.style.RedTheme
-                                ? R.drawable.article_background_tint_light
-                                : R.drawable.article_background_tint_dark
-                        ));
+                view.setBackgroundDrawable(AppCompatResources.getDrawable(this,
+                        activeTheme == R.style.RedTheme ? R.drawable.article_background_tint_light
+                                : R.drawable.article_background_tint_dark));
             } else {
-                view.setBackground(AppCompatResources
-                        .getDrawable(this, activeTheme == R.style.RedTheme
-                                ? R.drawable.article_background_tint_light
+                view.setBackground(AppCompatResources.getDrawable(this,
+                        activeTheme == R.style.RedTheme ? R.drawable.article_background_tint_light
                                 : R.drawable.article_background_tint_dark));
             }
         } else {
-            final Drawable tintDrawable = AppCompatResources.getDrawable(this,
-                    R.drawable.article_background_tint_dark);
+            final Drawable tintDrawable = AppCompatResources
+                    .getDrawable(this, R.drawable.article_background_tint_dark);
             if (tintDrawable != null) {
                 tintDrawable.setColorFilter(
                         getThemeAttribute(android.R.attr.colorBackground, activeTheme),
@@ -189,11 +205,13 @@ public class ArticleActivity extends DroiderBaseActivity
     protected void themeSetup() {
         super.themeSetup();
         currentNightMode = getResources().getConfiguration().uiMode;
-        webViewBackgroundColor = getThemeAttribute(android.R.attr.colorForegroundInverse, activeTheme);
-        webViewTextColor = "#" + Integer.toHexString(getThemeAttribute(
-                android.R.attr.textColorPrimary, activeTheme)).substring(2);
-        webViewLinkColor = "#" + Integer.toHexString(getThemeAttribute(
-                R.attr.colorPrimary, activeTheme)).substring(2);
+        webViewBackgroundColor = getThemeAttribute(android.R.attr.colorForegroundInverse,
+                activeTheme);
+        webViewTextColor = "#" + Integer
+                .toHexString(getThemeAttribute(android.R.attr.textColorPrimary, activeTheme))
+                .substring(2);
+        webViewLinkColor = "#" + Integer
+                .toHexString(getThemeAttribute(R.attr.colorPrimary, activeTheme)).substring(2);
 
         if (activeTheme == R.style.RedTheme) {
             webViewTableColor = "#F5F5F5";
@@ -220,8 +238,7 @@ public class ArticleActivity extends DroiderBaseActivity
             new NewArticleParser().with(this).execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
             articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
             shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
-            Picasso.with(this)
-                    .load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
+            Picasso.with(this).load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
                     .into(binding.articleHeaderImg);
 //
 //            new Handler().postDelayed(() -> {
@@ -232,28 +249,33 @@ public class ArticleActivity extends DroiderBaseActivity
 //                }
 //            }, 750);
 //
-            binding.similarArticles.setLayoutManager(new LinearLayoutManager(
-                    ArticleActivity.this,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-            ));
+            binding.similarArticles.setLayoutManager(
+                    new LinearLayoutManager(ArticleActivity.this, LinearLayoutManager.HORIZONTAL,
+                            false));
 //            new Handler().postDelayed(() ->
 //                   , 750);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                if (hasBlur)
-                    binding.articleHeaderContent.setBackgroundDrawable(Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
-                else
-                    binding.articleHeaderContent.setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable());
+                if (hasBlur) {
+                    binding.articleHeaderContent.setBackgroundDrawable(
+                            Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
+                } else {
+                    binding.articleHeaderContent
+                            .setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable());
+                }
             } else {
                 try {
-                    if (hasBlur)
-                        binding.articleHeaderContent.setBackground(Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
-                    else
-                        binding.articleHeaderContent.setBackground(FeedAdapter.getHeaderImageDrawable());
+                    if (hasBlur) {
+                        binding.articleHeaderContent.setBackground(
+                                Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
+                    } else {
+                        binding.articleHeaderContent
+                                .setBackground(FeedAdapter.getHeaderImageDrawable());
+                    }
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
-                    binding.articleHeaderContent.setBackground(FeedAdapter.getHeaderImageDrawable());
+                    binding.articleHeaderContent
+                            .setBackground(FeedAdapter.getHeaderImageDrawable());
                 }
 
             }
@@ -277,12 +299,7 @@ public class ArticleActivity extends DroiderBaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
 
-            binding.toolbarArticle.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+            binding.toolbarArticle.setNavigationOnClickListener(v -> finish());
         }
     }
 
@@ -292,17 +309,20 @@ public class ArticleActivity extends DroiderBaseActivity
         YouTubePlayerSupportFragment youtubeFragment = YouTubePlayerSupportFragment.newInstance();
         youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasResumed) {
+            public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                    YouTubePlayer youTubePlayer, boolean wasResumed) {
                 youTubePlayer.cueVideo(ArticleParser.getYouTubeVideoURL());
             }
 
             @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+            public void onInitializationFailure(YouTubePlayer.Provider provider,
+                    YouTubeInitializationResult youTubeInitializationResult) {
                 Log.d(TAG, "onInitializationFailure: ");
 
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment)
+                .commit();
     }
 
 
@@ -333,10 +353,10 @@ public class ArticleActivity extends DroiderBaseActivity
         // decide what to show in the action bar.
         getMenuInflater().inflate(R.menu.menu_article, menu);
 
-        menu.getItem(0).setIcon(ResourcesCompat.getDrawable(
-                getResources(), R.drawable.ic_open_in_browser_white_24dp, null));
-        menu.getItem(1).setIcon(ResourcesCompat.getDrawable(
-                getResources(), R.drawable.ic_share_white_24dp, null));
+        menu.getItem(0).setIcon(ResourcesCompat
+                .getDrawable(getResources(), R.drawable.ic_open_in_browser_white_24dp, null));
+        menu.getItem(1).setIcon(
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_share_white_24dp, null));
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -349,12 +369,14 @@ public class ArticleActivity extends DroiderBaseActivity
 
         switch (item.getItemId()) {
             case R.id.action_open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(extras.getString(Utils.EXTRA_ARTICLE_URL))));
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(extras.getString(Utils.EXTRA_ARTICLE_URL))));
                 break;
             case R.id.action_share:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, articleTitle + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        articleTitle + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"));
         }
@@ -377,9 +399,9 @@ public class ArticleActivity extends DroiderBaseActivity
                             .replace(R.id.image_preview, ImagePreviewFragment.newInstance(url))
                             .commit();
                     binding.articleBackgroundNSV.setNestedScrollingEnabled(false);
-                } else
-                    view.getContext().startActivity(
-                            new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } else {
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                }
 
                 return true;
             }
@@ -402,35 +424,46 @@ public class ArticleActivity extends DroiderBaseActivity
         TypedValue tv = new TypedValue();
 
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue
+                    .complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         binding.articleRelLayout.setMinimumHeight(screenHeight - actionBarHeight);
     }
 
     private void setupPaletteBackground(boolean isTransparent) {
-        if ((isPalette && activeTheme == R.style.RedTheme) || (isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
+        if ((isPalette && activeTheme == R.style.RedTheme) || (isPalette
+                && currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
-                Palette p = new Palette.Builder(Utils.drawableToBitmap(binding.articleHeaderContent.getBackground())).generate();
+                Palette p = new Palette.Builder(
+                        Utils.drawableToBitmap(binding.articleHeaderContent.getBackground()))
+                        .generate();
                 if (p.getLightMutedSwatch() != null && !isTransparent) {
                     binding.toolbarArticle.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-                    binding.articleBackgroundNSV.setBackgroundColor(p.getLightMutedSwatch().getRgb());
-                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightMutedSwatch().getRgb() + "");
+                    binding.articleBackgroundNSV
+                            .setBackgroundColor(p.getLightMutedSwatch().getRgb());
+                    Log.d(TAG, "onCreate: color from bitmap: " + p.getLightMutedSwatch().getRgb()
+                            + "");
                 } else {
                     binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT);
-                    binding.articleBackgroundNSV.setBackgroundColor(p.getLightMutedSwatch().getRgb());
+                    binding.articleBackgroundNSV
+                            .setBackgroundColor(p.getLightMutedSwatch().getRgb());
                     Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ");
                 }
             } catch (NullPointerException e) {
-                if (isTransparent)
+                if (isTransparent) {
                     binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT);
-                else
-                    Log.e(TAG, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ", e.getCause());
+                } else {
+                    Log.e(TAG,
+                            "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ",
+                            e.getCause());
+                }
             }
         }
     }
 
     public void loadArticle(String html) {
-        binding.article.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
+        binding.article
+                .loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
     }
 
     public void setupCoverImage(Bitmap b) {

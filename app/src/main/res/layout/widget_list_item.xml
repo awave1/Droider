@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/widget_card_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/cardBackgroundColor_dark">
+
+    <TextView
+            android:id="@+id/widget_title"
+            style="@style/AverageHorizontalMargin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="14dp"
+            android:ellipsize="end"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="Title!" />
+
+    <TextView
+            android:id="@+id/widget_description"
+            style="@style/AverageHorizontalMargin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="14sp"
+            tools:text="Description!" />
+
+</LinearLayout>

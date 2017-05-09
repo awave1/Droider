@@ -1,5 +1,12 @@
 package com.apps.wow.droider.Adapters;
 
+import com.apps.wow.droider.Article.ArticleActivity;
+import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.Model.Post;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.squareup.picasso.Picasso;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,26 +15,20 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.apps.wow.droider.Article.ArticleActivity;
-import com.apps.wow.droider.Model.FeedModel;
-import com.apps.wow.droider.Model.Post;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.squareup.picasso.Picasso;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
     private static Drawable headerImageDrawable;
+
     private FeedModel feedModel;
+
     private String TAG = FeedAdapter.class.getSimpleName();
+
     private float touchYCoordinate;
+
     private float touchXCoordinate;
 
     public FeedAdapter(FeedModel feedModel) {
@@ -51,23 +52,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     @Override
     public void onBindViewHolder(final FeedViewHolder feedViewHolder, final int i) {
         final Post post = feedModel.getPosts().get(i);
-        feedViewHolder.getCardTitleTextView().setText(
-                StringEscapeUtils.unescapeHtml4(post.getTitle())
-        );
+        feedViewHolder.getCardTitleTextView().setText(post.getTitle());
 
         if (!post.getDescription().isEmpty()) {
-            feedViewHolder.getCardDescriptionTextView().setText(
-                    StringEscapeUtils.unescapeHtml4(post.getDescription())
-            );
+            feedViewHolder.getCardDescriptionTextView().setText(post.getDescription());
         } else {
             feedViewHolder.getCardDescriptionTextView().setVisibility(View.GONE);
         }
 
         feedViewHolder.getSiteUrlTextView().setText(post.getUrl());
 
-
-        Picasso.with(feedViewHolder.getCardImageView().getContext())
-                .load(post.getPictureWide())
+        Picasso.with(feedViewHolder.getCardImageView().getContext()).load(post.getPictureWide())
                 .into(feedViewHolder.getCardImageView());
 
         final String url = post.getUrl();
@@ -80,8 +75,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
         feedViewHolder.getCardView().setOnClickListener(v -> {
             try {
-                Intent articleIntent =
-                        new Intent(feedViewHolder.getCardView().getContext(), ArticleActivity.class);
+                Intent articleIntent = new Intent(feedViewHolder.getCardView().getContext(),
+                        ArticleActivity.class);
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
                         feedViewHolder.getCardTitleTextView().getText().toString());
 
@@ -112,8 +107,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         feedViewHolder.getCardView().setOnLongClickListener(view -> {
             Log.d(TAG, "onLingClick cardview");
             ClipboardManager clipboardManager = (ClipboardManager) feedViewHolder.getCardView()
-                    .getContext()
-                    .getSystemService(Context.CLIPBOARD_SERVICE);
+                    .getContext().getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData copyLink = ClipData.newPlainText("", post.getUrl());
             clipboardManager.setPrimaryClip(copyLink);
             Toast.makeText(view.getContext(), R.string.main, Toast.LENGTH_SHORT).show();

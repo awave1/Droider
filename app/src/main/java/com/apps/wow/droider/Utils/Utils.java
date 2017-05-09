@@ -53,6 +53,8 @@ public class Utils {
     public static final String CATEGORY_VIDEO = "260";
     public static final String CATEGORY_PODCAST = "17931";
 
+    public static final String EXTRA_POSTS = "EXTRA_POSTS";
+
 
     public static final int DEFAULT_COUNT = 20;
 

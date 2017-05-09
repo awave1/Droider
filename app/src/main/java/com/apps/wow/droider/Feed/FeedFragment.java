@@ -1,5 +1,17 @@
 package com.apps.wow.droider.Feed;
 
+import com.apps.wow.droider.Adapters.ArticleAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
+import com.apps.wow.droider.BuildConfig;
+import com.apps.wow.droider.DroiderBaseActivity;
+import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
+import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
+import com.apps.wow.droider.Feed.View.FeedView;
+import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.apps.wow.droider.databinding.FeedFragmentBinding;
+
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -16,30 +28,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.apps.wow.droider.Adapters.ArticleAdapter;
-import com.apps.wow.droider.Adapters.FeedAdapter;
-import com.apps.wow.droider.BuildConfig;
-import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
-import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
-import com.apps.wow.droider.Feed.View.FeedView;
-import com.apps.wow.droider.Model.FeedModel;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.databinding.FeedFragmentBinding;
 
-
-public class FeedFragment extends Fragment implements
-        FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
+public class FeedFragment extends Fragment
+        implements FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
+
     public static LinearLayoutManager sLinearLayoutManager;
+
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
+
     private FeedPresenterImpl presenter;
+
     private FeedFragmentBinding binding;
+
     private FeedAdapter feedAdapter;
 
     private String currentCategory;
+
     private String currentSlug;
 
     public static FeedFragment newInstance(String category, String slug) {
@@ -54,10 +60,12 @@ public class FeedFragment extends Fragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false);
         presenter = new FeedPresenterImpl();
-        presenter.attachView(this, this); //first this = View interface, Second this = onTaskCompleted
+        presenter.attachView(this,
+                this); //first this = View interface, Second this = onTaskCompleted
         orientationDebugging();
 
         swipeRefreshLayoutSetup();
@@ -96,8 +104,8 @@ public class FeedFragment extends Fragment implements
     @Override
     public void onLoadCompleted(FeedModel model) {
         FeedActivity parentActivity = (FeedActivity) getActivity();
-        final LinearLayoutManager layoutManager =
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
         SnapHelper snapHelper = new PagerSnapHelper();
 
         parentActivity.binding.popularNews.setLayoutManager(layoutManager);
@@ -110,27 +118,30 @@ public class FeedFragment extends Fragment implements
     @Override
     public void onLoadFailed() {
         onTaskCompleted();
-        if (getActivity() != null)
+        if (getActivity() != null) {
             ((DroiderBaseActivity) getActivity()).initInternetConnectionDialog(getActivity());
+        }
     }
 
     @Override
     public void onRefresh() {
-        if (getActivity() != null && getActivity().getResources() != null
-                && (getActivity().getResources().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE)
-            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, true);
-        else
-            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, true);
+        if (getActivity() != null && getActivity().getResources() != null &&
+                (getActivity().getResources().getConfiguration().screenLayout
+                        & Configuration.SCREENLAYOUT_SIZE_MASK)
+                        >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                    FeedOrientation.offsetLandscape, true);
+        } else {
+            presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                    FeedOrientation.offsetPortrait, true);
+        }
         presenter.loadPopular();
     }
 
     private void swipeRefreshLayoutSetup() {
         binding.feedSwipeRefresh.setOnRefreshListener(this);
-        binding.feedSwipeRefresh.setColorSchemeResources(
-                android.R.color.holo_red_dark,
-                android.R.color.holo_blue_dark,
-                android.R.color.holo_green_dark,
+        binding.feedSwipeRefresh.setColorSchemeResources(android.R.color.holo_red_dark,
+                android.R.color.holo_blue_dark, android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark);
         binding.feedSwipeRefresh.setSize(SwipeRefreshLayout.DEFAULT);
     }
@@ -140,10 +151,12 @@ public class FeedFragment extends Fragment implements
     public synchronized void onTaskCompleted() {
         if (feedAdapter != null) {
             feedAdapter.notifyDataSetChanged();
-            if (binding.feedSwipeRefresh.isRefreshing())
+            if (binding.feedSwipeRefresh.isRefreshing()) {
                 binding.feedSwipeRefresh.setRefreshing(false);
-        } else
+            }
+        } else {
             onRefresh();
+        }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
@@ -153,32 +166,29 @@ public class FeedFragment extends Fragment implements
 
     private void initLayoutManager() {
         if (isAdded() && getActivity() != null) {
-            if ((getActivity().getResources().getConfiguration().screenLayout &
-                    Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            if ((getActivity().getResources().getConfiguration().screenLayout
+                    & Configuration.SCREENLAYOUT_SIZE_MASK)
+                    >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
                 setDoubleColFeedMode();
             } else {
                 setSingleColFeedMode();
             }
         } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    initLayoutManager();
-                }
-            }, 500);
+            new Handler().postDelayed(this::initLayoutManager, 500);
         }
     }
 
     private void setDoubleColFeedMode() {
-        sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(
-                2, StaggeredGridLayoutManager.VERTICAL);
+        sStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.VERTICAL);
         binding.feedRecyclerView.setLayoutManager(sStaggeredGridLayoutManager);
-        binding.feedRecyclerView.addOnScrollListener(
-                new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
+        binding.feedRecyclerView
+                .addOnScrollListener(new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN,
-                                Utils.DEFAULT_COUNT, FeedOrientation.offsetLandscape, false);
+                        presenter
+                                .loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                                        FeedOrientation.offsetLandscape, false);
                         onLoadingFeed();
                     }
                 });
@@ -187,15 +197,16 @@ public class FeedFragment extends Fragment implements
     private void setSingleColFeedMode() {
         sLinearLayoutManager = new LinearLayoutManager(getActivity());
         binding.feedRecyclerView.setLayoutManager(sLinearLayoutManager);
-        binding.feedRecyclerView.addOnScrollListener(
-                new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
+        binding.feedRecyclerView
+                .addOnScrollListener(new FeedOrientation(getActivity(), binding.feedSwipeRefresh) {
                     @Override
                     public void loadNextPage() {
-                        presenter.loadData(currentCategory, Utils.SLUG_MAIN,
-                                Utils.DEFAULT_COUNT, FeedOrientation.offsetPortrait, false);
+                        presenter.loadData(currentCategory, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                                FeedOrientation.offsetPortrait, false);
                         onLoadingFeed();
-                        if (!feedAdapter.getFeedModel().getPosts().isEmpty())
+                        if (!feedAdapter.getFeedModel().getPosts().isEmpty()) {
                             onTaskCompleted();
+                        }
                     }
                 });
     }
