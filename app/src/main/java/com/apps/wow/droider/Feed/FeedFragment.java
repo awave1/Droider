@@ -1,17 +1,5 @@
 package com.apps.wow.droider.Feed;
 
-import com.apps.wow.droider.Adapters.ArticleAdapter;
-import com.apps.wow.droider.Adapters.FeedAdapter;
-import com.apps.wow.droider.BuildConfig;
-import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
-import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
-import com.apps.wow.droider.Feed.View.FeedView;
-import com.apps.wow.droider.Model.FeedModel;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.databinding.FeedFragmentBinding;
-
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -27,6 +15,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.apps.wow.droider.Adapters.ArticleSimilarAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
+import com.apps.wow.droider.BuildConfig;
+import com.apps.wow.droider.DroiderBaseActivity;
+import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
+import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
+import com.apps.wow.droider.Feed.View.FeedView;
+import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.apps.wow.droider.databinding.FeedFragmentBinding;
 
 
 public class FeedFragment extends Fragment
@@ -109,7 +109,7 @@ public class FeedFragment extends Fragment
         SnapHelper snapHelper = new PagerSnapHelper();
 
         parentActivity.binding.popularNews.setLayoutManager(layoutManager);
-        parentActivity.binding.popularNews.setAdapter(new ArticleAdapter(model.getPosts()));
+        parentActivity.binding.popularNews.setAdapter(new ArticleSimilarAdapter(model.getPosts()));
         snapHelper.attachToRecyclerView(parentActivity.binding.popularNews);
 
         onTaskCompleted();

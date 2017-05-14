@@ -1,9 +1,5 @@
 package com.apps.wow.droider;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
-import com.apps.wow.droider.Utils.Utils;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -12,12 +8,15 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+
+import com.apps.wow.droider.Utils.Utils;
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.HashMap;
 
-public class DroiderBaseActivity extends AppCompatActivity {
+public class DroiderBaseActivity extends MvpAppCompatActivity {
 
     static {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);

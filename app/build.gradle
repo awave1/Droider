@@ -64,6 +64,12 @@ dependencies {
     // Apache
     compile 'org.apache.commons:commons-lang3:3.5'
 
+    //MVP
+    compile 'com.arello-mobile:moxy:1.5.2'
+    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.2'
+    compile 'com.arello-mobile:moxy-android:1.5.2'
+    compile 'com.arello-mobile:moxy-app-compat:1.5.2'
+
 
     testCompile 'junit:junit:4.12'
 }

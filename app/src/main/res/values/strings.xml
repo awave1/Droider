@@ -97,6 +97,7 @@
     <string name="popular_count" formatted="false">%s/%s</string>
     <string name="widget_text">Текст В Виджете</string>
     <string name="empty_view_text">Новостей нет :(</string>
+    <string name="errorHtml">Почему-то не получилось загрузить страницу. Попробуйте открыть статью заново</string>
     <!---->
 
 </resources>
