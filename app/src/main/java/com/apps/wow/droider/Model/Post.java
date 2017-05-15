@@ -1,13 +1,13 @@
 
 package com.apps.wow.droider.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class Post implements Parcelable {
 
@@ -15,6 +15,13 @@ public class Post implements Parcelable {
     public Post(String title, String pictureWide, String url) {
         this.title = title;
         this.pictureWide = pictureWide;
+        this.url = url;
+    }
+
+    public Post(String pictureWide, String title, String description, String url) {
+        this.pictureWide = pictureWide;
+        this.title = title;
+        this.description = description;
         this.url = url;
     }
 

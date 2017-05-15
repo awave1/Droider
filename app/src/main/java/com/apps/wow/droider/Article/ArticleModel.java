@@ -1,6 +1,7 @@
 package com.apps.wow.droider.Article;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.apps.wow.droider.Model.Post;
@@ -66,11 +67,26 @@ public class ArticleModel {
     @Nullable
     public ArrayList<Post> getSimilar() {
         if (!mSimilar.isEmpty())
-//                                    activity.binding.similarArticles
-//                                            .setAdapter(new ArticleSimilarAdapter(mSimilar));
             return mSimilar;
         else
             return null;
+    }
+
+    public Observable<Post> getPostDataForOutsideIntent(String url) {
+        return Observable.fromCallable(() -> {
+            mDocument = Jsoup.connect(url).timeout(10000).get();
+            mDocument.select(".article-gallery__photos__item__content").remove();
+
+            String img = mDocument.select(".cover").attr("style");
+            if (!TextUtils.isEmpty(img))
+                img = img.substring(img.indexOf("(") + 1, img.lastIndexOf(")"));
+            Log.d(TAG, "Background: : " + img);
+            Log.d(TAG, "getPostDataForOutsideIntent: " + mDocument.select("header .headline__content__title").text());
+            Log.d(TAG, "getPostDataForOutsideIntent: " + mDocument.select("header .headline__content__intro").text());
+
+            return new Post(img, mDocument.select("header .headline__content__title").text(),
+                    mDocument.select("header .headline__content__intro").text(), url);
+        }).subscribeOn(Schedulers.io());
     }
 
     //TODO extract to resources

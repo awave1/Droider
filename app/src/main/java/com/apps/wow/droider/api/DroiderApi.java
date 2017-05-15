@@ -13,7 +13,7 @@ import rx.Observable;
 
 public interface DroiderApi {
 
-    @GET("/wp-content/themes/droider/feed.php?category=0&slug=main&count=12&offset=24")
+    @GET("/wp-content/themes/droider/feed.php")
     Observable<Response<FeedModel>> getFeed(@Query("category") String category,
                                             @Query("slug") String slug,
                                             @Query("count") int count,

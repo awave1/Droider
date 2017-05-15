@@ -29,6 +29,7 @@
 
     <color name="colorControlNormal_light">#000000</color>
     <color name="navigation_bar_color">#60000000</color>
+    <color name="transparent_navigation_bar">@android:color/transparent</color>
 
     <!-- RedTheme -->
     <color name="color_primary_red">#ef5350</color>

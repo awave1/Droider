@@ -19,4 +19,6 @@ public interface ArticleView extends MvpView {
     void hideSimilar();
 
     void showErrorLoading(String errorHtml);
+
+    void setupNecessaryFields(Post post);
 }

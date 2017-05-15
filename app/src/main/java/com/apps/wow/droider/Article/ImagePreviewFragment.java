@@ -1,7 +1,6 @@
 package com.apps.wow.droider.Article;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,14 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FragmentImagePrevBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -46,15 +42,13 @@ public class ImagePreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_image_prev, container, false);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(
-//                    getContext(),
-//                    R.color.image_preview_bckg
-//            ));
-//        }
-
-//        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(
+                    getContext(),
+                    R.color.image_preview_bckg
+            ));
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
 
         mAttacher = new PhotoViewAttacher(mBinding.img);
 
@@ -87,10 +81,7 @@ public class ImagePreviewFragment extends Fragment {
                     .remove(ImagePreviewFragment.this)
                     .commit();
 
-            mAttacher.cleanup();
-            ((ArticleActivity) getActivity())
-                    .binding.articleBackgroundNSV.setNestedScrollingEnabled(true);
-
+           onDestroy();
         });
         return mBinding.getRoot();
     }
@@ -104,6 +95,9 @@ public class ImagePreviewFragment extends Fragment {
         ((ArticleActivity) getActivity())
                 .binding.articleBackgroundNSV.setNestedScrollingEnabled(true);
 
-//        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
     }
 }

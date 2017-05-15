@@ -17,6 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @InjectViewState
 public class ArticlePresenter extends MvpPresenter<ArticleView> {
 
+    public static final String TAG = "ArticlePresenter";
     private String mUrl;
 
     private ArticleModel mArticleModel;
@@ -65,6 +66,13 @@ public class ArticlePresenter extends MvpPresenter<ArticleView> {
         } else {
             getViewState().hideSimilar();
         }
+    }
+
+    public void getPostDataForOutsideEvent() {
+        mArticleModel.getPostDataForOutsideIntent(mUrl)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(post -> getViewState().setupNecessaryFields(post),
+                        e-> Log.e(TAG, "getPostDataForOutsideEvent: ", e));
     }
 }
 

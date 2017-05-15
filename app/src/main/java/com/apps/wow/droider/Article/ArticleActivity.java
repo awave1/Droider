@@ -20,6 +20,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,9 +32,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.apps.wow.droider.Adapters.ArticleSimilarAdapter;
 import com.apps.wow.droider.Adapters.FeedAdapter;
@@ -70,10 +68,6 @@ public class ArticleActivity extends DroiderBaseActivity
     public boolean hasBlur;
 
     public ArticleBinding binding;
-
-    private String articleTitle;
-
-    private String shortDescription;
 
     private FrameLayout youtubeFrame;
 
@@ -235,9 +229,6 @@ public class ArticleActivity extends DroiderBaseActivity
     private void ArticleParserSetup() {
         /** Проверка как мы попали в статью **/
         intentExtraChecking();
-
-        binding.articleHeader.setText(articleTitle);
-        binding.articleShortDescription.setText(shortDescription);
     }
 
     private void intentExtraChecking() {
@@ -245,20 +236,21 @@ public class ArticleActivity extends DroiderBaseActivity
 //            ArticleParser.isOutIntent(true);
             mArticlePresenter.provideData(getIntent().getData().toString(), setupArticleModelBuilder());
 
+            mArticlePresenter.getPostDataForOutsideEvent();
             //// TODO: teach presenter parse outIntent
         } else {
             Log.d(TAG, "intentExtraChecking: inner");
             mArticlePresenter.provideData(extras.getString(Utils.EXTRA_ARTICLE_URL), setupArticleModelBuilder());
 
-            articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
-            shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
+            binding.articleHeader.setText(extras.getString(Utils.EXTRA_ARTICLE_TITLE));
+            binding.articleShortDescription.setText(extras.getString(Utils.EXTRA_SHORT_DESCRIPTION));
+
             Picasso.with(this).load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
                     .into(binding.articleHeaderImg);
         }
 
         mArticlePresenter.parseArticle();
 
-//
 //            new Handler().postDelayed(() -> {
 //                if (ArticleParser.isYoutube()) {
 //                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
@@ -266,7 +258,6 @@ public class ArticleActivity extends DroiderBaseActivity
 //                    setupYoutubePlayer();
 //                }
 //            }, 750);
-//
 
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
@@ -389,7 +380,7 @@ public class ArticleActivity extends DroiderBaseActivity
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        articleTitle + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
+                        binding.articleHeader.getText().toString() + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"));
         }
@@ -425,8 +416,6 @@ public class ArticleActivity extends DroiderBaseActivity
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);
         settings.setSaveFormData(true);
-
-//        w.addJavascriptInterface(new ArticleWebClient(this), "android");
     }
 
     private void calculateMinimumHeight() {
@@ -503,32 +492,14 @@ public class ArticleActivity extends DroiderBaseActivity
         loadArticle(errorHtml);
     }
 
-    public ProgressBar getProgressBar() {
-        return binding.articleProgressBar;
-    }
+    @Override
+    public void setupNecessaryFields(Post post) {
+        binding.articleHeader.setText(post.getTitle());
+        binding.articleShortDescription.setText(post.getDescription());
 
-    public TextView getArticleHeader() {
-        return binding.articleHeader;
-    }
-
-    public ImageView getArticleImg() {
-        return binding.articleHeaderImg;
-    }
-
-    public void setArticleTitle(String title) {
-        articleTitle = title;
-    }
-
-    public TextView getArticleShortDescription() {
-        return binding.articleShortDescription;
-    }
-
-    public WebView getArticle() {
-        return binding.article;
-    }
-
-    public boolean hasBlur() {
-        return hasBlur;
+        if (!TextUtils.isEmpty(post.getPictureWide()))
+            Picasso.with(this).load(post.getPictureWide())
+                    .into(binding.articleHeaderImg);
     }
 
     private ArticleModel.Builder setupArticleModelBuilder() {
