@@ -1,6 +1,5 @@
 package com.apps.wow.droider.Feed;
 
-import android.app.Fragment;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -21,15 +20,17 @@ import com.apps.wow.droider.Adapters.FeedAdapter;
 import com.apps.wow.droider.BuildConfig;
 import com.apps.wow.droider.DroiderBaseActivity;
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation;
-import com.apps.wow.droider.Feed.Presenter.FeedPresenterImpl;
+import com.apps.wow.droider.Feed.Presenter.FeedPresenter;
 import com.apps.wow.droider.Feed.View.FeedView;
 import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.FeedFragmentBinding;
+import com.arellomobile.mvp.MvpFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 
 
-public class FeedFragment extends Fragment
+public class FeedFragment extends MvpFragment
         implements FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "Feed";
@@ -38,7 +39,8 @@ public class FeedFragment extends Fragment
 
     public static StaggeredGridLayoutManager sStaggeredGridLayoutManager;
 
-    private FeedPresenterImpl presenter;
+    @InjectPresenter
+    FeedPresenter presenter;
 
     private FeedFragmentBinding binding;
 
@@ -61,20 +63,22 @@ public class FeedFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false);
-        presenter = new FeedPresenterImpl();
-        presenter.attachView(this,
-                this); //first this = View interface, Second this = onTaskCompleted
+        presenter.setOnTaskCompleted(this); // this = onTaskCompleted
         orientationDebugging();
 
         swipeRefreshLayoutSetup();
         currentCategory = getArguments().getString(Utils.EXTRA_CATEGORY);
         currentSlug = getArguments().getString(Utils.EXTRA_SLUG);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         presenter.loadData(currentCategory, currentSlug, Utils.DEFAULT_COUNT, 0, true);
         presenter.loadPopular();
-
-        return binding.getRoot();
     }
 
     @Override

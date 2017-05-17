@@ -123,7 +123,7 @@
                                 android:ellipsize="end"
                                 android:maxLines="5"
                                 android:textColor="?android:textColorPrimary"
-                                android:textSize="24sp"
+                                android:textSize="26sp"
                                 android:textStyle="bold"
                                 tools:text="Title!"
                                 />
@@ -135,7 +135,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="24dp"
                                 android:textColor="?android:textColorPrimary"
-                                android:textSize="14sp"
+                                android:textSize="18sp"
                                 tools:text="Description!"
                                 />
 
@@ -163,7 +163,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/colorForegroundInverse"
-                                android:textSize="14sp"
+                                android:textSize="16sp"
                                 tools:text="article"
                                 />
 
@@ -180,17 +180,17 @@
                     <LinearLayout
                         android:id="@+id/similarArticlesContainer"
                         android:layout_width="match_parent"
-                        android:orientation="vertical"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:textColor="?android:textColorPrimary"
-                            android:textSize="22sp"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
                             android:layout_marginRight="15dp"
-                            android:layout_height="wrap_content"
-                            android:text="Также посмотрите"/>
+                            android:text="Также посмотрите"
+                            android:textColor="?android:textColorPrimary"
+                            android:textSize="22sp"/>
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/similarArticles"

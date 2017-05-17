@@ -107,7 +107,7 @@ public class ArticleModel {
                         "body { " +
                         "margin:0; padding-top:8dp; " +
                         "font-family:\"Roboto\", sans-serif; " +
-                        "font-size: 14px; " +
+                        "font-size: 18px; " +
                         "color:" + mWebViewTextColor +
                         "}" +
                         ".container { " +
@@ -167,7 +167,7 @@ public class ArticleModel {
                         "position: absolute;" +
                         "}" +
                         ".article-tech__header__title {" +
-                        "font-size: 21px;" +
+                        "font-size: 23px;" +
                         "padding-left: 5px;" +
                         "}" +
                         ".article-tech__info { " +
@@ -176,10 +176,10 @@ public class ArticleModel {
                         "}" +
                         ".article-tech__info__title {" +
                         "font-weight: bold;" +
-                        "font-size: 20px;" +
+                        "font-size: 22px;" +
                         "}" +
                         ".article-tech__info__content__key {" +
-                        "font-size: 15px;" +
+                        "font-size: 17px;" +
                         "margin-left: 5px;" +
                         "font-weight: bold;" +
                         "}" +
