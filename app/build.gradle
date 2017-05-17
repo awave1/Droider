@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "com.apps.wow.droider"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 32
-        versionName '5.6'
+        versionCode 33
+        versionName '5.7'
         renderscriptTargetApi 15
         renderscriptSupportModeEnabled true
 //        vectorDrawables.useSupportLibrary = true
