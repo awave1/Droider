@@ -5,7 +5,6 @@ import com.apps.wow.droider.Model.FeedModel;
 import com.apps.wow.droider.Model.Post;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
-import com.squareup.picasso.Picasso;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -62,8 +61,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
         feedViewHolder.getSiteUrlTextView().setText(post.getUrl());
 
-        Picasso.with(feedViewHolder.getCardImageView().getContext()).load(post.getPictureWide())
-                .into(feedViewHolder.getCardImageView());
+//        Picasso.with(feedViewHolder.getCardImageView().getContext()).load(post.getPictureWide())
+//                .into(feedViewHolder.getCardImageView());
+
+        feedViewHolder.getCardImageView().setImageURI(post.getPictureWide());
 
         final String url = post.getUrl();
 

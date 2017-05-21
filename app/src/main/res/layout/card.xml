@@ -13,15 +13,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/feed_card_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:fadingEdge="vertical"
-            android:fadingEdgeLength="40dp"
-            android:requiresFadingEdge="vertical"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dr_cast"/>
+        <!--<ImageView-->
+            <!--android:id="@+id/feed_card_image"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:fadingEdge="vertical"-->
+            <!--android:fadingEdgeLength="40dp"-->
+            <!--android:requiresFadingEdge="vertical"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/dr_cast"/>-->
+
+        <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/feed_card_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
 
         <TextView
             android:id="@+id/feed_card_title"
