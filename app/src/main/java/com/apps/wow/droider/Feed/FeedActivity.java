@@ -42,7 +42,6 @@ public class FeedActivity extends DroiderBaseActivity
     }
 
     public void setupView() {
-        // TODO: 18.08.2016 Font size on screen orientation changing
         toolbarSetup();
         navigationDrawerSetup();
         fragmentSetting();

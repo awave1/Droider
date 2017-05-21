@@ -21,15 +21,15 @@ import java.util.ArrayList;
  * Created by awave on 2016-12-25.
  */
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.PopularViewHolder> {
+public class ArticleSimilarAdapter extends RecyclerView.Adapter<ArticleSimilarAdapter.PopularViewHolder> {
 
-    private static final String TAG = "ArticleAdapter";
+    private static final String TAG = "ArticleSimilarAdapter";
     private ArrayList<Post> mData;
 
     private float touchYCoordinate;
     private float touchXCoordinate;
 
-    public ArticleAdapter(ArrayList<Post> data) {
+    public ArticleSimilarAdapter(ArrayList<Post> data) {
         this.mData = data;
     }
 
@@ -44,7 +44,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.PopularV
     public int getItemCount() {
         return mData.size();
     }
-    
+
     @Override
     public void onBindViewHolder(final PopularViewHolder holder, int position) {
         Post post = mData.get(position);
@@ -69,7 +69,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.PopularV
                 Intent articleIntent =
                         new Intent(holder.binding.popularCard.getContext(), ArticleActivity.class);
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
-                        holder.binding.popularTitle.getText().toString());
+                        post.getTitle());
+                articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, post.getDescription());
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, post.getUrl());
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);
@@ -91,6 +92,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.PopularV
 
     class PopularViewHolder extends RecyclerView.ViewHolder {
         CardPopularBinding binding;
+
         PopularViewHolder(CardPopularBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

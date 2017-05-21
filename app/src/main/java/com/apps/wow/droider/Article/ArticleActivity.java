@@ -1,23 +1,11 @@
 package com.apps.wow.droider.Article;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-
-import com.apps.wow.droider.Adapters.FeedAdapter;
-import com.apps.wow.droider.DroiderBaseActivity;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.databinding.ArticleBinding;
-import com.squareup.picasso.Picasso;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -32,6 +20,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -43,14 +32,26 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import com.apps.wow.droider.Adapters.ArticleSimilarAdapter;
+import com.apps.wow.droider.Adapters.FeedAdapter;
+import com.apps.wow.droider.DroiderBaseActivity;
+import com.apps.wow.droider.Model.Post;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.apps.wow.droider.databinding.ArticleBinding;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import io.codetail.animation.ViewAnimationUtils;
 
 public class ArticleActivity extends DroiderBaseActivity
-        implements AppBarLayout.OnOffsetChangedListener {
+        implements AppBarLayout.OnOffsetChangedListener, ArticleView {
 
     private static final String TAG = "ArticleActivity";
 
@@ -68,10 +69,6 @@ public class ArticleActivity extends DroiderBaseActivity
 
     public ArticleBinding binding;
 
-    private String articleTitle;
-
-    private String shortDescription;
-
     private FrameLayout youtubeFrame;
 
     private boolean isPalette;
@@ -84,7 +81,9 @@ public class ArticleActivity extends DroiderBaseActivity
 
     private boolean isAnimationPlayed = false;
 
-    private ArticleParser ArticleParser;
+    //    private ArticleParser ArticleParser;
+    @InjectPresenter
+    ArticlePresenter mArticlePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +96,7 @@ public class ArticleActivity extends DroiderBaseActivity
         getSharedPreferences();
 
         binding = DataBindingUtil.setContentView(ArticleActivity.this, R.layout.article);
-
-        ArticleParser = new ArticleParser(this);
+        extras = getIntent().getExtras();
 
         viewInitialisation();
 
@@ -155,8 +153,17 @@ public class ArticleActivity extends DroiderBaseActivity
     private void createCircularRevealAnimation(View animatedView) {
         animatedView.setVisibility(View.VISIBLE);
         Bundle extras = getIntent().getExtras();
-        float touchXCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
-        float touchYCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
+        float touchXCoordinate;
+        float touchYCoordinate;
+        try {
+            touchXCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0);
+            touchYCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0);
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            touchXCoordinate = 0f;
+            touchYCoordinate = 0f;
+        }
+
         Animator animator = ViewAnimationUtils
                 .createCircularReveal(animatedView, (int) touchXCoordinate, (int) touchYCoordinate,
                         0, Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS);
@@ -193,13 +200,6 @@ public class ArticleActivity extends DroiderBaseActivity
         }
     }
 
-    private void ArticleParserSetup() {
-        /** Проверка как мы попали в статью **/
-        intentExtraChecking();
-
-        getArticleHeader().setText(articleTitle);
-        binding.articleShortDescription.setText(shortDescription);
-    }
 
     @Override
     protected void themeSetup() {
@@ -226,21 +226,31 @@ public class ArticleActivity extends DroiderBaseActivity
         Log.d(TAG, "themeSetup: webViewLinkColor color: " + webViewLinkColor);
     }
 
+    private void ArticleParserSetup() {
+        /** Проверка как мы попали в статью **/
+        intentExtraChecking();
+    }
+
     private void intentExtraChecking() {
-        extras = getIntent().getExtras();
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            ArticleParser.isOutIntent(true);
-            String outsideUrl = getIntent().getData().toString();
-            ArticleParser.execute(outsideUrl);
+//            ArticleParser.isOutIntent(true);
+            mArticlePresenter.provideData(getIntent().getData().toString(), setupArticleModelBuilder());
+
+            mArticlePresenter.getPostDataForOutsideEvent();
+            //// TODO: teach presenter parse outIntent
         } else {
             Log.d(TAG, "intentExtraChecking: inner");
-//            ArticleParser.execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
-            new NewArticleParser().with(this).execute(extras.getString(Utils.EXTRA_ARTICLE_URL));
-            articleTitle = extras.getString(Utils.EXTRA_ARTICLE_TITLE);
-            shortDescription = extras.getString(Utils.EXTRA_SHORT_DESCRIPTION);
+            mArticlePresenter.provideData(extras.getString(Utils.EXTRA_ARTICLE_URL), setupArticleModelBuilder());
+
+            binding.articleHeader.setText(extras.getString(Utils.EXTRA_ARTICLE_TITLE));
+            binding.articleShortDescription.setText(extras.getString(Utils.EXTRA_SHORT_DESCRIPTION));
+
             Picasso.with(this).load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
                     .into(binding.articleHeaderImg);
-//
+        }
+
+        mArticlePresenter.parseArticle();
+
 //            new Handler().postDelayed(() -> {
 //                if (ArticleParser.isYoutube()) {
 //                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
@@ -248,37 +258,31 @@ public class ArticleActivity extends DroiderBaseActivity
 //                    setupYoutubePlayer();
 //                }
 //            }, 750);
-//
-            binding.similarArticles.setLayoutManager(
-                    new LinearLayoutManager(ArticleActivity.this, LinearLayoutManager.HORIZONTAL,
-                            false));
-//            new Handler().postDelayed(() ->
-//                   , 750);
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            if (hasBlur) {
+                binding.articleHeaderContent.setBackgroundDrawable(
+                        Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
+            } else {
+                binding.articleHeaderContent
+                        .setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable());
+            }
+        } else {
+            try {
                 if (hasBlur) {
-                    binding.articleHeaderContent.setBackgroundDrawable(
+                    binding.articleHeaderContent.setBackground(
                             Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
                 } else {
                     binding.articleHeaderContent
-                            .setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable());
-                }
-            } else {
-                try {
-                    if (hasBlur) {
-                        binding.articleHeaderContent.setBackground(
-                                Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this));
-                    } else {
-                        binding.articleHeaderContent
-                                .setBackground(FeedAdapter.getHeaderImageDrawable());
-                    }
-                } catch (NullPointerException npe) {
-                    npe.printStackTrace();
-                    binding.articleHeaderContent
                             .setBackground(FeedAdapter.getHeaderImageDrawable());
                 }
-
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+                binding.articleHeaderContent
+                        .setBackground(FeedAdapter.getHeaderImageDrawable());
             }
+
         }
     }
 
@@ -310,13 +314,13 @@ public class ArticleActivity extends DroiderBaseActivity
         youtubeFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                    YouTubePlayer youTubePlayer, boolean wasResumed) {
-                youTubePlayer.cueVideo(ArticleParser.getYouTubeVideoURL());
+                                                YouTubePlayer youTubePlayer, boolean wasResumed) {
+//                youTubePlayer.cueVideo(ArticleParser.getYouTubeVideoURL());
             }
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider,
-                    YouTubeInitializationResult youTubeInitializationResult) {
+                                                YouTubeInitializationResult youTubeInitializationResult) {
                 Log.d(TAG, "onInitializationFailure: ");
 
             }
@@ -376,7 +380,7 @@ public class ArticleActivity extends DroiderBaseActivity
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        articleTitle + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
+                        binding.articleHeader.getText().toString() + ":  " + extras.getString(Utils.EXTRA_ARTICLE_URL));
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"));
         }
@@ -412,8 +416,6 @@ public class ArticleActivity extends DroiderBaseActivity
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setAppCacheEnabled(true);
         settings.setSaveFormData(true);
-
-//        w.addJavascriptInterface(new ArticleWebClient(this), "android");
     }
 
     private void calculateMinimumHeight() {
@@ -461,57 +463,50 @@ public class ArticleActivity extends DroiderBaseActivity
         }
     }
 
+    @Override
+    public void changeLoadingVisibility(boolean isVisible) {
+        binding.articleProgressBar.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void loadArticle(String html) {
         binding.article
                 .loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "");
     }
 
-    public void setupCoverImage(Bitmap b) {
-        binding.articleHeaderImg.setImageBitmap(b);
+    @Override
+    public void setupSimilar(ArrayList<Post> similar) {
+        binding.similarArticles.setLayoutManager(
+                new LinearLayoutManager(ArticleActivity.this, LinearLayoutManager.HORIZONTAL,
+                        false));
+        binding.similarArticles.setAdapter(new ArticleSimilarAdapter(similar));
     }
 
-    public ProgressBar getProgressBar() {
-        return binding.articleProgressBar;
+    @Override
+    public void hideSimilar() {
+        binding.similarArticlesContainer.setVisibility(View.GONE);
     }
 
-    public TextView getArticleHeader() {
-        return binding.articleHeader;
+    @Override
+    public void showErrorLoading(String errorHtml) {
+        loadArticle(errorHtml);
     }
 
-    public ImageView getArticleImg() {
-        return binding.articleHeaderImg;
+    @Override
+    public void setupNecessaryFields(Post post) {
+        binding.articleHeader.setText(post.getTitle());
+        binding.articleShortDescription.setText(post.getDescription());
+
+        if (!TextUtils.isEmpty(post.getPictureWide()))
+            Picasso.with(this).load(post.getPictureWide())
+                    .into(binding.articleHeaderImg);
     }
 
-    public void setArticleTitle(String title) {
-        articleTitle = title;
+    private ArticleModel.Builder setupArticleModelBuilder() {
+        return new ArticleModel.Builder()
+                .setWebViewTextColor(webViewTextColor)
+                .setWebViewLinkColor(webViewLinkColor)
+                .setWebViewTableColor(webViewTableColor)
+                .setWebViewTableHeaderColor(webViewTableHeaderColor);
     }
-
-    public TextView getArticleShortDescription() {
-        return binding.articleShortDescription;
-    }
-
-    public WebView getArticle() {
-        return binding.article;
-    }
-
-    public boolean hasBlur() {
-        return hasBlur;
-    }
-
-    public String getWebViewTextColor() {
-        return webViewTextColor;
-    }
-
-    public String getWebViewLinkColor() {
-        return webViewLinkColor;
-    }
-
-    public String getWebViewTableColor() {
-        return webViewTableColor;
-    }
-
-    public String getWebViewTableHeaderColor() {
-        return webViewTableHeaderColor;
-    }
-
 }

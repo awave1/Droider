@@ -110,7 +110,7 @@
                                 android:ellipsize="end"
                                 android:maxLines="5"
                                 android:textColor="?android:textColorPrimary"
-                                android:textSize="24sp"
+                                android:textSize="26sp"
                                 android:textStyle="bold"
                                 tools:text="Title!" />
 
@@ -121,7 +121,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="24dp"
                                 android:textColor="?android:textColorPrimary"
-                                android:textSize="14sp"
+                                android:textSize="18sp"
                                 tools:text="Description!" />
 
                             <FrameLayout
@@ -146,7 +146,7 @@
                                 android:id="@+id/article"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="14sp"
+                                android:textSize="16sp"
                                 tools:text="article" />
 
                             <!-- comments toolbar here -->

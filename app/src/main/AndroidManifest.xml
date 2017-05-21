@@ -36,6 +36,7 @@
                 android:name="com.apps.wow.droider.Article.ArticleActivity"
                 android:hardwareAccelerated="true"
                 android:label="Droider"
+                android:exported="true"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"
                 tools:ignore="InnerclassSeparator">
             <intent-filter>
@@ -47,7 +48,6 @@
                 <data android:scheme="http" />
                 <data android:host="droider.ru" />
                 <data android:host="www.droider.ru" />
-                <data android:pathPrefix="/post/*" />
             </intent-filter>
         </activity>
         <!--
