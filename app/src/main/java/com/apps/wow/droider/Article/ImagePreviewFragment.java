@@ -1,6 +1,7 @@
 package com.apps.wow.droider.Article;
 
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +15,6 @@ import android.view.WindowManager;
 
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.databinding.FragmentImagePrevBinding;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by awave on 2016-12-30.
@@ -27,7 +24,6 @@ public class ImagePreviewFragment extends Fragment {
     private static final String TAG = "ImagePreviewFragment";
     public static final String IMAGE_URL = "IMAGE_URL";
     private FragmentImagePrevBinding mBinding;
-    private PhotoViewAttacher mAttacher;
 
     public static ImagePreviewFragment newInstance(String imageUrl) {
         Bundle args = new Bundle();
@@ -50,28 +46,7 @@ public class ImagePreviewFragment extends Fragment {
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
 
-        mAttacher = new PhotoViewAttacher(mBinding.img);
-
-
-        Callback imageLoaded = new Callback() {
-            @Override
-            public void onSuccess() {
-                if (mAttacher != null)
-                    mAttacher.update();
-                else
-                    mAttacher = new PhotoViewAttacher(mBinding.img);
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        };
-
-        Picasso.with(getContext())
-                .load(getArguments().getString(IMAGE_URL))
-                .into(mBinding.img, imageLoaded);
-
+        mBinding.img.setPhotoUri(Uri.parse(getArguments().getString(IMAGE_URL)));
 
         mBinding.closeBtn.setOnClickListener(view -> {
             getActivity()
@@ -81,7 +56,7 @@ public class ImagePreviewFragment extends Fragment {
                     .remove(ImagePreviewFragment.this)
                     .commit();
 
-           onDestroy();
+            onDestroy();
         });
         return mBinding.getRoot();
     }
@@ -90,7 +65,6 @@ public class ImagePreviewFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
-        mAttacher.cleanup();
 
         ((ArticleActivity) getActivity())
                 .binding.articleBackgroundNSV.setNestedScrollingEnabled(true);

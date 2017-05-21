@@ -44,7 +44,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -245,8 +244,7 @@ public class ArticleActivity extends DroiderBaseActivity
             binding.articleHeader.setText(extras.getString(Utils.EXTRA_ARTICLE_TITLE));
             binding.articleShortDescription.setText(extras.getString(Utils.EXTRA_SHORT_DESCRIPTION));
 
-            Picasso.with(this).load(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL))
-                    .into(binding.articleHeaderImg);
+            binding.articleHeaderImg.setImageURI(extras.getString(Utils.EXTRA_ARTICLE_IMG_URL));
         }
 
         mArticlePresenter.parseArticle();
@@ -498,8 +496,8 @@ public class ArticleActivity extends DroiderBaseActivity
         binding.articleShortDescription.setText(post.getDescription());
 
         if (!TextUtils.isEmpty(post.getPictureWide()))
-            Picasso.with(this).load(post.getPictureWide())
-                    .into(binding.articleHeaderImg);
+            binding.articleHeaderImg.setImageURI(post.getPictureWide());
+
     }
 
     private ArticleModel.Builder setupArticleModelBuilder() {

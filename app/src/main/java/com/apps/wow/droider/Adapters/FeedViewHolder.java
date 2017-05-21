@@ -1,17 +1,16 @@
 package com.apps.wow.droider.Adapters;
 
-import com.apps.wow.droider.R;
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.apps.wow.droider.R;
+import com.facebook.drawee.view.SimpleDraweeView;
+
 public class FeedViewHolder extends RecyclerView.ViewHolder {
 
-    //    private ImageView cardImageView;
-    private SimpleDraweeView cardImageView;
+    private SimpleDraweeView cardImage;
 
     private CardView cardView;
 
@@ -24,8 +23,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     public FeedViewHolder(View holderView) {
         super(holderView);
         cardView = (CardView) holderView.findViewById(R.id.card_view);
-//        cardImageView = (ImageView) holderView.findViewById(R.id.feed_card_image);
-        cardImageView = (SimpleDraweeView) holderView.findViewById(R.id.feed_card_image);
+        cardImage = (SimpleDraweeView) holderView.findViewById(R.id.feed_card_image);
 
         siteUrlTextView = (TextView) holderView.findViewById(R.id.feed_card_site_url);
         cardTitleTextView = (TextView) holderView.findViewById(R.id.feed_card_title);
@@ -48,7 +46,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         return cardView;
     }
 
-    public SimpleDraweeView getCardImageView() {
-        return cardImageView;
+    public SimpleDraweeView getCardImage() {
+        return cardImage;
     }
 }

@@ -1,11 +1,5 @@
 package com.apps.wow.droider.Adapters;
 
-import com.apps.wow.droider.Article.ArticleActivity;
-import com.apps.wow.droider.Model.FeedModel;
-import com.apps.wow.droider.Model.Post;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -17,6 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.apps.wow.droider.Article.ArticleActivity;
+import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.Model.Post;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
@@ -61,10 +61,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
         feedViewHolder.getSiteUrlTextView().setText(post.getUrl());
 
-//        Picasso.with(feedViewHolder.getCardImageView().getContext()).load(post.getPictureWide())
-//                .into(feedViewHolder.getCardImageView());
-
-        feedViewHolder.getCardImageView().setImageURI(post.getPictureWide());
+        feedViewHolder.getCardImage().setImageURI(post.getPictureWide());
 
         final String url = post.getUrl();
 

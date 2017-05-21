@@ -13,7 +13,6 @@ import com.apps.wow.droider.Model.Post;
 import com.apps.wow.droider.R;
 import com.apps.wow.droider.Utils.Utils;
 import com.apps.wow.droider.databinding.CardPopularBinding;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -48,9 +47,7 @@ public class ArticleSimilarAdapter extends RecyclerView.Adapter<ArticleSimilarAd
     @Override
     public void onBindViewHolder(final PopularViewHolder holder, int position) {
         Post post = mData.get(position);
-        Picasso.with(holder.binding.getRoot().getContext())
-                .load(post.getPictureWide())
-                .into(holder.binding.popularCardImage);
+        holder.binding.popularCardImage.setImageURI(post.getPictureWide());
         holder.binding.popularTitle.setText(post.getTitle());
         holder.binding.count.setText(holder.binding.getRoot().getResources().getString(
                 R.string.popular_count,
