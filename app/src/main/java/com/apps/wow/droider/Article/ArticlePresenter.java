@@ -25,9 +25,9 @@ public class ArticlePresenter extends MvpPresenter<ArticleView> {
     public ArticlePresenter() {
     }
 
-    public void provideData(String mUrl, ArticleModel.Builder builder) {
+    public void provideData(String mUrl, ArticleModel model) {
         this.mUrl = mUrl;
-        mArticleModel = new ArticleModel(builder);
+        mArticleModel = model;
     }
 
     @Override
@@ -48,6 +48,7 @@ public class ArticlePresenter extends MvpPresenter<ArticleView> {
 
                     @Override
                     public void onError(Throwable e) {
+                        getViewState().changeLoadingVisibility(false);
                         getViewState().showErrorLoading(AppContext.getContext().getString(R.string.errorHtml));
                     }
 
@@ -72,7 +73,7 @@ public class ArticlePresenter extends MvpPresenter<ArticleView> {
         mArticleModel.getPostDataForOutsideIntent(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(post -> getViewState().setupNecessaryFields(post),
-                        e-> Log.e(TAG, "getPostDataForOutsideEvent: ", e));
+                        e -> Log.e(TAG, "getPostDataForOutsideEvent: ", e));
     }
 }
 

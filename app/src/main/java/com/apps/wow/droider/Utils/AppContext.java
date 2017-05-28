@@ -8,7 +8,7 @@ import android.content.Context;
 
 public class AppContext {
 
-    private static Context mContext;
+    static Context mContext;
 
     public AppContext(Context mContext) {
         this.mContext = mContext;

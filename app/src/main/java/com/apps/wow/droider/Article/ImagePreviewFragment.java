@@ -66,8 +66,7 @@ public class ImagePreviewFragment extends Fragment {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
 
-        ((ArticleActivity) getActivity())
-                .binding.articleBackgroundNSV.setNestedScrollingEnabled(true);
+        ((ArticleActivity) getActivity()).getBinding().articleBackgroundNSV.setNestedScrollingEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,

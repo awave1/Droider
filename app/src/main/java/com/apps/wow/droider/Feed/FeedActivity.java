@@ -111,7 +111,7 @@ public class FeedActivity extends DroiderBaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        binding.navDrawer.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, activeTheme));
+        binding.navDrawer.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, Companion.getActiveTheme()));
     }
 
     @Override
