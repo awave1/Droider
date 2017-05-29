@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,10 +52,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     @Override
     public void onBindViewHolder(final FeedViewHolder feedViewHolder, final int i) {
         final Post post = feedModel.getPosts().get(i);
-        feedViewHolder.getCardTitleTextView().setText(post.getTitle());
+        feedViewHolder.getCardTitleTextView().setText(post.getTitleValue());
 
-        if (!post.getDescription().isEmpty()) {
-            feedViewHolder.getCardDescriptionTextView().setText(post.getDescription());
+        if (!TextUtils.isEmpty(post.getDescriptionValue())) {
+            feedViewHolder.getCardDescriptionTextView().setText(post.getDescriptionValue());
         } else {
             feedViewHolder.getCardDescriptionTextView().setVisibility(View.GONE);
         }

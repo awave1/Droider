@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -16,7 +17,9 @@ android {
 //        vectorDrawables.useSupportLibrary = true
     }
 
-    dataBinding.enabled = true
+    dataBinding {
+        enabled = true
+    }
 
     buildTypes {
         release {
@@ -66,10 +69,12 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.5'
 
     //MVP
-    compile 'com.arello-mobile:moxy:1.5.2'
-    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.2'
-    compile 'com.arello-mobile:moxy-android:1.5.2'
-    compile 'com.arello-mobile:moxy-app-compat:1.5.2'
+    compile "com.arello-mobile:moxy:$moxy_version"
+//    annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
+    compile "com.arello-mobile:moxy-android:$moxy_version"
+    compile "com.arello-mobile:moxy-app-compat:$moxy_version"
+
+    kapt "com.arello-mobile:moxy-compiler:$moxy_version"
 
     compile 'com.infstory:proguard-snippets:1.0.0'
 
@@ -85,8 +90,16 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+kapt {
+    generateStubs = true
+}
+
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
+
+//comment line below for android studio 3.0
+apply plugin: 'me.tatarka.retrolambda'
+
 repositories {
     mavenCentral()
 }

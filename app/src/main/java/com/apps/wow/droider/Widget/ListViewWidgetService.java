@@ -1,17 +1,17 @@
 package com.apps.wow.droider.Widget;
 
-import com.apps.wow.droider.Model.FeedModel;
-import com.apps.wow.droider.Model.Post;
-import com.apps.wow.droider.R;
-import com.apps.wow.droider.Utils.Utils;
-import com.apps.wow.droider.api.DroiderApi;
-
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.apps.wow.droider.Model.FeedModel;
+import com.apps.wow.droider.Model.Post;
+import com.apps.wow.droider.R;
+import com.apps.wow.droider.Utils.Utils;
+import com.apps.wow.droider.api.DroiderApi;
 
 import java.util.ArrayList;
 
@@ -79,8 +79,8 @@ public class ListViewWidgetService extends RemoteViewsService {
                         @Override
                         public void onNext(Response<FeedModel> response) {
                             if ((response.isSuccessful() && !data.isEmpty()
-                                    && response.body().getPosts() != null && !data.get(0).getTitle()
-                                    .equals(response.body().getPosts().get(0).getTitle())) || data
+                                    && response.body().getPosts() != null && !data.get(0).getTitleValue()
+                                    .equals(response.body().getPosts().get(0).getTitleValue())) || data
                                     .isEmpty()) {
 
                                 data.clear();
@@ -90,7 +90,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
                                 for (int i = 0; i < response.body().getPosts().size(); i++) {
                                     Log.d("TAG", "setSuccessfulView: " + response.body().getPosts()
-                                            .get(i).getTitle());
+                                            .get(i).getTitleValue());
 
                                 }
                             }
@@ -113,15 +113,15 @@ public class ListViewWidgetService extends RemoteViewsService {
             RemoteViews rView = new RemoteViews(context.getPackageName(),
                     R.layout.widget_list_item);
 
-            rView.setTextViewText(R.id.widget_title, data.get(position).getTitle());
-            rView.setTextViewText(R.id.widget_description, data.get(position).getDescription());
+            rView.setTextViewText(R.id.widget_title, data.get(position).getTitleValue());
+            rView.setTextViewText(R.id.widget_description, data.get(position).getDescriptionValue());
 
             Intent clickIntent = new Intent();
             clickIntent.putExtra(FeedWidget.ITEM_POSITION, position);
-            clickIntent.putExtra(EXTRA_ARTICLE_TITLE, data.get(position).getTitle());
+            clickIntent.putExtra(EXTRA_ARTICLE_TITLE, data.get(position).getTitleValue());
             clickIntent.putExtra(EXTRA_ARTICLE_URL, data.get(position).getUrl());
             clickIntent.putExtra(EXTRA_ARTICLE_IMG_URL, data.get(position).getPictureWide());
-            clickIntent.putExtra(EXTRA_SHORT_DESCRIPTION, data.get(position).getDescription());
+            clickIntent.putExtra(EXTRA_SHORT_DESCRIPTION, data.get(position).getDescriptionValue());
             rView.setOnClickFillInIntent(R.id.widget_card_container, clickIntent);
             return rView;
         }

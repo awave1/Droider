@@ -38,6 +38,7 @@ import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Utils
 import com.apps.wow.droider.databinding.ArticleBinding
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
@@ -56,7 +57,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     var hasBlur: Boolean = false
 
-    var binding: ArticleBinding = ArticleBinding()
+    lateinit var binding: ArticleBinding
 
     private val youtubeFrame: FrameLayout? = null
 
@@ -72,8 +73,8 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private var mUrl: String? = null
 
-    @InjectPresenter
-    internal var mArticlePresenter: ArticlePresenter? = null
+    @InjectPresenter(type = PresenterType.GLOBAL)
+    lateinit var mArticlePresenter: ArticlePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         themeSetup()
@@ -125,6 +126,11 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
             isAnimationPlayed = true
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.articleBackgroundNSV.isNestedScrollingEnabled = true
     }
 
     private fun playActivityAnimation() {
@@ -473,8 +479,8 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     }
 
     override fun setupNecessaryFields(post: Post) {
-        binding.articleHeader.text = post.title
-        binding.articleShortDescription.text = post.description
+        binding.articleHeader.text = post.titleValue
+        binding.articleShortDescription.text = post.descriptionValue
 
         if (!TextUtils.isEmpty(post.pictureWide))
             binding.articleHeaderImg.setImageURI(post.pictureWide)

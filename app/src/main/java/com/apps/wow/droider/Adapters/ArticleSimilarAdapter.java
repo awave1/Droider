@@ -48,7 +48,7 @@ public class ArticleSimilarAdapter extends RecyclerView.Adapter<ArticleSimilarAd
     public void onBindViewHolder(final PopularViewHolder holder, int position) {
         Post post = mData.get(position);
         holder.binding.popularCardImage.setImageURI(post.getPictureWide());
-        holder.binding.popularTitle.setText(post.getTitle());
+        holder.binding.popularTitle.setText(post.getTitleValue());
         holder.binding.count.setText(holder.binding.getRoot().getResources().getString(
                 R.string.popular_count,
                 String.valueOf(position + 1),
@@ -66,8 +66,8 @@ public class ArticleSimilarAdapter extends RecyclerView.Adapter<ArticleSimilarAd
                 Intent articleIntent =
                         new Intent(holder.binding.popularCard.getContext(), ArticleActivity.class);
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
-                        post.getTitle());
-                articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, post.getDescription());
+                        post.getTitleValue());
+                articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, post.getDescriptionValue());
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, post.getUrl());
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate);
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate);

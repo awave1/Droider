@@ -8,7 +8,7 @@
         android:layout_height="match_parent">
 
         <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/article_coordinator_layout"
+            android:id="@+id/articleCoordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/collapsing_toolbar_coordinator_layout_margin_bottom"
@@ -18,13 +18,13 @@
             tools:context=".Article.ArticleActivity">
 
             <android.support.design.widget.AppBarLayout
-                android:id="@+id/appbar_article"
+                android:id="@+id/appbarArticle"
                 android:layout_width="match_parent"
                 android:layout_height="225dp"
                 android:fitsSystemWindows="true">
 
                 <android.support.design.widget.CollapsingToolbarLayout
-                    android:id="@+id/collapsing_toolbar"
+                    android:id="@+id/collapsingToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
@@ -35,7 +35,7 @@
                     app:titleEnabled="false">
 
                     <RelativeLayout
-                        android:id="@+id/article_header_content"
+                        android:id="@+id/articleHeaderContent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fitsSystemWindows="true"
@@ -44,7 +44,7 @@
                         app:layout_collapseParallaxMultiplier="0.7">
 
                         <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/article_header_img"
+                            android:id="@+id/articleHeaderImg"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fitsSystemWindows="true"
@@ -54,7 +54,7 @@
                     </RelativeLayout>
 
                     <android.support.v7.widget.Toolbar
-                        android:id="@+id/toolbar_article"
+                        android:id="@+id/toolbarArticle"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginTop="@dimen/transparent_action_bar_margin"
@@ -69,13 +69,13 @@
                 android:id="@+id/article_background_tint_view"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:layout_alignBottom="@+id/article_header_img"
+                android:layout_alignBottom="@+id/articleHeaderImg"
                 android:background="@drawable/article_background_tint_light"
                 app:behavior_overlapTop="32dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
             <android.support.v4.widget.NestedScrollView
-                android:id="@+id/article_background_NSV"
+                android:id="@+id/articleBackgroundNSV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="fill_vertical"
@@ -101,7 +101,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/article_header"
+                                android:id="@+id/articleHeader"
                                 style="@style/AverageHorizontalMargin"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                                 tools:text="Title!"/>
 
                             <TextView
-                                android:id="@+id/article_shortDescription"
+                                android:id="@+id/articleShortDescription"
                                 style="@style/AverageHorizontalMargin"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                                 />
 
                             <ProgressBar
-                                android:id="@+id/article_progressBar"
+                                android:id="@+id/articleProgressBar"
                                 style="@style/Base.Widget.AppCompat.ProgressBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
-import com.apps.wow.droider.Feed.FeedFragment;
 import com.apps.wow.droider.Utils.Utils;
 
 
@@ -46,9 +45,9 @@ public abstract class FeedOrientation extends RecyclerView.OnScrollListener {
         if (newState == 0) {
             if ((mActivity.getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-                doubleColsLoading(mActivity, recyclerView, FeedFragment.sStaggeredGridLayoutManager);
+                doubleColsLoading(mActivity, recyclerView, FeedFragment.Companion.getSStaggeredGridLayoutManager());
             } else {
-                singleColsLoading(mActivity, recyclerView, FeedFragment.sLinearLayoutManager);
+                singleColsLoading(mActivity, recyclerView, FeedFragment.Companion.getSLinearLayoutManager());
             }
         }
     }
