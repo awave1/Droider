@@ -1,61 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
-    style="@style/CardStyle"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        style="@style/CardStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center">
 
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/feed_card_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:fadingEdge="vertical"
-            android:fadingEdgeLength="40dp"
-            android:requiresFadingEdge="vertical"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dr_cast"/>
-
-
-        <TextView
-            android:id="@+id/feed_card_title"
-            style="@style/AverageHorizontalMargin"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="15dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="2"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="24sp"
-            tools:text="Title!"/>
+            android:orientation="vertical">
+
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/feed_card_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:fadingEdge="vertical"
+                android:fadingEdgeLength="40dp"
+                android:requiresFadingEdge="vertical"
+                android:scaleType="centerCrop"
+                android:src="@drawable/dr_cast"/>
+
+
+            <TextView
+                android:id="@+id/feed_card_title"
+                style="@style/AverageHorizontalMargin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="24sp"
+                tools:text="Title!"/>
+
+            <TextView
+                android:id="@+id/feed_card_description"
+                style="@style/AverageHorizontalMargin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                tools:text="Description!"/>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/feed_card_description"
-            style="@style/AverageHorizontalMargin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="16sp"
-            tools:text="Description!"/>
+            android:id="@+id/feed_card_site_url"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@+id/feed_card_image"
+            android:visibility="gone"/>
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/feed_card_site_url"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@+id/feed_card_image"
-        android:visibility="gone"/>
-
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+</layout>

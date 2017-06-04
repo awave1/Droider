@@ -245,7 +245,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             //// TODO: teach presenter parse outIntent
         } else {
             Log.d(TAG, "intentExtraChecking: inner")
-            mArticlePresenter!!.provideData(mUrl, setupArticleModelBuilder())
+            mArticlePresenter!!.provideData(mUrl!!, setupArticleModelBuilder())
 
             binding.articleHeader.text = extras!!.getString(Utils.EXTRA_ARTICLE_TITLE)
             binding.articleShortDescription.text = extras!!.getString(Utils.EXTRA_SHORT_DESCRIPTION)
@@ -267,21 +267,21 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             if (hasBlur) {
                 binding.articleHeaderContent.setBackgroundDrawable(
-                        Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this))
+                        Utils.applyBlur(FeedAdapter.headerImageDrawable, this))
             } else {
                 binding.articleHeaderContent
-                        .setBackgroundDrawable(FeedAdapter.getHeaderImageDrawable())
+                        .setBackgroundDrawable(FeedAdapter.headerImageDrawable)
             }
         } else {
             try {
                 if (hasBlur) {
-                    binding.articleHeaderContent.background = Utils.applyBlur(FeedAdapter.getHeaderImageDrawable(), this)
+                    binding.articleHeaderContent.background = Utils.applyBlur(FeedAdapter.headerImageDrawable, this)
                 } else {
-                    binding.articleHeaderContent.background = FeedAdapter.getHeaderImageDrawable()
+                    binding.articleHeaderContent.background = FeedAdapter.headerImageDrawable
                 }
             } catch (npe: NullPointerException) {
                 npe.printStackTrace()
-                binding.articleHeaderContent.background = FeedAdapter.getHeaderImageDrawable()
+                binding.articleHeaderContent.background = FeedAdapter.headerImageDrawable
             }
 
         }
@@ -471,7 +471,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     }
 
     override fun hideSimilar() {
-        binding.similarArticlesContainer.visibility = View.GONE
+        binding.similarArticlesContainer?.visibility = View.GONE
     }
 
     override fun showErrorLoading(errorHtml: String) {

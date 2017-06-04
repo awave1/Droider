@@ -43,7 +43,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
-        transitive = true;
+        transitive = true
     }
     compile 'org.jsoup:jsoup:1.10.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -70,7 +70,6 @@ dependencies {
 
     //MVP
     compile "com.arello-mobile:moxy:$moxy_version"
-//    annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
     compile "com.arello-mobile:moxy-android:$moxy_version"
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
 
@@ -98,7 +97,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 
 //comment line below for android studio 3.0
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
     mavenCentral()

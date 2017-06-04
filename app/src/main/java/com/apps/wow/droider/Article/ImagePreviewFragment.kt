@@ -22,7 +22,7 @@ class ImagePreviewFragment : Fragment() {
     lateinit var mBinding: FragmentImagePrevBinding
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = FragmentImagePrevBinding.inflate(inflater, container, false)
+        mBinding = FragmentImagePrevBinding.inflate(inflater!!, container, false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.window.navigationBarColor = ContextCompat.getColor(
                     context,
