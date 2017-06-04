@@ -239,13 +239,13 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     private fun intentExtraChecking() {
         if (Intent.ACTION_VIEW == intent.action) {
             //            ArticleParser.isOutIntent(true);
-            mArticlePresenter!!.provideData(intent.data.toString(), setupArticleModelBuilder())
+            mArticlePresenter.provideData(intent.data.toString(), setupArticleModelBuilder())
 
-            mArticlePresenter!!.getPostDataForOutsideEvent()
+            mArticlePresenter.getPostDataForOutsideEvent()
             //// TODO: teach presenter parse outIntent
         } else {
             Log.d(TAG, "intentExtraChecking: inner")
-            mArticlePresenter!!.provideData(mUrl!!, setupArticleModelBuilder())
+            mArticlePresenter.provideData(mUrl!!, setupArticleModelBuilder())
 
             binding.articleHeader.text = extras!!.getString(Utils.EXTRA_ARTICLE_TITLE)
             binding.articleShortDescription.text = extras!!.getString(Utils.EXTRA_SHORT_DESCRIPTION)
@@ -253,7 +253,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             binding.articleHeaderImg.setImageURI(extras!!.getString(Utils.EXTRA_ARTICLE_IMG_URL))
         }
 
-        mArticlePresenter!!.parseArticle()
+        mArticlePresenter.parseArticle()
 
         //            new Handler().postDelayed(() -> {
         //                if (ArticleParser.isYoutube()) {
@@ -264,6 +264,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         //            }, 750);
 
 
+        //TODO разобраться с блюром
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             if (hasBlur) {
                 binding.articleHeaderContent.setBackgroundDrawable(
@@ -304,7 +305,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             supportActionBar!!.setDisplayShowHomeEnabled(true)
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
-            binding.toolbarArticle.setNavigationOnClickListener { v -> finish() }
+            binding.toolbarArticle.setNavigationOnClickListener { finish() }
         }
     }
 
@@ -459,9 +460,9 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         binding.articleProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    override fun loadArticle(html: String) {
+    override fun loadArticle(articleHtml: String) {
         binding.article
-                .loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", "")
+                .loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
     }
 
     override fun setupSimilar(similar: ArrayList<Post>) {

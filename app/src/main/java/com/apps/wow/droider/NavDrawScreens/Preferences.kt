@@ -13,7 +13,7 @@ class Preferences : PreferenceFragment() {
         retainInstance = true
         addPreferencesFromResource(R.xml.main_pref)
 
-        findPreference("theme").setOnPreferenceChangeListener { preference, newValue ->
+        findPreference("theme").setOnPreferenceChangeListener { _, _ ->
             activity.finish()
             startActivity(activity.intent)
             true

@@ -63,12 +63,12 @@ open class DroiderBaseActivity : MvpAppCompatActivity() {
         AlertDialog.Builder(context).setTitle("Соединение нестабильно или прервано")
                 .setMessage("Проверьте своё соединение с интернетом и перезайдите в приложение")
 
-                .setPositiveButton("Перезайти") { dialog, which ->
+                .setPositiveButton("Перезайти") { _, _ ->
                     finish()
                     startActivity(intent)
-                }.setNegativeButton("Выйти") { dialog, which -> finish() }
+                }.setNegativeButton("Выйти") { _, _ -> finish() }
                 .setNeutralButton("Включить Wi-Fi?"
-                ) { dialog, which -> Utils.enableWiFi(context, true) }.create().show()
+                ) { _, _ -> Utils.enableWiFi(context, true) }.create().show()
     }
 
     companion object {

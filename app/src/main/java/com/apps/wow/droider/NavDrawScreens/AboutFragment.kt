@@ -51,7 +51,7 @@ class AboutFragment : android.app.Fragment(), AdapterToFragmentRouter {
                             getString(R.string.about_fragment_art_title),
                             getString(R.string.about_fragment_art_description),
                             ContextCompat.getDrawable(activity, R.drawable.ic_golovin)))
-            developersList.add(
+            developersList.add(0,
                     Author(
                             getString(R.string.about_fragment_alex_title),
                             getString(R.string.about_fragment_alex_description),
@@ -78,6 +78,8 @@ class AboutFragment : android.app.Fragment(), AdapterToFragmentRouter {
     }
 
     override fun startActivityFromAdapter(intent: Intent?) {
-        startActivity(intent)
+        if (intent != null) {
+            startActivity(intent)
+        }
     }
 }

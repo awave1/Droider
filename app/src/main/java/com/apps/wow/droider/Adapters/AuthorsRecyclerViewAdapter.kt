@@ -19,10 +19,11 @@ class AuthorsRecyclerViewAdapter(val authorList: ArrayList<Author>, private val 
 
     override fun onBindViewHolder(holder: AuthorsViewHolder, position: Int) {
         val author = authorList[position]
-        holder.mBinding.authorsTitle.setText(author.titleString)
-        holder.mBinding.authorsDescription.setText(author.descriptionString)
-        holder.mBinding.authorsImage.setImageDrawable(author.imageDrawable)
-        holder.mBinding.authorsContainer.setOnClickListener({ mRouter.startActivityFromAdapter(Author.ON_CLICK_INTENT.STUB_FOR_INTENT.getIntentByName(Author.ON_CLICK_INTENT.values()[position])) })
+        holder.mBinding.authorsTitle.text = author.titleString
+        holder.mBinding.authorsDescription.text = author.descriptionString
+        holder.mBinding.authors.setImageDrawable(author.imageDrawable)
+        holder.mBinding.authorsContainer.setOnClickListener({
+            mRouter.startActivityFromAdapter(author.getIntentByName(author.titleString)) })
     }
 
     override fun getItemCount(): Int {

@@ -131,8 +131,8 @@ object Utils {
         return b
     }
 
-    fun applyBlur(drawable: Drawable, context: Context): Drawable {
-        val fromDrawable = drawableToBitmap(drawable)
+    fun applyBlur(drawable: Drawable?, context: Context): Drawable {
+        val fromDrawable = drawableToBitmap(drawable!!)
         val width = Math.round(fromDrawable.width * 0.8f)
         val height = Math.round(fromDrawable.height * 0.8f)
 

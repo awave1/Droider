@@ -41,13 +41,13 @@ class ArticleSimilarAdapter(private val mData: ArrayList<Post>) : RecyclerView.A
                 itemCount.toString()
         )
 
-        holder.binding.popularCard.setOnTouchListener { v, event ->
+        holder.binding.popularCard.setOnTouchListener { _, event ->
             touchXCoordinate = event.rawX
             touchYCoordinate = event.rawY
             false
         }
 
-        holder.binding.popularCard.setOnClickListener { view ->
+        holder.binding.popularCard.setOnClickListener {
             try {
                 val articleIntent = Intent(holder.binding.popularCard.context, ArticleActivity::class.java)
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,

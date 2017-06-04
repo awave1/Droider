@@ -86,9 +86,13 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
                 LinearLayoutManager.HORIZONTAL, false)
         val snapHelper = PagerSnapHelper()
 
-        parentActivity.binding!!.popularNews.layoutManager = layoutManager
-        parentActivity.binding!!.popularNews.adapter = ArticleSimilarAdapter(model.posts)
-        snapHelper.attachToRecyclerView(parentActivity.binding!!.popularNews)
+        parentActivity.binding?.popularNews?.layoutManager = layoutManager
+        parentActivity.binding?.popularNews?.adapter = ArticleSimilarAdapter(model.posts)
+        try {
+            snapHelper.attachToRecyclerView(parentActivity.binding?.popularNews)
+        } catch (ise: IllegalStateException) {
+            ise.printStackTrace()
+        }
 
         onTaskCompleted()
     }

@@ -47,13 +47,13 @@ class FeedAdapter(val feedModel: FeedModel) : RecyclerView.Adapter<FeedAdapter.F
 
         val url = post.url
 
-        binding.cardView.setOnTouchListener { v, event ->
+        binding.cardView.setOnTouchListener { _, event ->
             touchXCoordinate = event.rawX
             touchYCoordinate = event.rawY
             false
         }
 
-        binding.cardView.setOnClickListener { v ->
+        binding.cardView.setOnClickListener {
             try {
                 val articleIntent = Intent(binding.cardView.context,
                         ArticleActivity::class.java)
@@ -70,6 +70,8 @@ class FeedAdapter(val feedModel: FeedModel) : RecyclerView.Adapter<FeedAdapter.F
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate)
 
                 articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, post.pictureWide)
+
+                headerImageDrawable = binding.feedCardImage.drawable
 
                 binding.cardView.context.startActivity(articleIntent)
 

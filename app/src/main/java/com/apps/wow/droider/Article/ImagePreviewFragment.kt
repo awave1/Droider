@@ -31,7 +31,7 @@ class ImagePreviewFragment : Fragment() {
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
 
-        mBinding.img!!.setPhotoUri(Uri.parse(arguments.getString(IMAGE_URL)))
+        mBinding.img.setPhotoUri(Uri.parse(arguments.getString(IMAGE_URL)))
 
         mBinding.closeBtn.setOnClickListener {
             activity
