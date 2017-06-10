@@ -9,17 +9,25 @@ import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorInt
-import android.support.v8.renderscript.Allocation
-import android.support.v8.renderscript.Element
-import android.support.v8.renderscript.RenderScript
-import android.support.v8.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import android.util.TypedValue
 import android.view.Window
 import android.view.WindowManager
+import com.apps.wow.droider.Article.ArticlePresenter.Companion.TAG
+import com.facebook.common.executors.CallerThreadExecutor
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSource
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.common.Priority
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
+import com.facebook.imagepipeline.image.CloseableImage
+import com.facebook.imagepipeline.request.ImageRequest
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -111,9 +119,9 @@ object Utils {
 
     fun drawableToBitmap(d: Drawable): Bitmap {
         val b: Bitmap
-        if (d is BitmapDrawable) {
+        if (d.mutate() is BitmapDrawable) {
             val bitmapDrawable = d
-            if (bitmapDrawable.bitmap != null) {
+            if ((bitmapDrawable as BitmapDrawable).bitmap != null) {
                 return bitmapDrawable.bitmap
             }
         }
@@ -131,57 +139,47 @@ object Utils {
         return b
     }
 
-    fun applyBlur(drawable: Drawable?, context: Context): Drawable {
-        val fromDrawable = drawableToBitmap(drawable!!)
-        val width = Math.round(fromDrawable.width * 0.8f)
-        val height = Math.round(fromDrawable.height * 0.8f)
+    fun convertImageUrlToBitmap(imageUri: String, mContext: Context, callback : BitmapLoaded) {
+        val imagePipeline = Fresco.getImagePipeline()
 
-        val inBitmap = Bitmap.createScaledBitmap(fromDrawable, width, height, false)
-        val outBitmap = Bitmap.createBitmap(inBitmap)
+        val imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(Uri.parse(imageUri))
+                .setRequestPriority(Priority.HIGH)
+                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+                .build()
 
-        val renderScript = RenderScript.create(context)
-        val blur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript))
 
-        val `in` = Allocation.createFromBitmap(renderScript, inBitmap)
-        val out = Allocation.createFromBitmap(renderScript, outBitmap)
+        val dataSource =
+                imagePipeline.fetchDecodedImage(imageRequest, mContext)
 
-        blur.setRadius(11.5f)
-        blur.setInput(`in`)
-        blur.forEach(out)
+        try {
+            dataSource.subscribe(object : BaseBitmapDataSubscriber() {
 
-        out.copyTo(outBitmap)
-        renderScript.destroy()
+                public override fun onNewResultImpl(bitmap: Bitmap?) {
+                    if (bitmap == null) {
+                        Log.d(TAG, "Bitmap data source returned success, but bitmap null.")
+                        return
+                    }
 
-        return BitmapDrawable(context.resources, outBitmap)
-    }
+                    callback.readyToUse(bitmap)
+                    // The bitmap provided to this method is only guaranteed to be around
+                    // for the lifespan of this method. The image pipeline frees the
+                    // bitmap's memory after this method has completed.
+                    //
+                    // This is fine when passing the bitmap to a system process as
+                    // Android automatically creates a copy.
+                    //
+                    // If you need to keep the bitmap around, look into using a
+                    // BaseDataSubscriber instead of a BaseBitmapDataSubscriber.
+                }
 
-    fun applyBlur(bitmap: Bitmap, context: Context): Bitmap {
-        val rs = RenderScript.create(context)
-        val bitmapCopy: Bitmap
-        val width = Math.round(bitmap.width * 0.8f)
-        val height = Math.round(bitmap.height * 0.8f)
-
-        if (bitmap.config == Bitmap.Config.ARGB_8888) {
-            bitmapCopy = bitmap
-        } else {
-            bitmapCopy = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+                override fun onFailureImpl(p0: DataSource<CloseableReference<CloseableImage>>?) {
+                    // stub
+                }
+            }, CallerThreadExecutor.getInstance())
+        } finally {
+            dataSource?.close()
         }
-
-        val outBitmap = Bitmap.createBitmap(width, height, bitmapCopy.config)
-
-        val `in` = Allocation.createFromBitmap(rs, bitmapCopy, Allocation.MipmapControl.MIPMAP_NONE,
-                Allocation.USAGE_SCRIPT)
-        val out = Allocation.createTyped(rs, `in`.type)
-
-        val blur = ScriptIntrinsicBlur.create(rs, out.element)
-        blur.setRadius(11.5f)
-        blur.setInput(`in`)
-        blur.forEach(out)
-
-        out.copyTo(bitmap)
-        rs.destroy()
-
-        return outBitmap
     }
 
     fun <T> createRxService(rxService: Class<T>, baseUrl: String, withLog: Boolean): T {

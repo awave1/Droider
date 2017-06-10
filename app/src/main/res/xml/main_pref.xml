@@ -33,17 +33,11 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:summary="@string/pref_group_beta_summary"
-        android:title="@string/pref_group_beta">
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="beta_enableBlur"
-            android:summary="@string/pref_blur_summary"
-            android:textColor="?android:attr/textColorPrimary"
-            android:title="@string/pref_blur_title"/>
-
-    </PreferenceCategory>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/palette_key"
+        android:summary="@string/pref_palette_summary"
+        android:textColor="?android:attr/textColorPrimary"
+        android:title="@string/pref_palette_title"/>
 
 </PreferenceScreen>

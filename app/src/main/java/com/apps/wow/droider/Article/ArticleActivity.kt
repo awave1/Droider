@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -31,11 +32,12 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import com.apps.wow.droider.Adapters.ArticleSimilarAdapter
-import com.apps.wow.droider.Adapters.FeedAdapter
 import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.Model.Post
 import com.apps.wow.droider.R
+import com.apps.wow.droider.Utils.BitmapLoaded
 import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Utils.drawableToBitmap
 import com.apps.wow.droider.databinding.ArticleBinding
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -238,19 +240,17 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private fun intentExtraChecking() {
         if (Intent.ACTION_VIEW == intent.action) {
-            //            ArticleParser.isOutIntent(true);
             mArticlePresenter.provideData(intent.data.toString(), setupArticleModelBuilder())
-
             mArticlePresenter.getPostDataForOutsideEvent()
-            //// TODO: teach presenter parse outIntent
+
         } else {
             Log.d(TAG, "intentExtraChecking: inner")
             mArticlePresenter.provideData(mUrl!!, setupArticleModelBuilder())
 
-            binding.articleHeader.text = extras!!.getString(Utils.EXTRA_ARTICLE_TITLE)
-            binding.articleShortDescription.text = extras!!.getString(Utils.EXTRA_SHORT_DESCRIPTION)
+            binding.articleHeader.text = extras?.getString(Utils.EXTRA_ARTICLE_TITLE)
+            binding.articleShortDescription.text = extras?.getString(Utils.EXTRA_SHORT_DESCRIPTION)
 
-            binding.articleHeaderImg.setImageURI(extras!!.getString(Utils.EXTRA_ARTICLE_IMG_URL))
+            binding.articleHeaderImg.setImageURI(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL))
         }
 
         mArticlePresenter.parseArticle()
@@ -263,29 +263,6 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         //                }
         //            }, 750);
 
-
-        //TODO разобраться с блюром
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            if (hasBlur) {
-                binding.articleHeaderContent.setBackgroundDrawable(
-                        Utils.applyBlur(FeedAdapter.headerImageDrawable, this))
-            } else {
-                binding.articleHeaderContent
-                        .setBackgroundDrawable(FeedAdapter.headerImageDrawable)
-            }
-        } else {
-            try {
-                if (hasBlur) {
-                    binding.articleHeaderContent.background = Utils.applyBlur(FeedAdapter.headerImageDrawable, this)
-                } else {
-                    binding.articleHeaderContent.background = FeedAdapter.headerImageDrawable
-                }
-            } catch (npe: NullPointerException) {
-                npe.printStackTrace()
-                binding.articleHeaderContent.background = FeedAdapter.headerImageDrawable
-            }
-
-        }
     }
 
     private fun viewInitialisation() {
@@ -426,35 +403,48 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     }
 
     private fun setupPaletteBackground(isTransparent: Boolean) {
-        if (isPalette && DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme || isPalette && currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
+        if (isPalette && (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme || currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
-                val p = Palette.Builder(
-                        Utils.drawableToBitmap(binding.articleHeaderContent.background))
-                        .generate()
-                if (p.lightMutedSwatch != null && !isTransparent) {
-                    binding.toolbarArticle.setBackgroundColor(p.lightMutedSwatch!!.rgb)
-                    binding.articleBackgroundNSV
-                            .setBackgroundColor(p.lightMutedSwatch!!.rgb)
-                    Log.d(TAG, "onCreate: color from bitmap: " + p.lightMutedSwatch!!.rgb
-                            + "")
-                } else {
-                    binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
-                    binding.articleBackgroundNSV
-                            .setBackgroundColor(p.lightMutedSwatch!!.rgb)
-                    Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ")
-                }
-            } catch (e: NullPointerException) {
-                if (isTransparent) {
-                    binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
-                } else {
-                    Log.e(TAG,
-                            "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ",
-                            e.cause)
-                }
-            }
 
+                val b : Bitmap = drawableToBitmap(binding.articleHeaderImg.drawable)
+                var p: Palette
+                Utils.convertImageUrlToBitmap(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL)!!, this, object : BitmapLoaded {
+                    override fun readyToUse(bitmap: Bitmap) {
+                        p = Palette.Builder(bitmap).generate()
+
+                        if (p.lightVibrantSwatch != null && !isTransparent) {
+                            binding.toolbarArticle.setBackgroundColor(p.lightVibrantSwatch!!.rgb)
+                            binding.articleBackgroundNSV
+                                    .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
+                            Log.d(TAG, "onCreate: color from bitmap: " + p.lightVibrantSwatch!!.rgb
+                                    + "")
+                        } else {
+                            binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
+                            binding.articleBackgroundNSV
+                                    .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
+                            Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ")
+                        }
+                    }
+                })
+
+            } catch (e: NullPointerException) {
+                handlePaltetException(isTransparent, e)
+            } catch (ise: IllegalStateException) {
+                handlePaltetException(isTransparent, ise)
+            }
         }
     }
+
+    private fun handlePaltetException(isTransparent: Boolean, e: Exception) {
+        if (isTransparent) {
+            binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
+        } else {
+            Log.e(TAG,
+                    "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ",
+                    e.cause)
+        }
+    }
+
 
     override fun changeLoadingVisibility(isVisible: Boolean) {
         binding.articleProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
