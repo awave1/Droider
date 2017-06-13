@@ -22,12 +22,14 @@ class ArticleModel(val mWebViewTextColor: String,
 
     private var mHtml: String? = null
 
+    private lateinit var id: String
+
     fun parseArticle(url: String): Observable<String> {
         return Observable.fromCallable<String> {
             val mDocument = Jsoup.connect(url).timeout(10000).get()
             mDocument.select(".article-gallery__photos__item__content").remove()
 
-            val elements = mDocument.select("article[id^=post] .article-body")
+            var elements = mDocument.select("article[id^=post] .article-body")
             val similarElements = mDocument.select(".popular-slider__list a")
 
 
@@ -40,6 +42,21 @@ class ArticleModel(val mWebViewTextColor: String,
                 el.select(".popular-slider__item").attr("href")
                 ))
             }
+
+            elements.map {
+                if (it.select("iframe").toString().contains("droidercast.podster.fm")) {
+                    val title = mDocument.select("header h1").text().replace("/", " ").replace("#", "№")
+                    val frameHtml = it.select("iframe").toString()
+                    val indexOfId = frameHtml.indexOf("droidercast.podster.fm/") + 23
+                    if (frameHtml.substring(indexOfId, indexOfId + 3)[2] == '/')
+                        id = frameHtml.substring(indexOfId, indexOfId + 2)
+                    else
+                        id = frameHtml.substring(indexOfId, indexOfId + 3) // это на случай когда станет трёх значным номер подкаста
+
+                    it.select("iframe").wrap("<p><a href='droider://player/$id/$title'><b>Слушай в приложении</b></a></p>").wrap("<p><br></p>")
+                }
+            }
+
             mHtml = this@ArticleModel.setupHtml(elements.html())
             mHtml
         }.subscribeOn(Schedulers.io())
@@ -128,7 +145,6 @@ class ArticleModel(val mWebViewTextColor: String,
                 ".article-table__table { " +
                 "width: 100%;" +
                 "background: " + mWebViewTableColor + ";" +
-
                 "}" +
                 ".article-table__head { " +
                 "background: " + mWebViewTableHeaderColor + ";" +

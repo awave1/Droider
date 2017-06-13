@@ -52,4 +52,22 @@
 
     <color name="image_preview_bckg">#a6000000</color>
 
+
+    <!--PODCAST-->
+    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimaryDark">#152942</color>
+    <color name="colorAccent">#03a9f4</color>
+
+    <color name="notificationColor">#01579b</color>
+    <color name="titleColor">#ffffff</color>
+
+    <color name="indicatorColor">#ef5350</color>
+
+    <color name="bottomBackgroundColor">#bdbdbd</color>
+    <color name="inactiveBtn">#9b9b9b</color>
+
+    <color name="main_bg">#10d3e1</color>
+
+    <color name="toolbarColor">#152942</color>
+
 </resources>
