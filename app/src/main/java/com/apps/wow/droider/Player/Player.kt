@@ -4,13 +4,16 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.view.View
+import com.apps.wow.droider.R
 import com.google.android.exoplayer.*
+
 
 /**
  * Created by Jackson on 30/12/2016.
  */
 
-class Player(URL: String, context: Context) {
+class Player(URL: String, context: Context, view: MainView) {
 
     init {
         val URI = Uri.parse(URL)
@@ -18,6 +21,7 @@ class Player(URL: String, context: Context) {
         release()
         audioRenderer = MediaCodecAudioTrackRenderer(sampleSource, null, true)
         exoPlayer = ExoPlayer.Factory.newInstance(1)
+        mView = view
     }
 
     fun start() {
@@ -28,19 +32,17 @@ class Player(URL: String, context: Context) {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 // This state if player is ready to work and loaded all data
                 Log.d(TAG, "onPlayerStateChanged: " + playbackState)
-//                if (playbackState == 3 || playbackState == 4) {
-//                    mView.setVisibilityToLoadingAnimation(View.GONE)
-//                    mView.setVisibilityToControlButton(View.VISIBLE)
-//                    mView.setControlButtonImageResource(R.drawable.pause)
-//                } else if (playbackState == 1) {
-//                    mView.setVisibilityToLoadingAnimation(View.GONE)
-//                    mView.setVisibilityToControlButton(View.VISIBLE)
-//                    mView.setControlButtonImageResource(R.drawable.play)
-//                }
+                if (playbackState == 3 || playbackState == 4) {
+                    mView.setVisibilityToControlButton(View.VISIBLE)
+                    mView.setControlButtonImageResource(R.drawable.pause)
+                } else if (playbackState == 1) {
+                    mView.setVisibilityToControlButton(View.VISIBLE)
+                    mView.setControlButtonImageResource(R.drawable.play)
+                }
             }
 
             override fun onPlayWhenReadyCommitted() {
-                exoPlayer!!.seekTo(123456L)
+//                exoPlayer!!.seekTo(123456L)
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
@@ -67,7 +69,7 @@ class Player(URL: String, context: Context) {
 
 
     companion object {
-
+        lateinit var mView : MainView
         var exoPlayer: ExoPlayer? = null
         lateinit internal var audioRenderer: TrackRenderer
     }

@@ -74,7 +74,7 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (player == null || headsetPlugReceiver == null) {
             if (activity != null) {
-                player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity)
+                player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity, this)
             }
             headsetPlugReceiver = MusicIntentReceiver()
             val filter = IntentFilter(Intent.ACTION_HEADSET_PLUG)
@@ -90,12 +90,7 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     private fun togglePlayPause() {
         if (activity != null) {
             if (!isControlActivated) {
-                if (player == null) {
-                    player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity)
-                }
                 player?.start()
-                binding.seekBar.maxValue = Player.exoPlayer?.duration!!.toFloat()
-                startPlayProgressUpdater()
                 setIsControlActivated(true)
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
                 vibrate()
@@ -145,6 +140,9 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
 
     override fun setVisibilityToControlButton(visibility: Int) {
         binding.controlButton.visibility = visibility
+        binding.seekBar.minValue = Player.exoPlayer?.currentPosition!!.toFloat()
+        binding.seekBar.maxValue = Player.exoPlayer?.duration!!.toFloat()
+        startPlayProgressUpdater()
     }
 
     override fun getControlButton(): ImageButton {

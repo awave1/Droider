@@ -62,17 +62,17 @@ class ListViewWidgetService : RemoteViewsService() {
 
                         override fun onNext(response: Response<FeedModel>) {
                             if (response.isSuccessful && !data.isEmpty()
-                                    && data[0].titleValue != response.body().posts[0].titleValue
+                                    && data[0].titleValue != response.body()!!.posts[0].titleValue
                                     || data
                                     .isEmpty()) {
 
                                 data.clear()
-                                data.addAll(response.body().posts)
+                                data.addAll(response.body()!!.posts)
 
                                 FeedWidget.update(context)
 
-                                for (i in 0..response.body().posts.size - 1) {
-                                    Log.d("TAG", "setSuccessfulView: " + response.body().posts[i].titleValue!!)
+                                for (i in 0..response.body()!!.posts.size - 1) {
+                                    Log.d("TAG", "setSuccessfulView: " + response.body()!!.posts[i].titleValue!!)
 
                                 }
                             }

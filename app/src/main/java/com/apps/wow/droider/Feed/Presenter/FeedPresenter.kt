@@ -32,7 +32,7 @@ class FeedPresenter : MvpPresenter<FeedView>() {
 
                     override fun onNext(response: Response<FeedModel>) {
                         if (response.isSuccessful) {
-                            viewState.onLoadCompleted(response.body(), clear)
+                            viewState.onLoadCompleted(response.body()!!, clear)
                         }
                     }
                 })
@@ -54,7 +54,7 @@ class FeedPresenter : MvpPresenter<FeedView>() {
 
                     override fun onNext(response: Response<FeedModel>) {
                         if (response.isSuccessful)
-                            viewState.onLoadCompleted(response.body())
+                            viewState.onLoadCompleted(response.body()!!)
                     }
                 })
     }
