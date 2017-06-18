@@ -1,4 +1,4 @@
-package com.apps.wow.droider.player
+package com.apps.wow.droider.Player
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

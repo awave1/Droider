@@ -54,6 +54,13 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true">
 
+                <com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
+                    android:id="@+id/seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/cardTitleTint_dark"
+                    app:data_type="_long"/>
+
                 <ImageButton
                     android:id="@+id/controlButton"
                     android:layout_width="@dimen/play_size"

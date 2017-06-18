@@ -1,4 +1,4 @@
-package com.apps.wow.droider.player
+package com.apps.wow.droider.Player
 
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
@@ -7,6 +7,7 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
 import android.os.Vibrator
 import android.support.annotation.Nullable
 import android.support.v4.content.ContextCompat
@@ -21,6 +22,8 @@ import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
+import com.google.android.exoplayer.ExoPlayer
+
 
 /**
  * Created by Jackson on 15/01/2017.
@@ -34,6 +37,8 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     private var player: Player? = null
     private var headsetPlugReceiver: MusicIntentReceiver? = null
 
+    private lateinit var exoPlayer: ExoPlayer
+
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         binding = PodcastFragmentBinding.inflate(inflater!!, container, false)
 
@@ -45,18 +50,25 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
         }
 
         binding.share.setOnClickListener {
-            if (podcastTitle != "") {
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_TEXT, podcastTitle + "\n"
-                        + Const.PODCAST_PATH_SHARE.format(arguments.getString(CAST_ID)))
-                sendIntent.type = "text/plain"
-                startActivity(Intent.createChooser(sendIntent, "Поделиться подкастом:"))
-            } else {
-                showToast("Откуда мне знать, что играет, если плеер выключено?")
-            }
+            share()
         }
+
+        binding.seekBar.setOnSeekbarChangeListener { p0 -> Player.exoPlayer?.seekTo(p0!!.toLong()) }
+
         return binding.root
+    }
+
+    private fun share() {
+        if (podcastTitle != "") {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT, podcastTitle + "\n"
+                    + Const.PODCAST_PATH_SHARE.format(arguments.getString(CAST_ID)))
+            sendIntent.type = "text/plain"
+            startActivity(Intent.createChooser(sendIntent, "Поделиться подкастом:"))
+        } else {
+            showToast("Откуда мне знать, что играет, если плеер выключено?")
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,6 +94,8 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
                     player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity)
                 }
                 player?.start()
+                binding.seekBar.maxValue = Player.exoPlayer?.duration!!.toFloat()
+                startPlayProgressUpdater()
                 setIsControlActivated(true)
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
                 vibrate()
@@ -93,6 +107,12 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
                 vibrate()
             }
         }
+    }
+
+    fun startPlayProgressUpdater() {
+        binding.seekBar.minValue = Player.exoPlayer?.currentPosition!!.toFloat()
+        val notification = Runnable { startPlayProgressUpdater() }
+        Handler().postDelayed(notification, 1000)
     }
 
     // Service for background audio binding.playing

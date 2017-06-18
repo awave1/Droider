@@ -1,4 +1,4 @@
-package com.apps.wow.droider.player
+package com.apps.wow.droider.Player
 
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -40,7 +40,7 @@ class Player(URL: String, context: Context) {
             }
 
             override fun onPlayWhenReadyCommitted() {
-
+                exoPlayer!!.seekTo(123456L)
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
@@ -65,9 +65,10 @@ class Player(URL: String, context: Context) {
         }
     }
 
+
     companion object {
 
-        internal var exoPlayer: ExoPlayer? = null
+        var exoPlayer: ExoPlayer? = null
         lateinit internal var audioRenderer: TrackRenderer
     }
 }
