@@ -1,5 +1,6 @@
 package com.apps.wow.droider.Player
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -7,12 +8,12 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Handler
 import android.os.Vibrator
 import android.support.annotation.Nullable
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -21,8 +22,10 @@ import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
+import com.apps.wow.droider.Utils.IOScheduler
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
-import com.google.android.exoplayer.ExoPlayer
+import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -36,9 +39,13 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     private lateinit var binding: PodcastFragmentBinding
     private var player: Player? = null
     private var headsetPlugReceiver: MusicIntentReceiver? = null
+    private val STATE_READY = 3
 
-    private lateinit var exoPlayer: ExoPlayer
+    private var fromUser: Boolean = false
 
+    private val ps: PublishSubject<Boolean> = PublishSubject.create<Boolean>()
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         binding = PodcastFragmentBinding.inflate(inflater!!, container, false)
 
@@ -53,10 +60,25 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             share()
         }
 
-        binding.seekBar.setOnSeekbarChangeListener { p0 -> Player.exoPlayer?.seekTo(p0!!.toLong()) }
+        //TODO сделать переключение через этот метод только если чувак ткнул
+        binding.seekBar.setOnSeekbarChangeListener { p0 ->
+            if (fromUser) {
+                Player.exoPlayer?.seekTo(p0!!.toLong())
+                fromUser = false
+            }
+        }
+        binding.seekBar.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                fromUser = true
+            }
+            fromUser
+        }
+        controlButton = binding.controlButton
+        podcastTitle = binding.podcastName.text.toString()
 
         return binding.root
     }
+
 
     private fun share() {
         if (podcastTitle != "") {
@@ -73,30 +95,39 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (player == null || headsetPlugReceiver == null) {
-            if (activity != null) {
+            if (activity != null && !Player.isPlaying) {
                 player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity, this)
             }
             headsetPlugReceiver = MusicIntentReceiver()
             val filter = IntentFilter(Intent.ACTION_HEADSET_PLUG)
             activity.registerReceiver(headsetPlugReceiver, filter)
+            psSubscription()
         }
     }
 
     override fun onDestroy() {
-        activity.unregisterReceiver(headsetPlugReceiver)
+        try {
+            activity.unregisterReceiver(headsetPlugReceiver)
+            if (!Player.isPlaying)
+                Player.exoPlayer?.release()
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+        } catch (iae: IllegalArgumentException) {
+            iae.printStackTrace()
+        }
         super.onDestroy()
     }
 
     private fun togglePlayPause() {
         if (activity != null) {
-            if (!isControlActivated) {
-                player?.start()
-                setIsControlActivated(true)
+            if (!isControlActivated || !Player.isPlaying) {
+                startPlayerService()
+                isControlActivated = true
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
                 vibrate()
             } else {
-                player!!.stop()
-                setIsControlActivated(false)
+                player!!.pause()
+                isControlActivated = false
                 refreshNotification()
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.play))
                 vibrate()
@@ -104,20 +135,38 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
         }
     }
 
+    override fun setupSeekbar() {
+        binding.seekBar.setMinStartValue(Player.pauseTime!!.toFloat())
+                .setMaxValue(Player.exoPlayer?.duration!!.toFloat() / 1000).apply()
+        startPlayProgressUpdater()
+    }
+
     fun startPlayProgressUpdater() {
-        binding.seekBar.minValue = Player.exoPlayer?.currentPosition!!.toFloat()
-        val notification = Runnable { startPlayProgressUpdater() }
-        Handler().postDelayed(notification, 1000)
+        if (Player.isPlaying) {
+            Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
+            ps.onNext(true)
+        }
+    }
+
+    fun psSubscription() {
+        ps.delay(1L, TimeUnit.SECONDS).onBackpressureLatest().retry().compose(IOScheduler())
+                .subscribe({
+                    Player.pauseTime = Player.pauseTime!!.plus(1L)
+                    binding.seekBar.setMinStartValue(Player.pauseTime!!.toFloat()).apply()
+                    startPlayProgressUpdater()
+                },
+                        { Log.e(javaClass.name, "in Observable", it) })
     }
 
     // Service for background audio binding.playing
     fun startPlayerService() {
-        //        if (getActivity() != null) {
-        //            new BaseService(this); // just for working service with mvp
-        //            Intent serviceIntent = new Intent(getActivity(), NotificationService.class);
-        //            serviceIntent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
-        //            getActivity().startService(serviceIntent);
-        //        }
+        if (activity != null) {
+            BaseService(this) // just for working service with mvp
+            val serviceIntent: Intent = Intent(activity, NotificationService::class.java)
+            serviceIntent.action = Const.ACTION.STARTFOREGROUND_ACTION
+            serviceIntent.putExtra(Const.CAST_URL, Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)))
+            activity.startService(serviceIntent)
+        }
     }
 
     // Vibrate when click on control button
@@ -126,27 +175,13 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             (activity.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(Const.VIBRATE_TIME)
     }
 
-    override fun isControlActivated(): Boolean {
-        return controlIsActivated
-    }
-
-    override fun setIsControlActivated(isActivated: Boolean) {
-        controlIsActivated = isActivated
-    }
-
     override fun setControlButtonImageResource(resource: Int) {
         binding.controlButton.setImageResource(resource)
     }
 
     override fun setVisibilityToControlButton(visibility: Int) {
         binding.controlButton.visibility = visibility
-        binding.seekBar.minValue = Player.exoPlayer?.currentPosition!!.toFloat()
-        binding.seekBar.maxValue = Player.exoPlayer?.duration!!.toFloat()
-        startPlayProgressUpdater()
-    }
 
-    override fun getControlButton(): ImageButton {
-        return binding.controlButton
     }
 
     override fun refreshNotification() {
@@ -163,9 +198,6 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             Toast.makeText(activity, text, Toast.LENGTH_LONG).show()
     }
 
-    override fun getPodcastTitle(): String {
-        return binding.podcastName.text.toString()
-    }
 
     inner class MusicIntentReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -183,6 +215,11 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             }
         }
     }
+
+
+    override var isControlActivated: Boolean = false
+    override lateinit var controlButton: ImageButton
+    override lateinit var podcastTitle: String
 
     companion object {
 

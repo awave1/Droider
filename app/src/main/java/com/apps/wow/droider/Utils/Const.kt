@@ -25,6 +25,8 @@ object Const {
 
     val CAST_NAME = "DR_CAST_NAME"
 
+    val CAST_URL = "CAST_URL"
+
     interface ACTION {
         companion object {
             val MAIN_ACTION = "com.jassdev.apps.andrroider.uradio.action.main"

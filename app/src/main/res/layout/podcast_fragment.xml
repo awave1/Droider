@@ -22,7 +22,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="10dp"
                 android:foregroundGravity="center"
-                android:src="@drawable/dr_cast" />
+                android:src="@drawable/dr_cast"/>
 
             <TextView
                 android:id="@+id/podcastName"
@@ -37,7 +37,7 @@
                 android:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
                 android:textColor="@color/titleColor"
                 android:textSize="@dimen/text_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
         </RelativeLayout>
 
 
@@ -58,8 +58,17 @@
                     android:id="@+id/seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:background="@color/cardTitleTint_dark"
                     app:data_type="_long"/>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/ic_android"
+                    android:background="@color/cardTitleTint_dark"
+                    android:progressDrawable="@color/progressColor"
+                    android:visibility="gone"
+                    android:layout_below="@+id/seekBar"
+                    />
 
                 <ImageButton
                     android:id="@+id/controlButton"
@@ -70,18 +79,18 @@
                     android:background="@drawable/play_button"
                     android:elevation="7dp"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/play"
                     android:translationZ="2dp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/play"/>
 
                 <ImageView
                     android:id="@+id/share"
                     android:layout_width="46dp"
                     android:layout_height="46dp"
-                    app:srcCompat="@drawable/ic_share"
-                    android:layout_marginBottom="40dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="40dp"
+                    app:srcCompat="@drawable/ic_share"/>
             </RelativeLayout>
 
         </RelativeLayout>

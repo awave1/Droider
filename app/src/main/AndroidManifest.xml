@@ -88,6 +88,9 @@
                     android:scheme="droider"/>
             </intent-filter>
         </activity>
+
+        <!--Service for player and notification-->
+        <service android:name=".Player.NotificationService"/>
     </application>
 
 </manifest>

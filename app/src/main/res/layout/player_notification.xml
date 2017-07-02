@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/notificationColor">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <ImageButton
+                android:id="@+id/status_bar_play"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:background="@drawable/play_button"
+                android:contentDescription="@string/cd_play"
+                android:scaleType="fitCenter"
+                android:src="@drawable/play" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/status_bar_button_info_container_padding_left">
+
+
+                <TextView
+                    android:id="@+id/track_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/titleColor"
+                    android:text="Song"
+                    />
+            </LinearLayout>
+
+
+            <ImageButton
+                android:id="@+id/status_bar_collapse"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_close" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
