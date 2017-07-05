@@ -5,46 +5,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1">
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.55"
-            android:background="@color/main_bg">
+            android:layout_height="wrap_content"
+            android:background="@color/main_bg"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_above="@+id/podcastName"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="10dp"
-                android:foregroundGravity="center"
+                android:layout_gravity="top"
+                android:contentDescription="podcastImg"
+                android:scaleType="centerCrop"
                 android:src="@drawable/dr_cast"/>
 
             <TextView
                 android:id="@+id/podcastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="9dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
                 android:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
                 android:textColor="@color/titleColor"
                 android:textSize="@dimen/text_size"
                 android:textStyle="bold"/>
-        </RelativeLayout>
+        </LinearLayout>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.45"
+            android:layout_height="wrap_content"
             android:background="@drawable/main_background_gradient">
 
             <RelativeLayout
@@ -54,28 +48,29 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true">
 
-                <com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
-                    android:id="@+id/seekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    app:data_type="_long"/>
-
-                <android.support.v7.widget.AppCompatSeekBar
+                <com.github.florent37.androidslidr.Slidr
+                    android:id="@+id/slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/ic_android"
-                    android:background="@color/cardTitleTint_dark"
-                    android:progressDrawable="@color/progressColor"
-                    android:visibility="gone"
-                    android:layout_below="@+id/seekBar"
-                    />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="24dp"
+                    app:slidr_draw_bubble="false"
+                    app:slidr_region_leftColor="#FFF"
+                    app:slidr_region_rightColor="@color/white"
+                    app:slidr_regions_centerText="false"
+                    app:slidr_regions_textFollowRegionColor="true"
+                    app:slidr_regions="false"
+                    app:slidr_textBottom_visible="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"/>
 
                 <ImageButton
                     android:id="@+id/controlButton"
                     android:layout_width="@dimen/play_size"
                     android:layout_height="@dimen/play_size"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="100dp"
                     android:background="@drawable/play_button"
                     android:elevation="7dp"
                     android:scaleType="fitCenter"
@@ -88,9 +83,24 @@
                     android:layout_width="46dp"
                     android:layout_height="46dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="62dp"
+                    android:layout_marginLeft="56dp"
+                    android:layout_marginStart="56dp"
                     app:srcCompat="@drawable/ic_share"/>
+
+                <ImageView
+                    android:id="@+id/download"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="62dp"
+                    android:layout_marginEnd="56dp"
+                    android:layout_marginRight="56dp"
+                    app:srcCompat="@drawable/ic_file_download"/>
             </RelativeLayout>
 
         </RelativeLayout>

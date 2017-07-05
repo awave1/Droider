@@ -31,7 +31,7 @@ class Player(URL: String, context: Context, view: MainView) {
     init {
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context), DefaultTrackSelector(), DefaultLoadControl())
 //        val mediaSource = buildMediaSource(Uri.parse(URL))
-        val mediaSource = buildMediaSource(Uri.parse("https://cs1-64v4.vk-cdn.net/p20/53b7abb098aec3.mp3"))
+        val mediaSource = buildMediaSource(Uri.parse(URL))
         exoPlayer!!.prepare(mediaSource, true, false)
         mView = view
     }
@@ -106,7 +106,7 @@ class Player(URL: String, context: Context, view: MainView) {
     fun pause() {
         if (exoPlayer != null) {
             exoPlayer?.playWhenReady = false
-            pauseTime = exoPlayer?.currentPosition!! / 1000
+            pauseTime = exoPlayer?.currentPosition!!
             playbackPosition = exoPlayer?.currentPosition
             wasPaused = true
         }

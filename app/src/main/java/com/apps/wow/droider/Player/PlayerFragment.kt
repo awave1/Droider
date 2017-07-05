@@ -13,7 +13,6 @@ import android.support.annotation.Nullable
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -24,6 +23,7 @@ import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.Utils.IOScheduler
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
+import com.github.florent37.androidslidr.Slidr
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -35,14 +35,10 @@ import java.util.concurrent.TimeUnit
 class PlayerFragment : android.support.v4.app.Fragment(), MainView {
 
     // Boolean for check if play/pause button is activated
-    private var controlIsActivated = false
     private lateinit var binding: PodcastFragmentBinding
     private var player: Player? = null
     private var headsetPlugReceiver: MusicIntentReceiver? = null
     private val STATE_READY = 3
-
-    private var fromUser: Boolean = false
-
     private val ps: PublishSubject<Boolean> = PublishSubject.create<Boolean>()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -60,19 +56,21 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             share()
         }
 
-        //TODO сделать переключение через этот метод только если чувак ткнул
-        binding.seekBar.setOnSeekbarChangeListener { p0 ->
-            if (fromUser) {
-                Player.exoPlayer?.seekTo(p0!!.toLong())
-                fromUser = false
+
+        binding.slider.setListener(object : Slidr.Listener {
+            override fun bubbleClicked(slidr: Slidr?) {
             }
-        }
-        binding.seekBar.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                fromUser = true
+
+            override fun valueChanged(slidr: Slidr?, currentValue: Float) {
+                Log.d(javaClass.name, "valueChanged: " + Player.pauseTime)
+                Log.d(javaClass.name, "valueChanged currentValue : " + currentValue)
+                if (currentValue > Player.pauseTime!! + 2) {// +2 for corner cases(maloli)
+                    Player.pauseTime = slidr?.currentValue!!.toLong()
+                    Player.exoPlayer?.seekTo(Player.pauseTime!!)
+                }
             }
-            fromUser
-        }
+        })
+
         controlButton = binding.controlButton
         podcastTitle = binding.podcastName.text.toString()
 
@@ -89,7 +87,7 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             sendIntent.type = "text/plain"
             startActivity(Intent.createChooser(sendIntent, "Поделиться подкастом:"))
         } else {
-            showToast("Откуда мне знать, что играет, если плеер выключено?")
+            showToast("чёт не получилось запомнить название подкаста, со мной такое бывает")
         }
     }
 
@@ -102,6 +100,7 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
             val filter = IntentFilter(Intent.ACTION_HEADSET_PLUG)
             activity.registerReceiver(headsetPlugReceiver, filter)
             psSubscription()
+            binding.slider.setTextFormatter { "" }
         }
     }
 
@@ -136,10 +135,27 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     }
 
     override fun setupSeekbar() {
-        binding.seekBar.setMinStartValue(Player.pauseTime!!.toFloat())
-                .setMaxValue(Player.exoPlayer?.duration!!.toFloat() / 1000).apply()
+
+        val millis = Player.exoPlayer?.duration!!
+
+        Log.d(javaClass.name, "duration: " + formatText(millis))
+
+        binding.slider.max = millis.toFloat()
+        binding.slider.setMin(Player.pauseTime!!.toFloat())
+        binding.slider.setTextFormatter { formatText(it.toLong()) }
+
         startPlayProgressUpdater()
     }
+
+    fun formatText(millis: Long) =
+            if (TimeUnit.MILLISECONDS.toHours(millis) > 0)
+                String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                        TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
+            else
+                String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
+
 
     fun startPlayProgressUpdater() {
         if (Player.isPlaying) {
@@ -151,11 +167,10 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
     fun psSubscription() {
         ps.delay(1L, TimeUnit.SECONDS).onBackpressureLatest().retry().compose(IOScheduler())
                 .subscribe({
-                    Player.pauseTime = Player.pauseTime!!.plus(1L)
-                    binding.seekBar.setMinStartValue(Player.pauseTime!!.toFloat()).apply()
+                    Player.pauseTime = Player.pauseTime!!.plus(1000L)
+                    binding.slider.setMin(Player.pauseTime!!.toFloat())
                     startPlayProgressUpdater()
-                },
-                        { Log.e(javaClass.name, "in Observable", it) })
+                }, { Log.e(javaClass.name, "in Observable", it) })
     }
 
     // Service for background audio binding.playing
