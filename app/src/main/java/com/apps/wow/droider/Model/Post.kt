@@ -17,10 +17,6 @@ data class Post(@SerializedName("picture_basic") @Expose var pictureBasic: Strin
                 @SerializedName("comments") @Expose var comments: String? = null,
                 @SerializedName("views") @Expose var views: Int? = null) : Parcelable {
 
-
-//     var title: String = StringEscapeUtils.unescapeHtml4(title)
-//     var description: String = StringEscapeUtils.unescapeHtml4(description)
-
     var titleValue = title
         get(): String? {
             return StringEscapeUtils.unescapeHtml4(title)

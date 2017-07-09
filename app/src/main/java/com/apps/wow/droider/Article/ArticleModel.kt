@@ -3,7 +3,10 @@ package com.apps.wow.droider.Article
 import android.content.ContentValues.TAG
 import android.text.TextUtils
 import android.util.Log
+import com.apps.wow.droider.DB.Article
 import com.apps.wow.droider.Model.Post
+import com.apps.wow.droider.Utils.AppContext
+import io.realm.Realm
 import org.jsoup.Jsoup
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -58,6 +61,14 @@ class ArticleModel(val mWebViewTextColor: String,
             }
 
             mHtml = this@ArticleModel.setupHtml(elements.html())
+
+            Realm.init(AppContext.context)
+            val realm = Realm.getDefaultInstance()
+            realm.beginTransaction()
+            val article: Article = realm.createObject(Article::class.java)
+            article.articleHtml = mHtml
+            article.articleUrl = url
+            realm.commitTransaction()
             mHtml
         }.subscribeOn(Schedulers.io())
     }

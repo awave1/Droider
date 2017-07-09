@@ -6,7 +6,6 @@ import com.apps.wow.droider.Utils.Utils
 import com.apps.wow.droider.api.DroiderApi
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-
 import retrofit2.Response
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers

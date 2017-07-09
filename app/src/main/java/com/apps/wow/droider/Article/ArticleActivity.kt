@@ -45,6 +45,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import io.codetail.animation.ViewAnimationUtils
+import io.realm.Realm
 import java.util.*
 
 class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListener, ArticleView {
@@ -75,6 +76,8 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private var mUrl: String? = null
 
+    private lateinit var mRealm : Realm
+
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var mArticlePresenter: ArticlePresenter
 
@@ -85,6 +88,8 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         super.onCreate(savedInstanceState)
+        Realm.init(this)
+        mRealm = Realm.getDefaultInstance()
         getSharedPreferences()
 
         binding = DataBindingUtil.setContentView<ArticleBinding>(this@ArticleActivity, R.layout.article)
@@ -240,12 +245,12 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private fun intentExtraChecking() {
         if (Intent.ACTION_VIEW == intent.action) {
-            mArticlePresenter.provideData(intent.data.toString(), setupArticleModelBuilder())
+            mArticlePresenter.provideData(intent.data.toString(), setupArticleModel())
             mArticlePresenter.getPostDataForOutsideEvent()
 
         } else {
             Log.d(TAG, "intentExtraChecking: inner")
-            mArticlePresenter.provideData(mUrl!!, setupArticleModelBuilder())
+            mArticlePresenter.provideData(mUrl!!, setupArticleModel())
 
             binding.articleHeader.text = extras?.getString(Utils.EXTRA_ARTICLE_TITLE)
             binding.articleShortDescription.text = extras?.getString(Utils.EXTRA_SHORT_DESCRIPTION)
@@ -253,7 +258,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             binding.articleHeaderImg.setImageURI(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL))
         }
 
-        mArticlePresenter.parseArticle()
+        mArticlePresenter.parseArticle(mRealm)
 
         //            new Handler().postDelayed(() -> {
         //                if (ArticleParser.isYoutube()) {
@@ -406,7 +411,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         if (isPalette && (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme || currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
 
-                val b : Bitmap = drawableToBitmap(binding.articleHeaderImg.drawable)
+                val b: Bitmap = drawableToBitmap(binding.articleHeaderImg.drawable)
                 var p: Palette
                 Utils.convertImageUrlToBitmap(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL)!!, this, object : BitmapLoaded {
                     override fun readyToUse(bitmap: Bitmap) {
@@ -478,8 +483,13 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     }
 
-    private fun setupArticleModelBuilder(): ArticleModel {
+    private fun setupArticleModel(): ArticleModel {
         return ArticleModel(webViewTextColor!!, webViewLinkColor!!, webViewTableColor!!, webViewTableHeaderColor!!)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRealm.close()
     }
 
     companion object {
