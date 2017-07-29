@@ -1,7 +1,6 @@
 package com.apps.wow.droider.Feed
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -18,13 +17,10 @@ import com.apps.wow.droider.NavDrawScreens.AboutFragment
 import com.apps.wow.droider.NavDrawScreens.Preferences
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Utils
-import com.apps.wow.droider.databinding.ActivityFeedBinding
+import kotlinx.android.synthetic.main.activity_feed.*
 
 class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val TAG = FeedActivity::class.java.simpleName
-
-    var binding: ActivityFeedBinding? = null
-
     private var activeFeedTitle: String? = null
     private val mTitle = "Главная"
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
@@ -32,8 +28,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     override fun onCreate(savedInstanceState: Bundle?) {
         themeSetup()
         super.onCreate(savedInstanceState)
-
-        binding = DataBindingUtil.setContentView<ActivityFeedBinding>(this, R.layout.activity_feed)
+        setContentView(R.layout.activity_feed)
         setupView()
     }
 
@@ -62,8 +57,8 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     override fun onBackPressed() {
         assert(supportActionBar != null)
         supportActionBar!!.title = activeFeedTitle
-        if (binding?.navDrawer!!.isDrawerOpen(GravityCompat.START)) {
-            binding?.navDrawer?.closeDrawer(GravityCompat.START)
+        if (navDrawer.isDrawerOpen(GravityCompat.START)) {
+            navDrawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -79,7 +74,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
                 activeFeedTitle = getString(R.string.drawer_item_home)
             }
             fragmentManager.beginTransaction()
-                    .replace(R.id.container_main, FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN))
+                    .replace(R.id.containerMain, FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN))
                     .commit()
         }
     }
@@ -94,15 +89,14 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun navigationDrawerSetup() {
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, binding!!.navDrawer, binding!!.toolbar, R.string.drawer_open,
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, navDrawer, toolbar, R.string.drawer_open,
                 R.string.drawer_close)
-        binding!!.navDrawer.addDrawerListener(actionBarDrawerToggle!!)
+        navDrawer.addDrawerListener(actionBarDrawerToggle!!)
         actionBarDrawerToggle!!.syncState()
 
-        val navigationView = findViewById(R.id.nav_view) as NavigationView
-        navigationView.setNavigationItemSelectedListener(this)
+        navView.setNavigationItemSelectedListener(this)
 
-        binding!!.navDrawer.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, DroiderBaseActivity.Companion.activeTheme))
+        navDrawer.setBackgroundColor(getThemeAttribute(R.attr.colorPrimary, DroiderBaseActivity.Companion.activeTheme))
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
@@ -175,26 +169,25 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
         }
 
         if (menuItem.itemId != R.id.home_page_tab)
-            binding!!.popularNews.visibility = View.GONE
+            popularNews.visibility = View.GONE
         else
-            binding!!.popularNews.visibility = View.VISIBLE
+            popularNews.visibility = View.VISIBLE
 
         if (fragment != null) {
             fragmentTransaction.setCustomAnimations(R.animator.frag_in, R.animator.frag_out)
             if (isBackStackNeeded) {
                 fragmentTransaction.addToBackStack(fragment.tag)
-                isBackStackNeeded = false
             }
-            fragmentTransaction.replace(R.id.container_main, fragment).commit()
+            fragmentTransaction.replace(R.id.containerMain, fragment).commit()
         }
 
-        binding!!.navDrawer.closeDrawer(GravityCompat.START)
+        navDrawer.closeDrawer(GravityCompat.START)
         return super.onOptionsItemSelected(menuItem)
     }
 
     private fun toolbarSetup() {
-        binding!!.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.text_color_toolbar_red))
-        setSupportActionBar(binding!!.toolbar)
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.text_color_toolbar_red))
+        setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.title = mTitle
@@ -202,17 +195,17 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
         }
         activeFeedTitle = getString(R.string.drawer_item_home)
-        binding!!.popularNews.overScrollMode = View.OVER_SCROLL_NEVER
+        popularNews.overScrollMode = View.OVER_SCROLL_NEVER
     }
 
     fun restoreActionBar() {
         assert(supportActionBar != null)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        binding!!.toolbar.title = mTitle
+        toolbar.title = mTitle
     }
 
     override fun onDestroy() {
-        binding!!.navDrawer.removeDrawerListener(actionBarDrawerToggle!!)
+        navDrawer.removeDrawerListener(actionBarDrawerToggle!!)
         super.onDestroy()
     }
 }

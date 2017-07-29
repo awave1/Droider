@@ -17,13 +17,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidslidr.Slidr
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.Utils.IOScheduler
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
-import com.github.florent37.androidslidr.Slidr
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -34,11 +34,9 @@ import java.util.concurrent.TimeUnit
 
 class PlayerFragment : android.support.v4.app.Fragment(), MainView {
 
-    // Boolean for check if play/pause button is activated
     private lateinit var binding: PodcastFragmentBinding
     private var player: Player? = null
     private var headsetPlugReceiver: MusicIntentReceiver? = null
-    private val STATE_READY = 3
     private val ps: PublishSubject<Boolean> = PublishSubject.create<Boolean>()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -58,18 +56,21 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
 
 
         binding.slider.setListener(object : Slidr.Listener {
-            override fun bubbleClicked(slidr: Slidr?) {
+            override fun bubbleClicked(slidr: androidslidr.Slidr?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun valueChanged(slidr: Slidr?, currentValue: Float) {
-                Log.d(javaClass.name, "valueChanged: " + Player.pauseTime)
-                Log.d(javaClass.name, "valueChanged currentValue : " + currentValue)
-                if (currentValue > Player.pauseTime!! + 2) {// +2 for corner cases(maloli)
+            override fun valueChanged(slidr: androidslidr.Slidr?, currentValue: Float) {
+                Log.d(javaClass.name, "valueChanged: " + Player.pauseTime?.let { formatText(it) })
+                Log.d(javaClass.name, "valueChanged currentValue : " + formatText(currentValue.toLong()))
+                if (currentValue > Player.pauseTime!! + 5) {// +2 for corner cases(maloli)
                     Player.pauseTime = slidr?.currentValue!!.toLong()
                     Player.exoPlayer?.seekTo(Player.pauseTime!!)
                 }
             }
         })
+
+        binding.slider.setTextMin(formatText(0L))
 
         controlButton = binding.controlButton
         podcastTitle = binding.podcastName.text.toString()
@@ -141,8 +142,11 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
         Log.d(javaClass.name, "duration: " + formatText(millis))
 
         binding.slider.max = millis.toFloat()
-        binding.slider.setMin(Player.pauseTime!!.toFloat())
+        binding.slider.setMin(0F)
+        Player.exoPlayer?.duration?.toFloat()?.let { binding.slider.max = it }
         binding.slider.setTextFormatter { formatText(it.toLong()) }
+
+        binding.slider.setTextMax(Player.exoPlayer?.duration?.let { formatText(it) })
 
         startPlayProgressUpdater()
     }
@@ -168,7 +172,8 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
         ps.delay(1L, TimeUnit.SECONDS).onBackpressureLatest().retry().compose(IOScheduler())
                 .subscribe({
                     Player.pauseTime = Player.pauseTime!!.plus(1000L)
-                    binding.slider.setMin(Player.pauseTime!!.toFloat())
+                    binding.slider.currentValue = Player.pauseTime!!.toFloat()
+                    binding.slider.setTextMin(formatText(Player.pauseTime!!))
                     startPlayProgressUpdater()
                 }, { Log.e(javaClass.name, "in Observable", it) })
     }
@@ -242,7 +247,6 @@ class PlayerFragment : android.support.v4.app.Fragment(), MainView {
          * https://bitbucket.org/mrcpp/rapliveradio/src/7548be6d5b6b9330421e91f756150099d06b0c3d/app/src/main/java/radio/raplive/ru/rapliveradio/ActivityMain.java?at=master&fileviewer=file-view-default
          * https://tproger.ru/articles/android-online-radio/
          */
-
 
         fun newInstance(castId: String, castName: String): PlayerFragment {
             val fragment = PlayerFragment()

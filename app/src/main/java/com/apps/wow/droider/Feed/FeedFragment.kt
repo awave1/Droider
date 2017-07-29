@@ -26,6 +26,7 @@ import com.apps.wow.droider.databinding.FeedFragmentBinding
 import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
+import kotlinx.android.synthetic.main.activity_feed.*
 
 
 class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -80,16 +81,17 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         onTaskCompleted()
     }
 
+
     override fun onLoadCompleted(model: FeedModel) {
         val parentActivity = activity as FeedActivity
         val layoutManager = LinearLayoutManager(activity,
                 LinearLayoutManager.HORIZONTAL, false)
         val snapHelper = PagerSnapHelper()
-
-        parentActivity.binding?.popularNews?.layoutManager = layoutManager
-        parentActivity.binding?.popularNews?.adapter = ArticleSimilarAdapter(model.posts)
+        //грязь - перенести их активити сюда, во фрагмент
+        popularNews?.layoutManager = layoutManager
+        popularNews?.adapter = ArticleSimilarAdapter(model.posts)
         try {
-            snapHelper.attachToRecyclerView(parentActivity.binding?.popularNews)
+            snapHelper.attachToRecyclerView(parentActivity.popularNews)
         } catch (ise: IllegalStateException) {
             ise.printStackTrace()
         }

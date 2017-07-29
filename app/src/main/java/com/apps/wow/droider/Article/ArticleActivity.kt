@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -38,7 +37,6 @@ import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.BitmapLoaded
 import com.apps.wow.droider.Utils.Utils
 import com.apps.wow.droider.Utils.Utils.drawableToBitmap
-import com.apps.wow.droider.databinding.ArticleBinding
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -46,6 +44,7 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import io.codetail.animation.ViewAnimationUtils
 import io.realm.Realm
+import kotlinx.android.synthetic.main.article.*
 import java.util.*
 
 class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListener, ArticleView {
@@ -59,8 +58,6 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     var webViewTableHeaderColor: String? = null
 
     var hasBlur: Boolean = false
-
-    lateinit var binding: ArticleBinding
 
     private val youtubeFrame: FrameLayout? = null
 
@@ -76,7 +73,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private var mUrl: String? = null
 
-    private lateinit var mRealm : Realm
+    private lateinit var mRealm: Realm
 
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var mArticlePresenter: ArticlePresenter
@@ -88,11 +85,11 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.article)
         Realm.init(this)
         mRealm = Realm.getDefaultInstance()
         getSharedPreferences()
 
-        binding = DataBindingUtil.setContentView<ArticleBinding>(this@ArticleActivity, R.layout.article)
         extras = intent.extras
 
         mUrl = if (extras != null && extras!!.getString(Utils.EXTRA_ARTICLE_URL) != null)
@@ -105,10 +102,10 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         toolbarSetup()
         ArticleParserSetup()
         backgroundTintColorSetup()
-        binding.appbarArticle.addOnOffsetChangedListener(this)
+        appbarArticle.addOnOffsetChangedListener(this)
 
         this.calculateMinimumHeight()
-        this.setupArticleWebView(binding.article)
+        this.setupArticleWebView(article)
     }
 
     private fun getSharedPreferences() {
@@ -137,11 +134,11 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     override fun onPause() {
         super.onPause()
-        binding.articleBackgroundNSV.isNestedScrollingEnabled = true
+        articleBackgroundNSV.isNestedScrollingEnabled = true
     }
 
     private fun playActivityAnimation() {
-        val animatedView = binding.articleCoordinatorLayout
+        val animatedView = articleCoordinatorLayout
         animatedView.post {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 createFadeAnimation(animatedView)
@@ -184,32 +181,19 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     }
 
     private fun backgroundTintColorSetup() {
-        val view = findViewById(R.id.article_background_tint_view)
         if (DroiderBaseActivity.Companion.activeTheme != R.style.AdaptiveTheme) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                view.setBackgroundDrawable(AppCompatResources.getDrawable(this,
-                        if (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme)
-                            R.drawable.article_background_tint_light
-                        else
-                            R.drawable.article_background_tint_dark))
-            } else {
-                view.background = AppCompatResources.getDrawable(this,
-                        if (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme)
-                            R.drawable.article_background_tint_light
-                        else
-                            R.drawable.article_background_tint_dark)
-            }
+            articleBackgroundTintView.background = AppCompatResources.getDrawable(this,
+                    if (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme)
+                        R.drawable.article_background_tint_light
+                    else
+                        R.drawable.article_background_tint_dark)
         } else {
             val tintDrawable = AppCompatResources
                     .getDrawable(this, R.drawable.article_background_tint_dark)
             tintDrawable?.setColorFilter(
                     getThemeAttribute(android.R.attr.colorBackground, DroiderBaseActivity.Companion.activeTheme),
                     PorterDuff.Mode.SRC_ATOP)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                view.setBackgroundDrawable(tintDrawable)
-            } else {
-                view.background = tintDrawable
-            }
+            articleBackgroundTintView.background = tintDrawable
         }
     }
 
@@ -252,10 +236,10 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             Log.d(TAG, "intentExtraChecking: inner")
             mArticlePresenter.provideData(mUrl!!, setupArticleModel())
 
-            binding.articleHeader.text = extras?.getString(Utils.EXTRA_ARTICLE_TITLE)
-            binding.articleShortDescription.text = extras?.getString(Utils.EXTRA_SHORT_DESCRIPTION)
+            articleHeader.text = extras?.getString(Utils.EXTRA_ARTICLE_TITLE)
+            articleShortDescription.text = extras?.getString(Utils.EXTRA_SHORT_DESCRIPTION)
 
-            binding.articleHeaderImg.setImageURI(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL))
+            articleHeaderImg.setImageURI(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL))
         }
 
         mArticlePresenter.parseArticle(mRealm)
@@ -272,22 +256,22 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private fun viewInitialisation() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            binding.articleCoordinatorLayout.alpha = 0f
+            articleCoordinatorLayout.alpha = 0f
         } else {
-            binding.articleCoordinatorLayout.visibility = View.INVISIBLE
+            articleCoordinatorLayout.visibility = View.INVISIBLE
         }
     }
 
     private fun toolbarSetup() {
 
-        setSupportActionBar(binding.toolbarArticle)
+        setSupportActionBar(toolbarArticle)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.title = ""
             supportActionBar!!.setDisplayShowHomeEnabled(true)
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
-            binding.toolbarArticle.setNavigationOnClickListener { finish() }
+            toolbarArticle.setNavigationOnClickListener { finish() }
         }
     }
 
@@ -317,7 +301,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             setupPaletteBackground(false)
         } else {
             assert(supportActionBar != null)
-            binding.collapsingToolbar.title = ""
+            collapsingToolbar.title = ""
             assert(actionBar != null)
             setupPaletteBackground(true)
             supportActionBar!!.setHomeButtonEnabled(true)
@@ -355,7 +339,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        binding.articleHeader.text.toString() + ":  " + mUrl)
+                        articleHeader.text.toString() + ":  " + mUrl)
                 sendIntent.type = "text/plain"
                 startActivity(Intent.createChooser(sendIntent, "Отправить ссылку на статью"))
             }
@@ -368,7 +352,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         Log.d(TAG, "setupArticleWebView: ")
         w.setBackgroundColor(webViewBackgroundColor)
         val settings = w.settings
-        w.setWebViewClient(object : WebViewClient() {
+        w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 Log.d(TAG, "shouldOverrideUrlLoading: url: " + url)
                 if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)").toRegex())) {
@@ -377,14 +361,14 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
                             .addToBackStack("image_prev")
                             .replace(R.id.image_preview, ImagePreviewFragment.newInstance(url))
                             .commit()
-                    binding.articleBackgroundNSV.isNestedScrollingEnabled = false
+                    articleBackgroundNSV.isNestedScrollingEnabled = false
                 } else {
                     view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                 }
 
                 return true
             }
-        })
+        }
 
         settings.javaScriptEnabled = true
         settings.loadWithOverviewMode = true
@@ -404,28 +388,28 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             actionBarHeight = TypedValue
                     .complexToDimensionPixelSize(tv.data, resources.displayMetrics)
         }
-        binding.articleRelLayout.minimumHeight = screenHeight - actionBarHeight
+        articleRelLayout.minimumHeight = screenHeight - actionBarHeight
     }
 
     private fun setupPaletteBackground(isTransparent: Boolean) {
         if (isPalette && (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme || currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
             try {
 
-                val b: Bitmap = drawableToBitmap(binding.articleHeaderImg.drawable)
+                val b: Bitmap = drawableToBitmap(articleHeaderImg.drawable)
                 var p: Palette
                 Utils.convertImageUrlToBitmap(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL)!!, this, object : BitmapLoaded {
                     override fun readyToUse(bitmap: Bitmap) {
                         p = Palette.Builder(bitmap).generate()
 
                         if (p.lightVibrantSwatch != null && !isTransparent) {
-                            binding.toolbarArticle.setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            binding.articleBackgroundNSV
+                            toolbarArticle.setBackgroundColor(p.lightVibrantSwatch!!.rgb)
+                            articleBackgroundNSV
                                     .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
                             Log.d(TAG, "onCreate: color from bitmap: " + p.lightVibrantSwatch!!.rgb
                                     + "")
                         } else {
-                            binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
-                            binding.articleBackgroundNSV
+                            toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
+                            articleBackgroundNSV
                                     .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
                             Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ")
                         }
@@ -442,7 +426,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
     private fun handlePaltetException(isTransparent: Boolean, e: Exception) {
         if (isTransparent) {
-            binding.toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
+            toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
         } else {
             Log.e(TAG,
                     "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ",
@@ -452,22 +436,22 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
 
     override fun changeLoadingVisibility(isVisible: Boolean) {
-        binding.articleProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+        articleProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     override fun loadArticle(articleHtml: String) {
-        binding.article
+        article
                 .loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
     }
 
     override fun setupSimilar(similar: ArrayList<Post>) {
-        binding.similarArticles.layoutManager = LinearLayoutManager(this@ArticleActivity, LinearLayoutManager.HORIZONTAL,
+        similarArticles.layoutManager = LinearLayoutManager(this@ArticleActivity, LinearLayoutManager.HORIZONTAL,
                 false)
-        binding.similarArticles.adapter = ArticleSimilarAdapter(similar)
+        similarArticles.adapter = ArticleSimilarAdapter(similar)
     }
 
     override fun hideSimilar() {
-        binding.similarArticlesContainer?.visibility = View.GONE
+        similarArticlesContainer.visibility = View.GONE
     }
 
     override fun showErrorLoading(errorHtml: String) {
@@ -475,11 +459,11 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
     }
 
     override fun setupNecessaryFields(post: Post) {
-        binding.articleHeader.text = post.titleValue
-        binding.articleShortDescription.text = post.descriptionValue
+        articleHeader.text = post.titleValue
+        articleShortDescription.text = post.descriptionValue
 
         if (!TextUtils.isEmpty(post.pictureWide))
-            binding.articleHeaderImg.setImageURI(post.pictureWide)
+            articleHeaderImg.setImageURI(post.pictureWide)
 
     }
 

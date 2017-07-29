@@ -7,15 +7,11 @@ package com.apps.wow.droider.Player
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
 import android.view.View
 import android.widget.RemoteViews
-
 import com.apps.wow.droider.Feed.FeedActivity
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
@@ -26,7 +22,6 @@ class NotificationService : Service() {
     var track = ""
     private var status: Notification? = null
     internal var isPause = true
-    private var broadcastReceiver: BroadcastReceiver? = null
     private val mView: MainView = BaseService.mView
     private var player: Player? = null
 
@@ -113,29 +108,11 @@ class NotificationService : Service() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(broadcastReceiver)
-    }
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
-        broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent?) {
-                if (intent != null && intent.getStringExtra("TRACK") != null) {
-                    track = intent.getStringExtra("TRACK")
-                    showNotification(if (Player.isPlaying) 0 else 2)
-                }
-            }
-        }
-        val filter = IntentFilter(Const.ACTION.BROADCAST_MANAGER_INTENT)
-        registerReceiver(broadcastReceiver, filter)
-
-
         mUrl = intent.getStringExtra(Const.CAST_URL)
 
         if (intent.action == Const.ACTION.STARTFOREGROUND_ACTION) {
@@ -146,8 +123,7 @@ class NotificationService : Service() {
         } else if (intent.action == Const.ACTION.PLAY_ACTION) {
             if (!isPause) {
                 showNotification(2)
-                player!!.stop()
-                player!!.release()
+                player?.pause()
                 isPause = true
             } else {
                 showNotification(1)
@@ -155,11 +131,10 @@ class NotificationService : Service() {
                 startHQorNot()
             }
         } else if (intent.action == Const.ACTION.STOPFOREGROUND_ACTION) {
-            if (mView.controlButton != null) {
-                mView.setControlButtonImageResource(R.drawable.play)
-                mView.setVisibilityToControlButton(View.VISIBLE)
-                mView.isControlActivated = false
-            }
+            mView.setControlButtonImageResource(R.drawable.play)
+            mView.setVisibilityToControlButton(View.VISIBLE)
+            mView.isControlActivated = false
+
             player!!.stop()
             player!!.release()
             stopForeground(true)

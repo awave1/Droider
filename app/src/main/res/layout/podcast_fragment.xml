@@ -48,7 +48,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true">
 
-                <com.github.florent37.androidslidr.Slidr
+                <androidslidr.Slidr
                     android:id="@+id/slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,9 @@
                     app:slidr_regions_centerText="false"
                     app:slidr_regions_textFollowRegionColor="true"
                     app:slidr_regions="false"
-                    app:slidr_textBottom_visible="false"
+                    app:slidr_textTop_visible="false"
+                    app:slidr_textBottom_visible="true"
+                    app:slidr_textBottom_size="16sp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"/>
 
