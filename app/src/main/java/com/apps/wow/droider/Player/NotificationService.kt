@@ -23,9 +23,6 @@ class NotificationService : Service() {
     private var status: Notification? = null
     internal var isPause = true
     private val mView: MainView = BaseService.mView
-    private var player: Player? = null
-
-    private var mUrl: String? = null
 
     private fun showNotification(pos: Int) {
         val views = RemoteViews(packageName,
@@ -113,41 +110,31 @@ class NotificationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        mUrl = intent.getStringExtra(Const.CAST_URL)
-
         if (intent.action == Const.ACTION.STARTFOREGROUND_ACTION) {
             isPause = false
             showNotification(0)
-            startHQorNot()
+            mView.setupSeekbar()
 
         } else if (intent.action == Const.ACTION.PLAY_ACTION) {
             if (!isPause) {
                 showNotification(2)
-                player?.pause()
+                mView.pausePlayer()
                 isPause = true
             } else {
                 showNotification(1)
                 isPause = false
-                startHQorNot()
+                mView.setupSeekbar()
             }
         } else if (intent.action == Const.ACTION.STOPFOREGROUND_ACTION) {
             mView.setControlButtonImageResource(R.drawable.play)
             mView.setVisibilityToControlButton(View.VISIBLE)
             mView.isControlActivated = false
 
-            player!!.stop()
-            player!!.release()
+            mView.stopAndReleasePlayer()
             stopForeground(true)
             stopSelf()
         }
 
         return Service.START_STICKY
-    }
-
-    private fun startHQorNot() {
-        if (player == null) {
-            player = Player(mUrl ?: "", this, mView)
-        }
-        player?.start()
     }
 }

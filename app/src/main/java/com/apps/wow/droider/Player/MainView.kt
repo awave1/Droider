@@ -17,11 +17,15 @@ interface MainView {
 
     val controlButton: ImageButton
 
-    fun refreshNotification()
-
     fun showToast(text: String)
 
     val podcastTitle: String
 
     fun setupSeekbar()
+
+    fun startPlayProgressUpdater()
+
+    fun pausePlayer()
+
+    fun stopAndReleasePlayer()
 }
