@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.apps.wow.droider.Adapters.ArticleSimilarAdapter
 import com.apps.wow.droider.Adapters.FeedAdapter
 import com.apps.wow.droider.BuildConfig
 import com.apps.wow.droider.DroiderBaseActivity
@@ -26,7 +24,6 @@ import com.apps.wow.droider.databinding.FeedFragmentBinding
 import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
-import kotlinx.android.synthetic.main.activity_feed.*
 
 
 class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
@@ -83,19 +80,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
 
 
     override fun onLoadCompleted(model: FeedModel) {
-        val parentActivity = activity as FeedActivity
-        val layoutManager = LinearLayoutManager(activity,
-                LinearLayoutManager.HORIZONTAL, false)
-        val snapHelper = PagerSnapHelper()
-        //грязь - перенести их активити сюда, во фрагмент
-        popularNews?.layoutManager = layoutManager
-        popularNews?.adapter = ArticleSimilarAdapter(model.posts)
-        try {
-            snapHelper.attachToRecyclerView(parentActivity.popularNews)
-        } catch (ise: IllegalStateException) {
-            ise.printStackTrace()
-        }
-
+        (activity as FeedActivity).setupPopularArticles(model)
         onTaskCompleted()
     }
 

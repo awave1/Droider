@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.annotation.Nullable
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit
  * Created by Jackson on 15/01/2017.
  */
 
-class PlayerFragment : android.support.v4.app.Fragment(), MainView {
+class PlayerFragment : Fragment(), MainView {
 
     private lateinit var binding: PodcastFragmentBinding
     private var player: Player? = null

@@ -7,12 +7,16 @@ import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.apps.wow.droider.Adapters.ArticleSimilarAdapter
 import com.apps.wow.droider.Adapters.NotifyService
 import com.apps.wow.droider.DroiderBaseActivity
+import com.apps.wow.droider.Model.FeedModel
 import com.apps.wow.droider.NavDrawScreens.AboutFragment
 import com.apps.wow.droider.NavDrawScreens.Preferences
 import com.apps.wow.droider.R
@@ -202,6 +206,20 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
         assert(supportActionBar != null)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.title = mTitle
+    }
+
+    fun setupPopularArticles(model: FeedModel) {
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val snapHelper = PagerSnapHelper()
+        //грязь - перенести их активити сюда, во фрагмент
+        popularNews?.layoutManager = layoutManager
+        popularNews?.adapter = ArticleSimilarAdapter(model.posts)
+        try {
+            snapHelper.attachToRecyclerView(popularNews)
+        } catch (ise: IllegalStateException) {
+            ise.printStackTrace()
+        }
+
     }
 
     override fun onDestroy() {
