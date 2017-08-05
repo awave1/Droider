@@ -35,6 +35,7 @@ import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.Model.Post
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.BitmapLoaded
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Utils
 import com.apps.wow.droider.Utils.Utils.drawableToBitmap
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -92,8 +93,8 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
         extras = intent.extras
 
-        mUrl = if (extras != null && extras!!.getString(Utils.EXTRA_ARTICLE_URL) != null)
-            extras!!.getString(Utils.EXTRA_ARTICLE_URL)
+        mUrl = if (extras != null && extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
+            extras!!.getString(Const.EXTRA_ARTICLE_URL)
         else
             intent.data.toString()
 
@@ -164,17 +165,16 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
         var touchXCoordinate: Float
         var touchYCoordinate: Float
         try {
-            touchXCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0f)
-            touchYCoordinate = extras.getFloat(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0f)
+            touchXCoordinate = extras.getFloat(Const.EXTRA_ARTICLE_X_TOUCH_COORDINATE, 0f)
+            touchYCoordinate = extras.getFloat(Const.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, 0f)
         } catch (npe: NullPointerException) {
             npe.printStackTrace()
             touchXCoordinate = 0f
             touchYCoordinate = 0f
         }
 
-        val animator = ViewAnimationUtils
-                .createCircularReveal(animatedView, touchXCoordinate.toInt(), touchYCoordinate.toInt(),
-                        0f, Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS.toFloat())
+        val animator = ViewAnimationUtils.createCircularReveal(animatedView, touchXCoordinate.toInt(), touchYCoordinate.toInt(),
+                        0f, Const.CIRCULAR_REVIVAL_ANIMATION_RADIUS.toFloat())
         animator.interpolator = AccelerateInterpolator()
         animator.duration = 320
         animator.start()
@@ -236,10 +236,10 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
             Log.d(TAG, "intentExtraChecking: inner")
             mArticlePresenter.provideData(mUrl!!, setupArticleModel())
 
-            articleHeader.text = extras?.getString(Utils.EXTRA_ARTICLE_TITLE)
-            articleShortDescription.text = extras?.getString(Utils.EXTRA_SHORT_DESCRIPTION)
+            articleHeader.text = extras?.getString(Const.EXTRA_ARTICLE_TITLE)
+            articleShortDescription.text = extras?.getString(Const.EXTRA_SHORT_DESCRIPTION)
 
-            articleHeaderImg.setImageURI(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL))
+            articleHeaderImg.setImageURI(extras?.getString(Const.EXTRA_ARTICLE_IMG_URL))
         }
 
         mArticlePresenter.parseArticle(mRealm)
@@ -397,7 +397,7 @@ class ArticleActivity : DroiderBaseActivity(), AppBarLayout.OnOffsetChangedListe
 
                 val b: Bitmap = drawableToBitmap(articleHeaderImg.drawable)
                 var p: Palette
-                Utils.convertImageUrlToBitmap(extras?.getString(Utils.EXTRA_ARTICLE_IMG_URL)!!, this, object : BitmapLoaded {
+                Utils.convertImageUrlToBitmap(extras?.getString(Const.EXTRA_ARTICLE_IMG_URL)!!, this, object : BitmapLoaded {
                     override fun readyToUse(bitmap: Bitmap) {
                         p = Palette.Builder(bitmap).generate()
 

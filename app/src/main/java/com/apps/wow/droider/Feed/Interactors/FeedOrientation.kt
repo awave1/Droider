@@ -8,9 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
-
 import com.apps.wow.droider.Feed.FeedFragment
-import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Const
 
 
 abstract class FeedOrientation(private var mActivity: Activity?, private val swipeRefresher: SwipeRefreshLayout) : RecyclerView.OnScrollListener() {
@@ -59,7 +58,7 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
 
         if (!isLoading_portrait && totalItemCount_portrait - visibleItemCount_portrait <= firstVisibleItem_portrait + visibleThreshold_portrait) {
             Log.d(TAG, "singleColsLoading: end has been reached, loading next page")
-            offsetPortrait += Utils.DEFAULT_COUNT
+            offsetPortrait += Const.DEFAULT_COUNT
             loadNextPage()
             isLoading_portrait = true
         }
@@ -92,7 +91,7 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
         }
 
         if (!isLoading_landscape && totalItemCount_landscape - visibleItemCount_landscape <= previousTotal_landscape + visibleThreshold_landscape) {
-            offsetLandscape += Utils.DEFAULT_COUNT
+            offsetLandscape += Const.DEFAULT_COUNT
             loadNextPage()
             isLoading_landscape = true
         }

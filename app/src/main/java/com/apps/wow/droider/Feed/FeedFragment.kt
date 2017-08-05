@@ -19,7 +19,7 @@ import com.apps.wow.droider.Feed.Presenter.FeedPresenter
 import com.apps.wow.droider.Feed.View.FeedView
 import com.apps.wow.droider.Model.FeedModel
 import com.apps.wow.droider.R
-import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.databinding.FeedFragmentBinding
 import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -45,14 +45,14 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         orientationDebugging()
 
         swipeRefreshLayoutSetup()
-        currentCategory = arguments.getString(Utils.EXTRA_CATEGORY)
-        currentSlug = arguments.getString(Utils.EXTRA_SLUG)
+        currentCategory = arguments.getString(Const.EXTRA_CATEGORY)
+        currentSlug = arguments.getString(Const.EXTRA_SLUG)
         return binding!!.root
     }
 
     override fun onStart() {
         super.onStart()
-        presenter.loadData(currentCategory!!, currentSlug!!, Utils.DEFAULT_COUNT, 0, true)
+        presenter.loadData(currentCategory!!, currentSlug!!, Const.DEFAULT_COUNT, 0, true)
         presenter.loadPopular()
     }
 
@@ -94,10 +94,10 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
     override fun onRefresh() {
         if (activity != null && activity.resources != null &&
                 activity.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-            presenter.loadData(currentCategory!!, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+            presenter.loadData(currentCategory!!, Const.SLUG_MAIN, Const.DEFAULT_COUNT,
                     FeedOrientation.offsetLandscape, true)
         } else {
-            presenter.loadData(currentCategory!!, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+            presenter.loadData(currentCategory!!, Const.SLUG_MAIN, Const.DEFAULT_COUNT,
                     FeedOrientation.offsetPortrait, true)
         }
         presenter.loadPopular()
@@ -148,7 +148,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
                 .addOnScrollListener(object : FeedOrientation(activity, binding!!.feedSwipeRefresh) {
                     override fun loadNextPage() {
                         presenter
-                                .loadData(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                                .loadData(Const.CATEGORY_MAIN, Const.SLUG_MAIN, Const.DEFAULT_COUNT,
                                         FeedOrientation.offsetLandscape, false)
                         onLoadingFeed()
                     }
@@ -161,7 +161,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         binding!!.feedRecyclerView
                 .addOnScrollListener(object : FeedOrientation(activity, binding!!.feedSwipeRefresh) {
                     override fun loadNextPage() {
-                        presenter.loadData(currentCategory!!, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT,
+                        presenter.loadData(currentCategory!!, Const.SLUG_MAIN, Const.DEFAULT_COUNT,
                                 FeedOrientation.offsetPortrait, false)
                         onLoadingFeed()
                         if (!feedAdapter!!.feedModel.posts.isEmpty()) {
@@ -189,8 +189,8 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         fun newInstance(category: String, slug: String): FeedFragment {
             val feedFragment = FeedFragment()
             val bundle = Bundle()
-            bundle.putString(Utils.EXTRA_CATEGORY, category)
-            bundle.putString(Utils.EXTRA_SLUG, slug)
+            bundle.putString(Const.EXTRA_CATEGORY, category)
+            bundle.putString(Const.EXTRA_SLUG, slug)
             feedFragment.arguments = bundle
             feedFragment.retainInstance = true
             return feedFragment

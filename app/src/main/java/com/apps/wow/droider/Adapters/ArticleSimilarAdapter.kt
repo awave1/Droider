@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.apps.wow.droider.Article.ArticleActivity
 import com.apps.wow.droider.Model.Post
 import com.apps.wow.droider.R
-import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.databinding.CardPopularBinding
 import java.util.*
 
@@ -50,13 +50,13 @@ class ArticleSimilarAdapter(private val mData: ArrayList<Post>) : RecyclerView.A
         holder.binding.popularCard.setOnClickListener {
             try {
                 val articleIntent = Intent(holder.binding.popularCard.context, ArticleActivity::class.java)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_TITLE,
                         post.titleValue)
-                articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, post.descriptionValue)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, post.url)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, post.pictureWide)
+                articleIntent.putExtra(Const.EXTRA_SHORT_DESCRIPTION, post.descriptionValue)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_URL, post.url)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_IMG_URL, post.pictureWide)
                 holder.binding.root.context.startActivity(articleIntent)
 
             } catch (npe: NullPointerException) {

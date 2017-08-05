@@ -17,7 +17,7 @@
         android:icon="@mipmap/ic_launcher_droider_app"
         android:label="@string/app_name"
         android:theme="@style/LightTheme">
-        <service android:name=".Adapters.NotifyService">
+        <service android:name=".NavDrawScreens.NotifyService">
             <intent-filter>
                 <action android:name="com.awave.apps.droider.Main.NotifyService"/>
             </intent-filter>

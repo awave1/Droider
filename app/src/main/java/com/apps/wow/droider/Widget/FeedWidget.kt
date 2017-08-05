@@ -12,7 +12,7 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import com.apps.wow.droider.Article.ArticleActivity
 import com.apps.wow.droider.R
-import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Const
 import java.util.*
 
 /**
@@ -72,13 +72,13 @@ class FeedWidget : AppWidgetProvider() {
             if (itemPos != -1) {
                 try {
                     val articleIntent = Intent(context, ArticleActivity::class.java)
-                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
-                            intent.getStringExtra(Utils.EXTRA_ARTICLE_TITLE))
+                    articleIntent.putExtra(Const.EXTRA_ARTICLE_TITLE,
+                            intent.getStringExtra(Const.EXTRA_ARTICLE_TITLE))
                     articleIntent
-                            .putExtra(Utils.EXTRA_ARTICLE_URL, intent.getStringExtra(Utils.EXTRA_ARTICLE_URL))
-                    articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL,
-                            intent.getStringExtra(Utils.EXTRA_ARTICLE_IMG_URL))
-                    articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, intent.getStringExtra(Utils.EXTRA_SHORT_DESCRIPTION))
+                            .putExtra(Const.EXTRA_ARTICLE_URL, intent.getStringExtra(Const.EXTRA_ARTICLE_URL))
+                    articleIntent.putExtra(Const.EXTRA_ARTICLE_IMG_URL,
+                            intent.getStringExtra(Const.EXTRA_ARTICLE_IMG_URL))
+                    articleIntent.putExtra(Const.EXTRA_SHORT_DESCRIPTION, intent.getStringExtra(Const.EXTRA_SHORT_DESCRIPTION))
                     articleIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(articleIntent)
 
