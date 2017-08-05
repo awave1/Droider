@@ -2,109 +2,175 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/main_bg"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_gravity="top"
-                android:contentDescription="podcastImg"
-                android:scaleType="centerCrop"
-                android:src="@drawable/dr_cast"/>
-
-            <TextView
-                android:id="@+id/podcastName"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="10dp"
-                android:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
-                android:textColor="@color/titleColor"
-                android:textSize="@dimen/text_size"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                android:background="@color/main_bg"
+                android:orientation="vertical">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_gravity="top"
+                    android:contentDescription="podcastImg"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/dr_cast"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/main_background_gradient">
+                <TextView
+                    android:id="@+id/podcastName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
+                    android:textColor="@color/titleColor"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
 
             <RelativeLayout
-                android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentTop="true">
+                android:background="@drawable/main_background_gradient">
 
-                <androidslidr.Slidr
-                    android:id="@+id/slider"
+                <LinearLayout
+                    android:id="@+id/frameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="24dp"
-                    app:slidr_draw_bubble="false"
-                    app:slidr_region_leftColor="#FFF"
-                    app:slidr_region_rightColor="@color/white"
-                    app:slidr_regions_centerText="false"
-                    app:slidr_regions_textFollowRegionColor="true"
-                    app:slidr_regions="false"
-                    app:slidr_textTop_visible="false"
-                    app:slidr_textBottom_visible="true"
-                    app:slidr_textBottom_size="16sp"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/controlButton"
-                    android:layout_width="@dimen/play_size"
-                    android:layout_height="@dimen/play_size"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="100dp"
-                    android:background="@drawable/play_button"
-                    android:elevation="7dp"
-                    android:scaleType="fitCenter"
-                    android:translationZ="2dp"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/play"/>
+                    <androidslidr.Slidr
+                        android:id="@+id/slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="24dp"
+                        app:slidr_draw_bubble="false"
+                        app:slidr_region_leftColor="#FFF"
+                        app:slidr_region_rightColor="@color/white"
+                        app:slidr_regions="false"
+                        app:slidr_regions_centerText="false"
+                        app:slidr_regions_textFollowRegionColor="true"
+                        app:slidr_textBottom_size="16sp"
+                        app:slidr_textBottom_visible="true"
+                        app:slidr_textTop_visible="false"/>
 
-                <ImageView
-                    android:id="@+id/share"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="62dp"
-                    android:layout_marginLeft="56dp"
-                    android:layout_marginStart="56dp"
-                    app:srcCompat="@drawable/ic_share"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:paddingBottom="80dp">
 
-                <ImageView
-                    android:id="@+id/download"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="62dp"
-                    android:layout_marginEnd="56dp"
-                    android:layout_marginRight="56dp"
-                    app:srcCompat="@drawable/ic_file_download"/>
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.3">
+
+                            <ImageView
+                                android:id="@+id/share"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_share"/>
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.3">
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/controlButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/play_button"
+                                android:visibility="visible"
+                                app:srcCompat="@drawable/play"/>
+                        </FrameLayout>
+
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.3">
+
+                            <ImageView
+                                android:id="@+id/download"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_file_download"/>
+                        </FrameLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
             </RelativeLayout>
+        </LinearLayout>
 
-        </RelativeLayout>
-    </LinearLayout>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:orientation="vertical"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="80dp"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/colorAccent"
+                android:gravity="center"
+                android:text="Подкаст"
+                android:textColor="@android:color/white"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?
+
+Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit.
+
+My money's in that office, right? If she start giving me some bullshit about it ain't there, and we got to go someplace else and get it, I'm gonna shoot you in the head then and there. Then I'm gonna shoot that bitch in the kneecaps, find out where my goddamn money is. She gonna tell me too. Hey, look at me when I'm talking to you, motherfucker. You listen: we go in there, and that nigga Winston or anybody else is in there, you the first motherfucker to get shot. You understand?
+
+Now that we know who you are, I know who I am. I'm not a mistake! It all makes sense! In a comic, you know how you can tell who the arch-villain's going to be? He's the exact opposite of the hero. And most times they're friends, like you and me! I should've known way back when... You know why, David? Because of the kids. They called me Mr Glass.
+
+Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?
+
+My money's in that office, right? If she start giving me some bullshit about it ain't there, and we got to go someplace else and get it, I'm gonna shoot you in the head then and there. Then I'm gonna shoot that bitch in the kneecaps, find out where my goddamn money is. She gonna tell me too. Hey, look at me when I'm talking to you, motherfucker. You listen: we go in there, and that nigga Winston or anybody else is in there, you the first motherfucker to get shot. You understand?"
+                        android:textColor="@android:color/white"/>
+                </android.support.v4.widget.NestedScrollView>
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>
