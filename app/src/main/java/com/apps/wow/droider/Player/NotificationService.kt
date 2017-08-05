@@ -123,7 +123,7 @@ class NotificationService : Service() {
             } else {
                 showNotification(1)
                 isPause = false
-                mView.setupSeekbar()
+                mView.startOrResume()
             }
         } else if (intent.action == Const.ACTION.STOPFOREGROUND_ACTION) {
             mView.setControlButtonImageResource(R.drawable.play)

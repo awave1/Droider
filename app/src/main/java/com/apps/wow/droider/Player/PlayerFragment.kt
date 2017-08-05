@@ -165,8 +165,11 @@ class PlayerFragment : Fragment(), MainView {
                 String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                         TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
 
+    override fun startOrResume() {
+       player?.start()
+    }
 
-    override fun startPlayProgressUpdater() {
+    fun startPlayProgressUpdater() {
         if (Player.isPlaying) {
             Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
             Observable.timer(1, TimeUnit.SECONDS, Schedulers.io()).flatMap {

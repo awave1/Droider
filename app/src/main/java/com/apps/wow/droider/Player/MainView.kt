@@ -23,7 +23,7 @@ interface MainView {
 
     fun setupSeekbar()
 
-    fun startPlayProgressUpdater()
+    fun startOrResume()
 
     fun pausePlayer()
 
