@@ -3,6 +3,7 @@ package com.apps.wow.droider.Feed
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
@@ -14,12 +15,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.apps.wow.droider.Adapters.ArticleSimilarAdapter
-import com.apps.wow.droider.Adapters.NotifyService
 import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.Model.FeedModel
 import com.apps.wow.droider.NavDrawScreens.AboutFragment
+import com.apps.wow.droider.NavDrawScreens.NotifyService
 import com.apps.wow.droider.NavDrawScreens.Preferences
 import com.apps.wow.droider.R
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Utils
 import kotlinx.android.synthetic.main.activity_feed.*
 
@@ -54,7 +56,8 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onStop() {
-        stopService(Intent(this, NotifyService::class.java))
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", false))
+            stopService(Intent(this, NotifyService::class.java))
         super.onStop()
     }
 
@@ -78,7 +81,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
                 activeFeedTitle = getString(R.string.drawer_item_home)
             }
             fragmentManager.beginTransaction()
-                    .replace(R.id.containerMain, FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN))
+                    .replace(R.id.containerMain, FeedFragment.newInstance(Const.CATEGORY_MAIN, Const.SLUG_MAIN))
                     .commit()
         }
     }
@@ -89,7 +92,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
         display.getSize(size)
         val width = size.x
         val height = size.y
-        Utils.CIRCULAR_REVIVAL_ANIMATION_RADIUS = Math.max(width, height)
+        Const.CIRCULAR_REVIVAL_ANIMATION_RADIUS = Math.max(width, height)
     }
 
     private fun navigationDrawerSetup() {
@@ -111,50 +114,50 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
 
         when (menuItem.itemId) {
             R.id.home_page_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_MAIN, Const.SLUG_MAIN)
                 supportActionBar!!.title = getString(R.string.drawer_item_home)
                 activeFeedTitle = getString(R.string.drawer_item_home)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.android_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_ANDROID, Utils.SLUG_ANDROID)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_ANDROID, Const.SLUG_ANDROID)
                 supportActionBar!!.title = getString(R.string.drawer_item_android)
                 activeFeedTitle = getString(R.string.drawer_item_android)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.apple_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_APPLE, Utils.SLUG_APPLE)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_APPLE, Const.SLUG_APPLE)
                 supportActionBar!!.title = getString(R.string.drawer_item_apple)
                 activeFeedTitle = getString(R.string.drawer_item_apple)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.gadgets_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_GAGETS, Utils.SLUG_GAGETS)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_GAGETS, Const.SLUG_GAGETS)
                 supportActionBar!!.title = getString(R.string.drawer_item_gadgets)
                 activeFeedTitle = getString(R.string.drawer_item_gadgets)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
 
             R.id.video_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_VIDEO, Utils.SLUG_VIDEO)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_VIDEO, Const.SLUG_VIDEO)
                 supportActionBar!!.title = getString(R.string.drawer_item_video)
                 activeFeedTitle = getString(R.string.drawer_item_video)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.games_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_NEW_GAMES, Utils.SLUG_NEW_GAMES)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_NEW_GAMES, Const.SLUG_NEW_GAMES)
                 supportActionBar!!.title = getString(R.string.drawer_item_games)
                 activeFeedTitle = getString(R.string.drawer_item_games)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.welcome_to_the_internet_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_FROM_INTERNET, Utils.SLUG_FROM_INTERNET)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_FROM_INTERNET, Const.SLUG_FROM_INTERNET)
                 supportActionBar!!.title = getString(R.string.drawer_item_internet)
                 activeFeedTitle = getString(R.string.drawer_item_internet)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)
             }
             R.id.droider_cast_tab -> {
-                fragment = FeedFragment.newInstance(Utils.CATEGORY_PODCAST, Utils.SLUG_PODCAST)
+                fragment = FeedFragment.newInstance(Const.CATEGORY_PODCAST, Const.SLUG_PODCAST)
                 supportActionBar!!.title = getString(R.string.drawer_item_dr_cast)
                 activeFeedTitle = getString(R.string.drawer_item_dr_cast)
                 if (!Utils.isOnline(this)) initInternetConnectionDialog(this)

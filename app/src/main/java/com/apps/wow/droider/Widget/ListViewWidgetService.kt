@@ -9,6 +9,7 @@ import android.widget.RemoteViewsService
 import com.apps.wow.droider.Model.FeedModel
 import com.apps.wow.droider.Model.Post
 import com.apps.wow.droider.R
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Utils
 import com.apps.wow.droider.api.DroiderApi
 import retrofit2.Response
@@ -45,11 +46,11 @@ class ListViewWidgetService : RemoteViewsService() {
 
         override fun onCreate() {
             data = ArrayList<Post>()
-            api = Utils.createRxService(DroiderApi::class.java, Utils.HOME_URL, true)
+            api = Utils.createRxService(DroiderApi::class.java, Const.HOME_URL, true)
         }
 
         override fun onDataSetChanged() {
-            api.getFeed(Utils.CATEGORY_MAIN, Utils.SLUG_MAIN, Utils.DEFAULT_COUNT, 0)
+            api.getFeed(Const.CATEGORY_MAIN, Const.SLUG_MAIN, Const.DEFAULT_COUNT, 0)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Subscriber<Response<FeedModel>>() {
                         override fun onCompleted() {
@@ -96,10 +97,10 @@ class ListViewWidgetService : RemoteViewsService() {
 
             val clickIntent = Intent()
             clickIntent.putExtra(FeedWidget.ITEM_POSITION, position)
-            clickIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE, data[position].titleValue)
-            clickIntent.putExtra(Utils.EXTRA_ARTICLE_URL, data[position].url)
-            clickIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, data[position].pictureWide)
-            clickIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION, data[position].descriptionValue)
+            clickIntent.putExtra(Const.EXTRA_ARTICLE_TITLE, data[position].titleValue)
+            clickIntent.putExtra(Const.EXTRA_ARTICLE_URL, data[position].url)
+            clickIntent.putExtra(Const.EXTRA_ARTICLE_IMG_URL, data[position].pictureWide)
+            clickIntent.putExtra(Const.EXTRA_SHORT_DESCRIPTION, data[position].descriptionValue)
             rView.setOnClickFillInIntent(R.id.widget_card_container, clickIntent)
             return rView
         }

@@ -15,7 +15,7 @@ import android.widget.Toast
 import com.apps.wow.droider.Article.ArticleActivity
 import com.apps.wow.droider.Model.FeedModel
 import com.apps.wow.droider.R
-import com.apps.wow.droider.Utils.Utils
+import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.databinding.CardBinding
 
 class FeedAdapter(val feedModel: FeedModel) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
@@ -57,19 +57,19 @@ class FeedAdapter(val feedModel: FeedModel) : RecyclerView.Adapter<FeedAdapter.F
             try {
                 val articleIntent = Intent(binding.cardView.context,
                         ArticleActivity::class.java)
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_TITLE,
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_TITLE,
                         binding.feedCardTitle.text.toString())
 
-                articleIntent.putExtra(Utils.EXTRA_SHORT_DESCRIPTION,
+                articleIntent.putExtra(Const.EXTRA_SHORT_DESCRIPTION,
                         binding.feedCardDescription.text.toString())
 
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_URL, url)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_URL, url)
 
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_X_TOUCH_COORDINATE, touchXCoordinate)
 
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_Y_TOUCH_COORDINATE, touchYCoordinate)
 
-                articleIntent.putExtra(Utils.EXTRA_ARTICLE_IMG_URL, post.pictureWide)
+                articleIntent.putExtra(Const.EXTRA_ARTICLE_IMG_URL, post.pictureWide)
 
                 headerImageDrawable = binding.feedCardImage.drawable
 
