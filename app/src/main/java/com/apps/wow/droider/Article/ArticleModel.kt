@@ -38,12 +38,12 @@ class ArticleModel(val mWebViewTextColor: String,
 
             Log.d(TAG, "doInBackground: similar el: " + similarElements.size)
 
-            for (el in similarElements) {
-                mSimilar.add(Post(title =
-                el.select(".post-link__title").text(), pictureWide =
-                el.select(".post-link__picture__image_wide").attr("src"), url =
-                el.select(".popular-slider__item").attr("href")
-                ))
+            similarElements.mapTo(mSimilar) {
+                Post(
+                    title = it.select(".post-link__title").text(),
+                    pictureWide = it.select(".post-link__picture__image_wide").attr("src"),
+                    url = it.select(".popular-slider__item").attr("href")
+                )
             }
 
             elements.map {
