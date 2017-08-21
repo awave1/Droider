@@ -34,6 +34,7 @@ class ArticlePresenter : MvpPresenter<ArticleView>() {
     }
 
     fun parseArticle(mRealm: Realm) {
+        //todo extract to repository
         if (mRealm.where(Article::class.java).equalTo("articleUrl", mUrl).findFirst() != null) {
             mRealm.where(Article::class.java)
                     .equalTo("articleUrl", mUrl).findFirst().articleHtml?.let { viewState.loadArticle(it) }

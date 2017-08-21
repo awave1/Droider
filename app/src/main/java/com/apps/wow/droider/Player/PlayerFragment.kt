@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidslidr.Slidr
+import com.apps.wow.droider.Article.ArticleFragment
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
@@ -75,6 +76,8 @@ class PlayerFragment : Fragment(), MainView {
 
         controlButton = binding.controlButton
         podcastTitle = binding.podcastName.text.toString()
+
+        setupBottomSheet()
 
         return binding.root
     }
@@ -166,7 +169,7 @@ class PlayerFragment : Fragment(), MainView {
                         TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
 
     override fun startOrResume() {
-       player?.start()
+        player?.start()
     }
 
     fun startPlayProgressUpdater() {
@@ -236,6 +239,10 @@ class PlayerFragment : Fragment(), MainView {
                 }
             }
         }
+    }
+
+    fun setupBottomSheet() {
+        fragmentManager.beginTransaction().replace(R.id.podcastPostContainer, ArticleFragment.newInstance()).commit()
     }
 
 

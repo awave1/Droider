@@ -16,23 +16,25 @@ import java.util.*
  * Created by Jackson on 14/05/2017.
  */
 
-class ArticleModel(val mWebViewTextColor: String,
-                   val mWebViewLinkColor: String,
-                   val mWebViewTableColor: String,
-                   val mWebViewTableHeaderColor: String) {
+class ArticleModel(private val mWebViewTextColor: String?,
+                   private val mWebViewLinkColor: String?,
+                   private val mWebViewTableColor: String?,
+                   private val mWebViewTableHeaderColor: String?) {
 
     private val mSimilar = ArrayList<Post>()
 
     private var mHtml: String? = null
 
-    private lateinit var id: String
+    lateinit var castTitle: String
+
+    var castID: String? = null
 
     fun parseArticle(url: String): Observable<String> {
         return Observable.fromCallable<String> {
             val mDocument = Jsoup.connect(url).timeout(10000).get()
             mDocument.select(".article-gallery__photos__item__content").remove()
 
-            var elements = mDocument.select("article[id^=post] .article-body")
+            val elements = mDocument.select("article[id^=post] .article-body")
             val similarElements = mDocument.select(".popular-slider__list a")
 
 
@@ -40,23 +42,21 @@ class ArticleModel(val mWebViewTextColor: String,
 
             similarElements.mapTo(mSimilar) {
                 Post(
-                    title = it.select(".post-link__title").text(),
-                    pictureWide = it.select(".post-link__picture__image_wide").attr("src"),
-                    url = it.select(".popular-slider__item").attr("href")
+                        title = it.select(".post-link__title").text(),
+                        pictureWide = it.select(".post-link__picture__image_wide").attr("src"),
+                        url = it.select(".popular-slider__item").attr("href")
                 )
             }
 
             elements.map {
                 if (it.select("iframe").toString().contains("droidercast.podster.fm")) {
-                    val title = mDocument.select("header h1").text().replace("/", " ").replace("#", "№")
+                    castTitle = mDocument.select("header h1").text()
                     val frameHtml = it.select("iframe").toString()
-                    val indexOfId = frameHtml.indexOf("droidercast.podster.fm/") + 23
+                    val indexOfId = frameHtml.indexOf(".fm/") + 4
                     if (frameHtml.substring(indexOfId, indexOfId + 3)[2] == '/')
-                        id = frameHtml.substring(indexOfId, indexOfId + 2)
+                        castID = frameHtml.substring(indexOfId, indexOfId + 2)
                     else
-                        id = frameHtml.substring(indexOfId, indexOfId + 3) // это на случай когда станет трёх значным номер подкаста
-
-                    it.select("iframe").wrap("<p><a href='droider://player/$id/$title'><b>Слушай в приложении</b></a></p>").wrap("<p><br></p>")
+                        castID = frameHtml.substring(indexOfId, indexOfId + 3) // это на случай когда станет трёх значным номер подкаста
                 }
             }
 
@@ -69,7 +69,7 @@ class ArticleModel(val mWebViewTextColor: String,
             article.articleHtml = mHtml
             article.articleUrl = url
             realm.commitTransaction()
-            mHtml
+            mHtml //for returning value
         }.subscribeOn(Schedulers.io())
     }
 

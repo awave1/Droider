@@ -46,7 +46,7 @@ open class DroiderBaseActivity : MvpAppCompatActivity() {
 
     }
 
-    protected fun getThemeAttribute(@AttrRes attributeInt: Int, @StyleRes theme: Int): Int {
+    fun getThemeAttribute(@AttrRes attributeInt: Int, @StyleRes theme: Int): Int {
         // The attributes you want retrieved
         val attrs = intArrayOf(attributeInt)
         // Parse MyCustomStyle, using Context.obtainStyledAttributes()
