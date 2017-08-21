@@ -161,6 +161,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/similarArticlesContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -197,8 +198,8 @@
             <!--android:layout_margin="16dp"-->
             <!--android:elevation="4dp"-->
             <!--android:src="@drawable/ic_open_in_browser"-->
-            <!--android:id="@+id/article_fab_share"-->
-            <!--app:layout_anchor="@id/appbar_article"-->
+            <!--andrcastIDd:idcastID@+id/article_fab_share"-->
+            <!--app:layout_anchocastID"@id/appbar_article"-->
             <!--app:layout_anchorGravity="bottom|right|end"/>-->
 
         </android.support.design.widget.CoordinatorLayout>

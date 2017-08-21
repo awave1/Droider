@@ -29,7 +29,7 @@ class ArticleModel(private val mWebViewTextColor: String?,
 
     var castID: String? = null
 
-    fun parseArticle(url: String): Observable<String> {
+    fun parseArticle(url: String): Observable<String?> {
         return Observable.fromCallable<String> {
             val mDocument = Jsoup.connect(url).timeout(10000).get()
             mDocument.select(".article-gallery__photos__item__content").remove()

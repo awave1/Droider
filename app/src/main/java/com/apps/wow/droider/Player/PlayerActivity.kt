@@ -3,6 +3,7 @@ package com.apps.wow.droider.Player
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.apps.wow.droider.Article.PlayerFragment
 import com.apps.wow.droider.R
 
 class PlayerActivity : AppCompatActivity() {

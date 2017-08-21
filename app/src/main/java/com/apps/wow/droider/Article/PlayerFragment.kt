@@ -1,4 +1,4 @@
-package com.apps.wow.droider.Player
+package com.apps.wow.droider.Article
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -19,7 +19,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidslidr.Slidr
-import com.apps.wow.droider.Article.ArticleFragment
+import com.apps.wow.droider.Player.BaseService
+import com.apps.wow.droider.Player.MainView
+import com.apps.wow.droider.Player.NotificationService
+import com.apps.wow.droider.Player.Player
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
@@ -58,7 +61,6 @@ class PlayerFragment : Fragment(), MainView {
 
         binding.slider.setListener(object : Slidr.Listener {
             override fun bubbleClicked(slidr: androidslidr.Slidr?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun valueChanged(slidr: androidslidr.Slidr?, currentValue: Float) {
@@ -241,7 +243,7 @@ class PlayerFragment : Fragment(), MainView {
         }
     }
 
-    fun setupBottomSheet() {
+    private fun setupBottomSheet() {
         fragmentManager.beginTransaction().replace(R.id.podcastPostContainer, ArticleFragment.newInstance()).commit()
     }
 
