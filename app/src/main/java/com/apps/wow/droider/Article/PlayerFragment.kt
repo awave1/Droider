@@ -30,7 +30,7 @@ import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
 import org.jetbrains.anko.support.v4.browse
 import rx.Observable
-import rx.schedulers.Schedulers
+import rx.Subscription
 import java.util.concurrent.TimeUnit
 
 
@@ -43,11 +43,13 @@ class PlayerFragment : Fragment(), MainView {
     private lateinit var binding: PodcastFragmentBinding
     private var player: Player? = null
     private var headsetPlugReceiver: MusicIntentReceiver? = null
+    private var playerSubscription: Subscription? = null
+    private lateinit var serviceIntent: Intent
+    private var lastTime : Float? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         binding = PodcastFragmentBinding.inflate(inflater!!, container, false)
-
 
         binding.podcastName.text = arguments.getString(CAST_NAME)
 
@@ -58,18 +60,18 @@ class PlayerFragment : Fragment(), MainView {
         binding.share.setOnClickListener { share() }
         binding.download.setOnClickListener { download() }
 
-
         binding.slider.setListener(object : Slidr.Listener {
             override fun bubbleClicked(slidr: androidslidr.Slidr?) {
             }
 
-            override fun valueChanged(slidr: androidslidr.Slidr?, currentValue: Float) {
+            override fun valueChanged(slidr: Slidr?, currentValue: Float) {
                 Log.d(javaClass.name, "valueChanged: " + Player.pauseTime?.let { formatText(it) })
                 Log.d(javaClass.name, "valueChanged currentValue : " + formatText(currentValue.toLong()))
                 // +-5 for corner cases(maloli)
                 if (currentValue > Player.pauseTime!! + 5 || currentValue < Player.pauseTime!! - 5) {
                     Player.pauseTime = slidr?.currentValue!!.toLong()
                     Player.exoPlayer?.seekTo(Player.pauseTime!!)
+                    lastTime = currentValue
                 }
             }
         })
@@ -81,9 +83,16 @@ class PlayerFragment : Fragment(), MainView {
 
         setupBottomSheet()
 
+        if (Player.isPlaying) {
+            binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
+            isControlActivated = true
+            setupSeekbar()
+        } else {
+            binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.play))
+        }
+
         return binding.root
     }
-
 
     private fun share() {
         if (podcastTitle != "") {
@@ -105,24 +114,30 @@ class PlayerFragment : Fragment(), MainView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (player == null || headsetPlugReceiver == null) {
             if (activity != null && !Player.isPlaying) {
-                player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity, this)
+                initPlayer()
             }
             headsetPlugReceiver = MusicIntentReceiver()
             val filter = IntentFilter(Intent.ACTION_HEADSET_PLUG)
             activity.registerReceiver(headsetPlugReceiver, filter)
-            binding.slider.setTextFormatter { "" }
         }
+        binding.slider.setTextFormatter { "" }
+    }
+
+    private fun initPlayer() {
+        player = Player(Const.PODCAST_PATH_PLAYER.format(arguments.getString(CAST_ID)), activity, this)
     }
 
     override fun onDestroy() {
         try {
-            activity.unregisterReceiver(headsetPlugReceiver)
-            if (!Player.isPlaying)
+            if (!Player.isPlaying) {
+                activity.unregisterReceiver(headsetPlugReceiver)
+                activity.stopService(serviceIntent)
                 Player.exoPlayer?.release()
-        } catch (e: RuntimeException) {
+            }
+            if (playerSubscription != null && !playerSubscription!!.isUnsubscribed)
+                playerSubscription!!.unsubscribe()
+        } catch (e: Exception) {
             e.printStackTrace()
-        } catch (iae: IllegalArgumentException) {
-            iae.printStackTrace()
         }
         super.onDestroy()
     }
@@ -130,8 +145,13 @@ class PlayerFragment : Fragment(), MainView {
     private fun togglePlayPause() {
         if (activity != null) {
             if (!isControlActivated || !Player.isPlaying) {
+                if (player == null) {
+                    initPlayer()
+                }
                 player?.start()
                 startPausePlayerService(true)
+                if (lastTime != null)
+                    Player.exoPlayer?.seekTo(lastTime!!.toLong())
                 isControlActivated = true
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
                 vibrate()
@@ -158,6 +178,10 @@ class PlayerFragment : Fragment(), MainView {
 
         binding.slider.setTextMax(Player.exoPlayer?.duration?.let { formatText(it) })
 
+
+        if (playerSubscription != null && !playerSubscription!!.isUnsubscribed)
+            playerSubscription!!.unsubscribe()
+
         startPlayProgressUpdater()
     }
 
@@ -174,31 +198,30 @@ class PlayerFragment : Fragment(), MainView {
         player?.start()
     }
 
-    fun startPlayProgressUpdater() {
+    private fun startPlayProgressUpdater() {
         if (Player.isPlaying) {
             Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
-            Observable.timer(1, TimeUnit.SECONDS, Schedulers.io()).flatMap {
+            playerSubscription = Observable.interval(1000L, TimeUnit.MILLISECONDS)
+                    .timeInterval().subscribe({
                 Player.pauseTime = Player.pauseTime!!.plus(1000L)
                 binding.slider.currentValue = Player.pauseTime!!.toFloat()
                 binding.slider.setTextMin(formatText(Player.pauseTime!!))
-                startPlayProgressUpdater()
-                Observable.just(true)
-            }.retry().subscribe()
+            }, { it.printStackTrace() })
         }
     }
 
     // Service for background audio binding.playing
-    fun startPausePlayerService(startService: Boolean) {
+    private fun startPausePlayerService(startService: Boolean) {
         if (activity != null) {
             BaseService(this) // just for working service with mvp
-            val serviceIntent: Intent = Intent(activity, NotificationService::class.java)
+            serviceIntent = Intent(activity, NotificationService::class.java)
             serviceIntent.action = if (startService) Const.ACTION.STARTFOREGROUND_ACTION else Const.ACTION.PLAY_ACTION
             activity.startService(serviceIntent)
         }
     }
 
     // Vibrate when click on control button
-    fun vibrate() {
+    private fun vibrate() {
         if (activity != null)
             (activity.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(Const.VIBRATE_TIME)
     }

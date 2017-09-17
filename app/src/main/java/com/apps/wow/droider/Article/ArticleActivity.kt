@@ -1,5 +1,6 @@
 package com.apps.wow.droider.Article
 
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -20,7 +21,9 @@ class ArticleActivity : DroiderBaseActivity() {
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.container)
-
+        val pd = ProgressDialog(this)
+        pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
+        pd.show()
         if (supportFragmentManager.findFragmentById(R.id.container) == null) {
 
             val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
@@ -42,6 +45,7 @@ class ArticleActivity : DroiderBaseActivity() {
                         .setCustomAnimations(R.anim.zoom_in, R.anim.zoom_out)
                         .replace(R.id.container, fragment)
                         .commitAllowingStateLoss()
+                pd.dismiss()
             })
         }
     }

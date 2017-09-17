@@ -48,6 +48,7 @@ class ArticleModel(private val mWebViewTextColor: String?,
                 )
             }
 
+//TODO check if there two(or more (crazy droider………)) podcasts and return list which should be shown as dialog with single check
             elements.map {
                 if (it.select("iframe").toString().contains("droidercast.podster.fm")) {
                     castTitle = mDocument.select("header h1").text()

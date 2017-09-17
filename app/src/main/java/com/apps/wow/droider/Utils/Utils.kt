@@ -2,6 +2,7 @@ package com.apps.wow.droider.Utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.preference.PreferenceManager
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorInt
 import android.util.Log
@@ -87,19 +89,16 @@ object Utils {
     }
 
     fun drawableToBitmap(d: Drawable): Bitmap {
-        val b: Bitmap
-        if (d.mutate() is BitmapDrawable) {
-            val bitmapDrawable = d
-            if ((bitmapDrawable as BitmapDrawable).bitmap != null) {
-                return bitmapDrawable.bitmap
-            }
-        }
-
-        if (d.intrinsicWidth <= 0 || d.intrinsicHeight <= 0) {
-            b = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val b: Bitmap = if (d.intrinsicWidth <= 0 || d.intrinsicHeight <= 0) {
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         } else {
-            b = Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight,
+            Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight,
                     Bitmap.Config.ARGB_8888)
+        }
+        if (d.mutate() is BitmapDrawable) {
+            if ((d as BitmapDrawable).bitmap != null) {
+                return d.bitmap
+            }
         }
 
         val canvas = Canvas(b)
@@ -108,7 +107,7 @@ object Utils {
         return b
     }
 
-    fun convertImageUrlToBitmap(imageUri: String, mContext: Context, callback : BitmapLoaded) {
+    fun convertImageUrlToBitmap(imageUri: String, mContext: Context, callback: BitmapLoaded) {
         val imagePipeline = Fresco.getImagePipeline()
 
         val imageRequest = ImageRequestBuilder
@@ -211,4 +210,11 @@ object Utils {
         return value.data
     }
 
+    fun getSharedPref(): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(AppContext.context)
+    }
+
+    fun saveToSharedPref(key: String, value: String) {
+        getSharedPref().edit().putString(key, value).apply()
+    }
 }
