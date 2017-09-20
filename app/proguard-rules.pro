@@ -132,3 +132,6 @@
 
 ####### RxAndroid #######
 -dontwarn rx.internal.util.unsafe.**
+
+-ignorewarnings
+-dontwarn

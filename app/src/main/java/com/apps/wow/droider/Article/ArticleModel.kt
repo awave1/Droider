@@ -70,16 +70,16 @@ class ArticleModel(private val mWebViewTextColor: String?,
             article.articleHtml = mHtml
             article.articleUrl = url
             realm.commitTransaction()
-            mHtml //for returning value
+             mHtml //for returning value
         }.subscribeOn(Schedulers.io())
     }
 
     val similar: ArrayList<Post>?
         get() {
-            if (!mSimilar.isEmpty())
-                return mSimilar
+            return if (!mSimilar.isEmpty())
+                mSimilar
             else
-                return null
+                null
         }
 
     fun getPostDataForOutsideIntent(url: String): Observable<Post> {

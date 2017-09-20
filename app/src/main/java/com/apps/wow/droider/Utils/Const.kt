@@ -63,6 +63,8 @@ object Const {
 
     val CAST_URL = "CAST_URL"
 
+    val POST_HTML = "POST_HTML"
+
     interface ACTION {
         companion object {
             val MAIN_ACTION = "com.jassdev.apps.andrroider.uradio.action.main"

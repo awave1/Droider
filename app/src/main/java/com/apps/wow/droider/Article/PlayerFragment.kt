@@ -27,6 +27,7 @@ import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
+import com.apps.wow.droider.Utils.Const.POST_HTML
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
 import org.jetbrains.anko.support.v4.browse
 import rx.Observable
@@ -45,7 +46,7 @@ class PlayerFragment : Fragment(), MainView {
     private var headsetPlugReceiver: MusicIntentReceiver? = null
     private var playerSubscription: Subscription? = null
     private lateinit var serviceIntent: Intent
-    private var lastTime : Float? = null
+    private var lastTime: Float? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
@@ -267,7 +268,8 @@ class PlayerFragment : Fragment(), MainView {
     }
 
     private fun setupBottomSheet() {
-        fragmentManager.beginTransaction().replace(R.id.podcastPostContainer, ArticleFragment.newInstance()).commit()
+        fragmentManager.beginTransaction().replace(R.id.podcastPostContainer,
+                ArticleForPlayerFragment.newInstance(arguments.getString(POST_HTML))).commit()
     }
 
 
@@ -282,12 +284,13 @@ class PlayerFragment : Fragment(), MainView {
          * https://tproger.ru/articles/android-online-radio/
          */
 
-        fun newInstance(castId: String, castName: String): PlayerFragment {
+        fun newInstance(html: String?, castId: String, castName: String): PlayerFragment {
             val fragment = PlayerFragment()
             fragment.retainInstance = true
             val b = Bundle()
             b.putString(CAST_ID, castId)
             b.putString(CAST_NAME, castName)
+            b.putString(POST_HTML, html)
             fragment.arguments = b
             return fragment
         }

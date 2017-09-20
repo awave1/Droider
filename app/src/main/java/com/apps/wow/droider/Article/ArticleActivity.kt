@@ -21,10 +21,10 @@ class ArticleActivity : DroiderBaseActivity() {
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.container)
-        val pd = ProgressDialog(this)
-        pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
-        pd.show()
         if (supportFragmentManager.findFragmentById(R.id.container) == null) {
+            val pd = ProgressDialog(this)
+            pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
+            pd.show()
 
             val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
                 intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
@@ -35,7 +35,7 @@ class ArticleActivity : DroiderBaseActivity() {
 
             model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
                 val fragment: Fragment = if (model.castID != null) {
-                    PlayerFragment.newInstance(model.castID!!, model.castTitle)
+                    PlayerFragment.newInstance(it, model.castID!!, model.castTitle)
                 } else {
                     ArticleFragment.newInstance()
                 }

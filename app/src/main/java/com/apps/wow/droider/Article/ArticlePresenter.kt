@@ -24,7 +24,7 @@ class ArticlePresenter : MvpPresenter<ArticleView>() {
         mArticleModel = model
     }
 
-    fun parseArticle(mRealm: Realm) {
+    fun parseArticle(mRealm: Realm?) {
         ArticleDataStoreFactory().getArticle(mUrl, mRealm, mArticleModel)
                 .subscribe({
                     viewState.changeLoadingVisibility(false)

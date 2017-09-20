@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="10dp"
-                    android:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
+                    tools:text="ЛуДший I/O и Грозный Спилберг | Droider Cast #63–64"
                     android:textColor="@color/titleColor"
                     android:textSize="@dimen/text_size"
                     android:textStyle="bold"/>

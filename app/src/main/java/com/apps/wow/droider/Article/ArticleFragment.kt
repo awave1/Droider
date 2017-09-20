@@ -36,13 +36,13 @@ import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Utils
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import io.codetail.animation.ViewAnimationUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.article.*
+import kotlinx.android.synthetic.main.article_card.*
 import java.util.*
 
 /**
@@ -65,7 +65,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
 
     private lateinit var mRealm: Realm
 
-    @InjectPresenter(type = PresenterType.GLOBAL)
+    @InjectPresenter
     lateinit var mArticlePresenter: ArticlePresenter
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,12 +87,12 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         viewInitialisation()
 
         toolbarSetup()
-        ArticleParserSetup()
+        setupArticleParser()
         backgroundTintColorSetup()
         appbarArticle.addOnOffsetChangedListener(this)
 
-        this.calculateMinimumHeight()
-        this.setupArticleWebView(article)
+        calculateMinimumHeight()
+        setupArticleWebView(article)
     }
 
     private fun getSharedPreferences() {
@@ -184,7 +184,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     }
 
 
-    private fun ArticleParserSetup() {
+    private fun setupArticleParser() {
         /** Проверка как мы попали в статью  */
         intentExtraChecking()
     }
@@ -447,9 +447,9 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         var currentNightMode: Int = 0
 
         fun newInstance(): ArticleFragment {
-            val frgmnt = ArticleFragment()
-            frgmnt.retainInstance = true
-            return frgmnt
+            val fragment = ArticleFragment()
+            fragment.retainInstance = true
+            return fragment
         }
     }
 }
