@@ -23,13 +23,12 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 
 class Player(URL: String, context: Context, view: MainView) {
 
-    private var playbackPosition: Long? = null
-
     private var currentWindow: Int? = null
 
 
     init {
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context), DefaultTrackSelector(), DefaultLoadControl())
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),
+                DefaultTrackSelector(), DefaultLoadControl())
 //        val mediaSource = buildMediaSource(Uri.parse(URL))
         val mediaSource = buildMediaSource(Uri.parse(URL))
         exoPlayer!!.prepare(mediaSource, true, false)
@@ -46,8 +45,8 @@ class Player(URL: String, context: Context, view: MainView) {
         if (!wasPaused) {
             stop()
         }
-        if (playbackPosition != null && playbackPosition != 0.toLong() && !wasPaused) {
-            exoPlayer?.seekTo(playbackPosition!!)
+        if (pauseTime != null && pauseTime != 0.toLong() && !wasPaused) {
+            exoPlayer?.seekTo(pauseTime!!)
         }
         exoPlayer?.playWhenReady = true
 
@@ -96,7 +95,7 @@ class Player(URL: String, context: Context, view: MainView) {
 
     fun stop() {
         if (exoPlayer != null) {
-            playbackPosition = exoPlayer?.currentPosition
+            pauseTime = exoPlayer?.currentPosition!!
             currentWindow = exoPlayer?.currentWindowIndex
             wasPaused = false
             exoPlayer?.stop()
@@ -107,14 +106,13 @@ class Player(URL: String, context: Context, view: MainView) {
         if (exoPlayer != null) {
             exoPlayer?.playWhenReady = false
             pauseTime = exoPlayer?.currentPosition!!
-            playbackPosition = exoPlayer?.currentPosition
             wasPaused = true
         }
     }
 
     fun release() {
         if (exoPlayer != null) {
-            playbackPosition = exoPlayer?.currentPosition
+            pauseTime = exoPlayer?.currentPosition!!
             currentWindow = exoPlayer?.currentWindowIndex
             wasPaused = false
             exoPlayer?.release()

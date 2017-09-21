@@ -290,9 +290,9 @@ public class Slidr extends FrameLayout {
 
             postInvalidate();
         }
-        if (listener != null) {
-            listener.bubbleClicked(this);
-        }
+//        if (listener != null) {
+//            listener.bubbleClicked(this);
+//        }
     }
 
     @Override
@@ -1007,7 +1007,7 @@ public class Slidr extends FrameLayout {
     public interface Listener {
         void valueChanged(Slidr slidr, float currentValue);
 
-        void bubbleClicked(Slidr slidr);
+//        void bubbleClicked(Slidr slidr);
     }
 
     public interface TextFormatter {

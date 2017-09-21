@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.annotation.Nullable
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -18,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
-import androidslidr.Slidr
 import com.apps.wow.droider.Player.BaseService
 import com.apps.wow.droider.Player.MainView
 import com.apps.wow.droider.Player.NotificationService
@@ -29,6 +29,7 @@ import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.Utils.Const.POST_HTML
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
+import kotlinx.android.synthetic.main.podcast_fragment.*
 import org.jetbrains.anko.support.v4.browse
 import rx.Observable
 import rx.Subscription
@@ -61,28 +62,18 @@ class PlayerFragment : Fragment(), MainView {
         binding.share.setOnClickListener { share() }
         binding.download.setOnClickListener { download() }
 
-        binding.slider.setListener(object : Slidr.Listener {
-            override fun bubbleClicked(slidr: androidslidr.Slidr?) {
+        binding.slider.setListener { slidr, currentValue ->
+            // +-5 for corner cases
+            if (currentValue > lastTime!! + 5 || currentValue < lastTime!! - 5) {
+                Player.exoPlayer?.seekTo(currentValue.toLong())
+                lastTime = currentValue
             }
-
-            override fun valueChanged(slidr: Slidr?, currentValue: Float) {
-                Log.d(javaClass.name, "valueChanged: " + Player.pauseTime?.let { formatText(it) })
-                Log.d(javaClass.name, "valueChanged currentValue : " + formatText(currentValue.toLong()))
-                // +-5 for corner cases(maloli)
-                if (currentValue > Player.pauseTime!! + 5 || currentValue < Player.pauseTime!! - 5) {
-                    Player.pauseTime = slidr?.currentValue!!.toLong()
-                    Player.exoPlayer?.seekTo(Player.pauseTime!!)
-                    lastTime = currentValue
-                }
-            }
-        })
+        }
 
         binding.slider.setTextMin(formatText(0L))
 
         controlButton = binding.controlButton
         podcastTitle = binding.podcastName.text.toString()
-
-        setupBottomSheet()
 
         if (Player.isPlaying) {
             binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
@@ -122,6 +113,8 @@ class PlayerFragment : Fragment(), MainView {
             activity.registerReceiver(headsetPlugReceiver, filter)
         }
         binding.slider.setTextFormatter { "" }
+
+        setupBottomSheet()
     }
 
     private fun initPlayer() {
@@ -179,14 +172,13 @@ class PlayerFragment : Fragment(), MainView {
 
         binding.slider.setTextMax(Player.exoPlayer?.duration?.let { formatText(it) })
 
-
         if (playerSubscription != null && !playerSubscription!!.isUnsubscribed)
             playerSubscription!!.unsubscribe()
 
         startPlayProgressUpdater()
     }
 
-    fun formatText(millis: Long) =
+    private fun formatText(millis: Long) =
             if (TimeUnit.MILLISECONDS.toHours(millis) > 0)
                 String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
                         TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
@@ -204,9 +196,8 @@ class PlayerFragment : Fragment(), MainView {
             Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
             playerSubscription = Observable.interval(1000L, TimeUnit.MILLISECONDS)
                     .timeInterval().subscribe({
-                Player.pauseTime = Player.pauseTime!!.plus(1000L)
-                binding.slider.currentValue = Player.pauseTime!!.toFloat()
-                binding.slider.setTextMin(formatText(Player.pauseTime!!))
+                Player.exoPlayer?.currentPosition?.let { binding.slider.currentValue = it.toFloat() }
+                binding.slider.setTextMin(formatText(Player.exoPlayer?.currentPosition!!))
             }, { it.printStackTrace() })
         }
     }
@@ -270,6 +261,14 @@ class PlayerFragment : Fragment(), MainView {
     private fun setupBottomSheet() {
         fragmentManager.beginTransaction().replace(R.id.podcastPostContainer,
                 ArticleForPlayerFragment.newInstance(arguments.getString(POST_HTML))).commit()
+
+        val mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+        mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+            }
+        })
     }
 
 

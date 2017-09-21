@@ -26,7 +26,7 @@ class ArticleForPlayerFragment : MvpAppCompatFragment() {
     private var extras: Bundle? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.article_card, container, false)
+        return inflater?.inflate(R.layout.article_for_player, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -49,16 +49,7 @@ class ArticleForPlayerFragment : MvpAppCompatFragment() {
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 Log.d(TAG, "shouldOverrideUrlLoading: url: " + url)
-//                if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)").toRegex())) {
-//                    fragmentManager.beginTransaction()
-//                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-//                            .addToBackStack("image_prev")
-//                            .replace(R.id.image_preview, ImagePreviewFragment.newInstance(url))
-//                            .commit()
-//                } else {
                 view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-//                }
-
                 return true
             }
         }
@@ -70,7 +61,7 @@ class ArticleForPlayerFragment : MvpAppCompatFragment() {
         settings.saveFormData = true
     }
 
-    fun loadArticle(articleHtml: String) {
+    private fun loadArticle(articleHtml: String) {
         article.loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
     }
 
