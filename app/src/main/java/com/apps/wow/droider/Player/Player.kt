@@ -1,7 +1,6 @@
 package com.apps.wow.droider.Player
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -25,6 +24,7 @@ class Player(URL: String, context: Context, view: MainView) {
 
     private var currentWindow: Int? = null
 
+    val TAG = Player::class.java.simpleName
 
     init {
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),

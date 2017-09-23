@@ -38,7 +38,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
         setupView()
     }
 
-    fun setupView() {
+    private fun setupView() {
         toolbarSetup()
         navigationDrawerSetup()
         fragmentSetting()

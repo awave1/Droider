@@ -420,7 +420,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     }
 
     private fun setupArticleModel(): ArticleModel {
-        return ArticleModel(webViewTextColor!!, webViewLinkColor!!, webViewTableColor!!, webViewTableHeaderColor!!)
+        return ArticleModel(webViewTextColor, webViewLinkColor, webViewTableColor, webViewTableHeaderColor)
     }
 
     override fun onDestroy() {
@@ -434,13 +434,13 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
 
         private val YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4"
 
-        var webViewTextColor: String? = null
+        lateinit var webViewTextColor: String
 
-        var webViewLinkColor: String? = null
+        lateinit var webViewLinkColor: String
 
-        var webViewTableColor: String? = null
+        lateinit var webViewTableColor: String
 
-        var webViewTableHeaderColor: String? = null
+        lateinit var webViewTableHeaderColor: String
 
         var webViewBackgroundColor: Int = 0
 

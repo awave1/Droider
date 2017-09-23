@@ -12,7 +12,7 @@ import android.os.Build
 import android.os.IBinder
 import android.view.View
 import android.widget.RemoteViews
-import com.apps.wow.droider.Feed.FeedActivity
+import com.apps.wow.droider.Article.ArticleActivity
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 
@@ -21,14 +21,14 @@ class NotificationService : Service() {
 
     var track = ""
     private var status: Notification? = null
-    internal var isPause = true
+    private var isPause = true
     private val mView: MainView = BaseService.mView
 
     private fun showNotification(pos: Int) {
         val views = RemoteViews(packageName,
                 R.layout.player_notification)
 
-        val notificationIntent = Intent(this, FeedActivity::class.java)
+        val notificationIntent = Intent(this, ArticleActivity::class.java)
         notificationIntent.action = Intent.ACTION_MAIN
         notificationIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)

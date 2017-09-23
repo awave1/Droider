@@ -67,12 +67,9 @@ object Const {
 
     interface ACTION {
         companion object {
-            val MAIN_ACTION = "com.jassdev.apps.andrroider.uradio.action.main"
-            val PLAY_ACTION = "com.jassdev.apps.andrroider.uradio.action.play"
-            val STARTFOREGROUND_ACTION = "com.jassdev.apps.andrroider.uradio.action.startforeground"
-            val STOPFOREGROUND_ACTION = "com.jassdev.apps.andrroider.uradio.action.stopforeground"
-            val BROADCAST_MANAGER_INTENT = "com.jassdev.apps.andrroider.uradio.action.updateNotification"
+            val PLAY_ACTION = "com.jassdev.apps.andrroider.droider.action.play"
+            val STARTFOREGROUND_ACTION = "com.jassdev.apps.andrroider.droider.action.startforeground"
+            val STOPFOREGROUND_ACTION = "com.jassdev.apps.andrroider.droider.action.stopforeground"
         }
     }
-
 }

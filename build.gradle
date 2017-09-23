@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.1.4-3'
+        kotlin_version = '1.1.50'
         gradle_version = '3.0.0-beta6'
         moxy_version = '1.5.2'
         support_lib = '26.1.0'

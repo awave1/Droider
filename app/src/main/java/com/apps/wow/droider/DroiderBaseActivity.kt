@@ -59,10 +59,8 @@ open class DroiderBaseActivity : MvpAppCompatActivity() {
     }
 
     fun initInternetConnectionDialog(context: Context) {
-
         AlertDialog.Builder(context).setTitle("Соединение нестабильно или прервано")
                 .setMessage("Проверьте своё соединение с интернетом и перезайдите в приложение")
-
                 .setPositiveButton("Перезайти") { _, _ ->
                     finish()
                     startActivity(intent)

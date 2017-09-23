@@ -10,7 +10,6 @@ import io.realm.Realm
 import org.jsoup.Jsoup
 import rx.Observable
 import rx.schedulers.Schedulers
-import java.util.*
 
 /**
  * Created by Jackson on 14/05/2017.
@@ -25,9 +24,9 @@ class ArticleModel(private val mWebViewTextColor: String?,
 
     private var mHtml: String? = null
 
-    lateinit var castTitle: String
+    var castTitle: String? = null
 
-    var castID: String? = null
+    val castID: ArrayList<CharSequence> = ArrayList()
 
     fun parseArticle(url: String): Observable<String?> {
         return Observable.fromCallable<String> {
@@ -48,16 +47,21 @@ class ArticleModel(private val mWebViewTextColor: String?,
                 )
             }
 
-//TODO check if there two(or more (crazy droider………)) podcasts and return list which should be shown as dialog with single check
             elements.map {
-                if (it.select("iframe").toString().contains("droidercast.podster.fm")) {
-                    castTitle = mDocument.select("header h1").text()
-                    val frameHtml = it.select("iframe").toString()
-                    val indexOfId = frameHtml.indexOf(".fm/") + 4
-                    if (frameHtml.substring(indexOfId, indexOfId + 3)[2] == '/')
-                        castID = frameHtml.substring(indexOfId, indexOfId + 2)
-                    else
-                        castID = frameHtml.substring(indexOfId, indexOfId + 3) // это на случай когда станет трёх значным номер подкаста
+                if (it.select("iframe") != null) {
+                    val iframes = it.select("iframe")
+                    iframes.map {
+                        if (it.toString().contains("droidercast.podster.fm")) {
+                            castTitle = mDocument.select("header h1").text()
+                            val frameHtml = it.select("iframe").toString()
+                            val indexOfId = frameHtml.indexOf(".fm/") + 4
+                            if (frameHtml.substring(indexOfId, indexOfId + 3)[2] == '/')
+                                castID.add(frameHtml.substring(indexOfId, indexOfId + 2))
+                            else
+                            // это на случай когда станет трёх значным номер подкаста
+                                castID.add(frameHtml.substring(indexOfId, indexOfId + 3))
+                        }
+                    }
                 }
             }
 
@@ -70,7 +74,7 @@ class ArticleModel(private val mWebViewTextColor: String?,
             article.articleHtml = mHtml
             article.articleUrl = url
             realm.commitTransaction()
-             mHtml //for returning value
+            mHtml //for returning value
         }.subscribeOn(Schedulers.io())
     }
 

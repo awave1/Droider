@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.annotation.Nullable
-import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -19,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidslidr.Slidr
 import com.apps.wow.droider.Player.BaseService
 import com.apps.wow.droider.Player.MainView
 import com.apps.wow.droider.Player.NotificationService
@@ -29,7 +29,6 @@ import com.apps.wow.droider.Utils.Const.CAST_ID
 import com.apps.wow.droider.Utils.Const.CAST_NAME
 import com.apps.wow.droider.Utils.Const.POST_HTML
 import com.apps.wow.droider.databinding.PodcastFragmentBinding
-import kotlinx.android.synthetic.main.podcast_fragment.*
 import org.jetbrains.anko.support.v4.browse
 import rx.Observable
 import rx.Subscription
@@ -47,32 +46,38 @@ class PlayerFragment : Fragment(), MainView {
     private var headsetPlugReceiver: MusicIntentReceiver? = null
     private var playerSubscription: Subscription? = null
     private lateinit var serviceIntent: Intent
-    private var lastTime: Float? = null
+    private var lastTime: Float = 0.0F
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         binding = PodcastFragmentBinding.inflate(inflater!!, container, false)
+        controlButton = binding.controlButton
 
         binding.podcastName.text = arguments.getString(CAST_NAME)
 
         binding.controlButton.setOnClickListener {
+            turnLoadingAnimation(true)
             togglePlayPause()
         }
 
         binding.share.setOnClickListener { share() }
         binding.download.setOnClickListener { download() }
 
-        binding.slider.setListener { slidr, currentValue ->
-            // +-5 for corner cases
-            if (currentValue > lastTime!! + 5 || currentValue < lastTime!! - 5) {
-                Player.exoPlayer?.seekTo(currentValue.toLong())
-                lastTime = currentValue
+        binding.slider.setListener(object : Slidr.Listener {
+            override fun bubbleClicked(slidr: androidslidr.Slidr?) {
             }
-        }
+
+            override fun valueChanged(slidr: androidslidr.Slidr?, currentValue: Float) {
+                // +-5 for corner cases
+                if (currentValue > lastTime + 5 || currentValue < lastTime - 5) {
+                    Player.exoPlayer?.seekTo(currentValue.toLong())
+                    lastTime = currentValue
+                }
+            }
+        })
 
         binding.slider.setTextMin(formatText(0L))
 
-        controlButton = binding.controlButton
         podcastTitle = binding.podcastName.text.toString()
 
         if (Player.isPlaying) {
@@ -144,12 +149,13 @@ class PlayerFragment : Fragment(), MainView {
                 }
                 player?.start()
                 startPausePlayerService(true)
-                if (lastTime != null)
-                    Player.exoPlayer?.seekTo(lastTime!!.toLong())
+                if (lastTime > 0.0F)
+                    Player.exoPlayer?.seekTo(lastTime.toLong())
                 isControlActivated = true
                 binding.controlButton.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.pause))
                 vibrate()
             } else {
+                turnLoadingAnimation(false)
                 pausePlayer()
                 isControlActivated = false
                 startPausePlayerService(false)
@@ -160,7 +166,6 @@ class PlayerFragment : Fragment(), MainView {
     }
 
     override fun setupSeekbar() {
-
         val millis = Player.exoPlayer?.duration
 
         if (millis != null) {
@@ -171,6 +176,8 @@ class PlayerFragment : Fragment(), MainView {
         binding.slider.setTextFormatter { formatText(it.toLong()) }
 
         binding.slider.setTextMax(Player.exoPlayer?.duration?.let { formatText(it) })
+
+        turnLoadingAnimation(false)
 
         if (playerSubscription != null && !playerSubscription!!.isUnsubscribed)
             playerSubscription!!.unsubscribe()
@@ -196,8 +203,10 @@ class PlayerFragment : Fragment(), MainView {
             Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
             playerSubscription = Observable.interval(1000L, TimeUnit.MILLISECONDS)
                     .timeInterval().subscribe({
-                Player.exoPlayer?.currentPosition?.let { binding.slider.currentValue = it.toFloat() }
-                binding.slider.setTextMin(formatText(Player.exoPlayer?.currentPosition!!))
+                if (Player.isPlaying) {
+                    Player.exoPlayer?.currentPosition?.let { binding.slider.currentValue = it.toFloat() }
+                    binding.slider.setTextMin(formatText(Player.exoPlayer?.currentPosition!!))
+                }
             }, { it.printStackTrace() })
         }
     }
@@ -258,17 +267,22 @@ class PlayerFragment : Fragment(), MainView {
         }
     }
 
+    private fun turnLoadingAnimation(on: Boolean) {
+        binding.loadAnimation.visibility = if (on) View.VISIBLE else View.GONE
+    }
+
     private fun setupBottomSheet() {
         fragmentManager.beginTransaction().replace(R.id.podcastPostContainer,
                 ArticleForPlayerFragment.newInstance(arguments.getString(POST_HTML))).commit()
 
-        val mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
-        mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-            }
-        })
+//        val mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+//        mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//            }
+//
+//            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//            }
+//        })
     }
 
 
@@ -283,7 +297,7 @@ class PlayerFragment : Fragment(), MainView {
          * https://tproger.ru/articles/android-online-radio/
          */
 
-        fun newInstance(html: String?, castId: String, castName: String): PlayerFragment {
+        fun newInstance(html: String?, castId: String, castName: String?): PlayerFragment {
             val fragment = PlayerFragment()
             fragment.retainInstance = true
             val b = Bundle()

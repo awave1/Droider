@@ -10,8 +10,8 @@ android {
         applicationId "com.apps.wow.droider"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 36
-        versionName '5.7'
+        versionCode 38
+        versionName '5.8'
         renderscriptTargetApi 15
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
