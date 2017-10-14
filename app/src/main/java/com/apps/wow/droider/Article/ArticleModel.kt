@@ -10,6 +10,7 @@ import io.realm.Realm
 import org.jsoup.Jsoup
 import rx.Observable
 import rx.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * Created by Jackson on 14/05/2017.
@@ -21,11 +22,8 @@ class ArticleModel(private val mWebViewTextColor: String?,
                    private val mWebViewTableHeaderColor: String?) {
 
     private val mSimilar = ArrayList<Post>()
-
     private var mHtml: String? = null
-
     var castTitle: String? = null
-
     val castID: ArrayList<CharSequence> = ArrayList()
 
     fun parseArticle(url: String): Observable<String?> {
@@ -37,7 +35,7 @@ class ArticleModel(private val mWebViewTextColor: String?,
             val similarElements = mDocument.select(".popular-slider__list a")
 
 
-            Log.d(TAG, "doInBackground: similar el: " + similarElements.size)
+            Timber.d("doInBackground: similar el: %s", similarElements.size)
 
             similarElements.mapTo(mSimilar) {
                 Post(
@@ -54,12 +52,11 @@ class ArticleModel(private val mWebViewTextColor: String?,
                         if (it.toString().contains("droidercast.podster.fm")) {
                             castTitle = mDocument.select("header h1").text()
                             val frameHtml = it.select("iframe").toString()
-                            val indexOfId = frameHtml.indexOf(".fm/") + 4
-                            if (frameHtml.substring(indexOfId, indexOfId + 3)[2] == '/')
-                                castID.add(frameHtml.substring(indexOfId, indexOfId + 2))
+                            val indexId = frameHtml.indexOf(".fm/") + 4
+                            if (frameHtml.substring(indexId, indexId + 3)[2] == '/')
+                                castID.add(frameHtml.substring(indexId, indexId + 2))
                             else
-                            // это на случай когда станет трёх значным номер подкаста
-                                castID.add(frameHtml.substring(indexOfId, indexOfId + 3))
+                                castID.add(frameHtml.substring(indexId, indexId + 3)) // это на случай когда станет трёх значным номер подкаста
                         }
                     }
                 }
@@ -70,11 +67,15 @@ class ArticleModel(private val mWebViewTextColor: String?,
             Realm.init(AppContext.context)
             val realm = Realm.getDefaultInstance()
             realm.beginTransaction()
+
             val article: Article = realm.createObject(Article::class.java)
             article.articleHtml = mHtml
             article.articleUrl = url
+
             realm.commitTransaction()
-            mHtml //for returning value
+
+            //return
+            mHtml
         }.subscribeOn(Schedulers.io())
     }
 
@@ -94,12 +95,13 @@ class ArticleModel(private val mWebViewTextColor: String?,
             var img = mDocument.select(".cover").attr("style")
             if (!TextUtils.isEmpty(img))
                 img = img.substring(img.indexOf("(") + 1, img.lastIndexOf(")"))
-            Log.d(TAG, "Background: : " + img)
-            Log.d(TAG, "getPostDataForOutsideIntent: " + mDocument.select("header .headline__content__title").text())
-            Log.d(TAG, "getPostDataForOutsideIntent: " + mDocument.select("header .headline__content__intro").text())
+            Timber.d("Background: %s", img)
+            Timber.d("getPostDataForOutsideIntent: %s", mDocument.select("header .headline__content__title").text())
+            Timber.d(TAG, "getPostDataForOutsideIntent: %s", mDocument.select("header .headline__content__intro").text())
 
-            Post(pictureWide = img, title = mDocument.select("header .headline__content__title").text(),
-                    description = mDocument.select("header .headline__content__intro").text())
+            Post(pictureWide = img,
+                title = mDocument.select("header .headline__content__title").text(),
+                description = mDocument.select("header .headline__content__intro").text())
         }.subscribeOn(Schedulers.io())
     }
 
@@ -108,7 +110,7 @@ class ArticleModel(private val mWebViewTextColor: String?,
         val head = "<head>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                 "<link href='https://fonts.googleapis.com/css?family=Roboto:300,700italic,300italic' rel='stylesheet' type='text/css'>" +
-                style() +
+                    style() +
                 "</head>"
 
         return "<html>$head<body><div class=\"container\">$html</div></body></html>"

@@ -8,21 +8,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.arellomobile.mvp.MvpAppCompatFragment
 import kotlinx.android.synthetic.main.article_card.*
+import timber.log.Timber
 
 /**
  * Created by Jackson on 20/09/2017.
  */
 class ArticleForPlayerFragment : MvpAppCompatFragment() {
-
-    private val TAG: String? = ArticleForPlayerFragment::class.java.name
-
     private var extras: Bundle? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,12 +39,12 @@ class ArticleForPlayerFragment : MvpAppCompatFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupArticleWebView(w: WebView) {
-        Log.d(TAG, "setupArticleWebView: ")
+        Timber.d("setup article WebView")
         w.setBackgroundColor(ArticleFragment.webViewBackgroundColor)
         val settings = w.settings
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                Log.d(TAG, "shouldOverrideUrlLoading: url: " + url)
+                Timber.d("shouldOverrideUrlLoading: url: %s", url)
                 view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                 return true
             }

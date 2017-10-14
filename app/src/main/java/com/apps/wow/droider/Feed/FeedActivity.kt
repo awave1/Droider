@@ -24,9 +24,10 @@ import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import com.apps.wow.droider.Utils.Utils
 import kotlinx.android.synthetic.main.activity_feed.*
+import timber.log.Timber
 
 class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private val TAG = FeedActivity::class.java.simpleName
+
     private var activeFeedTitle: String? = null
     private val mTitle = "Главная"
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
@@ -72,7 +73,7 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun fragmentSetting() {
-        Log.d(TAG, "onCreate: isOnline = " + Utils.isOnline(this))
+       Timber.d("onCreate: isOnline = %s", Utils.isOnline(this))
         if (!Utils.isOnline(this)) {
             initInternetConnectionDialog(this)
         } else {

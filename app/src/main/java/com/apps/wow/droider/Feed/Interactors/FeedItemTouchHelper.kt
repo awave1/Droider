@@ -27,8 +27,4 @@ class FeedItemTouchHelper(private val mFeedItemTouch: OnFeedItemTouch) : ItemTou
     override fun isItemViewSwipeEnabled(): Boolean {
         return true
     }
-
-    companion object {
-        private val TAG = "FeedItemTouchHelper"
-    }
 }

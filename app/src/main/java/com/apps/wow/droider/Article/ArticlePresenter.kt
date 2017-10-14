@@ -8,6 +8,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import io.realm.Realm
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 /**
  * Created by Jackson on 14/05/2017.
@@ -15,8 +16,8 @@ import rx.android.schedulers.AndroidSchedulers
 
 @InjectViewState
 class ArticlePresenter : MvpPresenter<ArticleView>() {
-    lateinit var mUrl: String
 
+    lateinit var mUrl: String
     lateinit var mArticleModel: ArticleModel
 
     fun provideData(mUrl: String, model: ArticleModel) {
@@ -37,23 +38,17 @@ class ArticlePresenter : MvpPresenter<ArticleView>() {
     }
 
     private fun loadSimilar() {
-        if (mArticleModel.similar != null) {
+        if (mArticleModel.similar != null)
             viewState.setupSimilar(mArticleModel.similar!!)
-        } else {
+        else
             viewState.hideSimilar()
-        }
     }
 
     fun getPostDataForOutsideEvent() {
         mArticleModel.getPostDataForOutsideIntent(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ post -> viewState.setupNecessaryFields(post) }
-                ) { e -> Log.e(TAG, "getPostDataForOutsideEvent: ", e) }
-    }
-
-    companion object {
-
-        val TAG = "ArticlePresenter"
+                ) { e -> Timber.e(e, "getPostDataForOutsideEvent: ") }
     }
 }
 

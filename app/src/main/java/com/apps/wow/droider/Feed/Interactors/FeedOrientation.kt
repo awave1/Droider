@@ -10,9 +10,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import com.apps.wow.droider.Feed.FeedFragment
 import com.apps.wow.droider.Utils.Const
+import timber.log.Timber
 
 
 abstract class FeedOrientation(private var mActivity: Activity?, private val swipeRefresher: SwipeRefreshLayout) : RecyclerView.OnScrollListener() {
+
     // Portrait
     private var previousTotal_portrait = 0
     private val visibleThreshold_portrait: Byte = 4
@@ -20,6 +22,7 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
     private var visibleItemCount_portrait: Byte = 0
     private var totalItemCount_portrait: Byte = 0
     private var isLoading_portrait = true
+
     // Landscape
     private var previousTotal_landscape = 0
     private val visibleThreshold_landscape: Byte = 3 // 3
@@ -32,11 +35,10 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
 
     override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
         if (newState == 0) {
-            if (mActivity!!.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            if (mActivity!!.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE)
                 doubleColsLoading(mActivity, recyclerView, FeedFragment.sStaggeredGridLayoutManager)
-            } else {
+            else
                 singleColsLoading(mActivity, recyclerView, FeedFragment.sLinearLayoutManager)
-            }
         }
     }
 
@@ -45,11 +47,11 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
         visibleItemCount_portrait = recyclerView?.childCount!!.toByte()
         totalItemCount_portrait = layoutManager.itemCount.toByte()
 
-        Log.d(TAG, "singleColsLoading: totalItemCount_portrait = " + totalItemCount_portrait)
+        Timber.d("singleColsLoading: totalItemCount_portrait = %s", totalItemCount_portrait)
         firstVisibleItem_portrait = layoutManager.findFirstVisibleItemPosition().toByte()
 
 
-        Log.d(TAG, "singleColsLoading: firstVisibleItem_portrait = " + firstVisibleItem_portrait)
+        Timber.d("singleColsLoading: firstVisibleItem_portrait = %s", firstVisibleItem_portrait)
 
         if (isLoading_portrait && totalItemCount_portrait > previousTotal_portrait) {
             isLoading_portrait = false
@@ -57,7 +59,7 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
         }
 
         if (!isLoading_portrait && totalItemCount_portrait - visibleItemCount_portrait <= firstVisibleItem_portrait + visibleThreshold_portrait) {
-            Log.d(TAG, "singleColsLoading: end has been reached, loading next page")
+            Timber.d("singleColsLoading: end has been reached, loading next page")
             offsetPortrait += Const.DEFAULT_COUNT
             loadNextPage()
             isLoading_portrait = true
@@ -73,13 +75,13 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
         visibleItemCount_landscape = recyclerView?.childCount!!.toByte()
         totalItemCount_landscape = staggeredGridLayoutManager.itemCount.toByte()
 
-        Log.d(TAG, "doubleColsLoading: totalItemCount_landscape = " + totalItemCount_landscape)
+        Timber.d("doubleColsLoading: totalItemCount_landscape = " + totalItemCount_landscape)
 
         firstVisibleItem_landscape = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItem_landscape)
 
-        Log.d(TAG, "singleColsLoading: firstVisibleItem_portrait (length) = " + firstVisibleItem_landscape!!.size)
-        Log.d(TAG, "doubleColsLoading: firstVisibleItem_landscape [0]/[1] = \n"
-                + firstVisibleItem_landscape!![0] + "/" + firstVisibleItem_landscape!![1])
+        Timber.d("singleColsLoading: firstVisibleItem_portrait (length) = %s", firstVisibleItem_landscape!!.size)
+        Timber.d("doubleColsLoading: firstVisibleItem_landscape [0]/[1] = \n %s %s",
+                 firstVisibleItem_landscape!![0], "/" + firstVisibleItem_landscape!![1])
 
         if (firstVisibleItem_landscape != null && firstVisibleItem_landscape!!.size > 0) {
             previousTotal_landscape = firstVisibleItem_landscape!![0]
@@ -102,7 +104,6 @@ abstract class FeedOrientation(private var mActivity: Activity?, private val swi
     }
 
     companion object {
-        private val TAG = "FeedOrientation"
         var offsetPortrait = 0
         var offsetLandscape = 1
     }

@@ -6,19 +6,21 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 class ArticleActivity : DroiderBaseActivity() {
 
-    private val TAG = "ArticleActivity"
-
     private lateinit var castId: String
-
     private lateinit var pd: ProgressDialog
+
+    private val WEB_TABLE_COLOR_LIGHT = "#f5f5f5"
+    private val WEB_TABLE_HEADER_COLOR_LIGHT = "#eeeeee"
+    private val WEB_TABLE_COLOR_DARK = "#212121"
+    private val WEB_TABLE_HEADER_COLOR_DARK = "#616161"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         themeSetup()
@@ -28,7 +30,7 @@ class ArticleActivity : DroiderBaseActivity() {
         setContentView(R.layout.container)
         if (supportFragmentManager.findFragmentById(R.id.container) == null) {
             pd = ProgressDialog(this)
-            pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
+            pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу") // lol
             pd.show()
 
             val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
@@ -36,12 +38,16 @@ class ArticleActivity : DroiderBaseActivity() {
             else
                 intent.data.toString()
 
-            val model = ArticleModel(ArticleFragment.webViewTextColor, ArticleFragment.webViewLinkColor, ArticleFragment.webViewTableColor, ArticleFragment.webViewTableHeaderColor)
+            val model = ArticleModel(ArticleFragment.webViewTextColor,
+                                     ArticleFragment.webViewLinkColor,
+                                     ArticleFragment.webViewTableColor,
+                                     ArticleFragment.webViewTableHeaderColor)
+
             model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
                 when {
-                    model.castID.size == 1 -> replaceFragment(PlayerFragment.newInstance(it,
-                            model.castID[0].toString(), model.castTitle))
-                    model.castID.size > 1 -> podcastsAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
+                    model.castID.size == 1 -> replaceFragment(
+                            PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))
+                    model.castID.size > 1 -> podcastAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
                     else -> replaceFragment(ArticleFragment.newInstance())
                 }
             })
@@ -58,7 +64,7 @@ class ArticleActivity : DroiderBaseActivity() {
             pd.dismiss()
     }
 
-    private fun podcastsAlertDialogChooser(list: Array<CharSequence>, html: String?, title: String?) {
+    private fun podcastAlertDialogChooser(list: Array<CharSequence>, html: String?, title: String?) {
         if (pd.isShowing)
             pd.dismiss()
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -80,16 +86,16 @@ class ArticleActivity : DroiderBaseActivity() {
                 .toHexString(getThemeAttribute(R.attr.colorPrimary, DroiderBaseActivity.Companion.activeTheme)).substring(2)
 
         if (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme) {
-            ArticleFragment.webViewTableColor = "#F5F5F5"
-            ArticleFragment.webViewTableHeaderColor = "#EEEEEE"
+            ArticleFragment.webViewTableColor = WEB_TABLE_COLOR_LIGHT
+            ArticleFragment.webViewTableHeaderColor = WEB_TABLE_HEADER_COLOR_LIGHT
         } else {
-            ArticleFragment.webViewTableHeaderColor = "#212121"
-            ArticleFragment.webViewTableColor = "#616161"
+            ArticleFragment.webViewTableColor = WEB_TABLE_COLOR_DARK
+            ArticleFragment.webViewTableHeaderColor = WEB_TABLE_HEADER_COLOR_DARK
         }
 
-        Log.d(TAG, "themeSetup: bg color: " + ArticleFragment.webViewBackgroundColor)
-        Log.d(TAG, "themeSetup: webViewTextColor color: " + ArticleFragment.webViewTextColor)
-        Log.d(TAG, "themeSetup: webViewLinkColor color: " + ArticleFragment.webViewLinkColor)
+        Timber.d("themeSetup: bg color: " + ArticleFragment.webViewBackgroundColor)
+        Timber.d("themeSetup: webViewTextColor color: " + ArticleFragment.webViewTextColor)
+        Timber.d("themeSetup: webViewLinkColor color: " + ArticleFragment.webViewLinkColor)
     }
 
     override fun onBackPressed() {

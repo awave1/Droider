@@ -1,5 +1,6 @@
 package com.apps.wow.droider.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 
 /**
@@ -13,7 +14,7 @@ class AppContext(mContext: Context) {
     }
 
     companion object {
-        lateinit var context: Context
-            internal set
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context internal set
     }
 }

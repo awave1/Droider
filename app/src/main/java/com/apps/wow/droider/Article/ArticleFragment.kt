@@ -19,7 +19,6 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -43,6 +42,7 @@ import io.codetail.animation.ViewAnimationUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.article.*
 import kotlinx.android.synthetic.main.article_card.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -54,15 +54,10 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     var hasBlur: Boolean = false
 
     private val youtubeFrame: FrameLayout? = null
-
     private var isPalette: Boolean = false
-
     private var extras: Bundle? = null
-
     private var isAnimationPlayed = false
-
     private var mUrl: String? = null
-
     private lateinit var mRealm: Realm
 
     @InjectPresenter
@@ -195,7 +190,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
             mArticlePresenter.getPostDataForOutsideEvent()
 
         } else {
-            Log.d(TAG, "intentExtraChecking: inner")
+            Timber.d("intentExtraChecking: inner")
             mArticlePresenter.provideData(mUrl!!, setupArticleModel())
 
             articleHeader.text = extras?.getString(Const.EXTRA_ARTICLE_TITLE)
@@ -205,15 +200,6 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         }
 
         mArticlePresenter.parseArticle(mRealm)
-
-        //            new Handler().postDelayed(() -> {
-        //                if (ArticleParser.isYoutube()) {
-        //                    /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
-        //                    youtubeFrame = (FrameLayout) findViewById(R.castID.YouTubeFrame);
-        //                    setupYoutubePlayer();
-        //                }
-        //            }, 750);
-
     }
 
     private fun viewInitialisation() {
@@ -239,22 +225,21 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
 
     @Synchronized private fun setupYoutubePlayer() {
         youtubeFrame!!.visibility = View.VISIBLE
-        Log.d(TAG, "setupYoutubePlayer: ")
+        Timber.d("setup youtube player")
         val youtubeFragment = YouTubePlayerSupportFragment.newInstance()
         youtubeFragment.initialize(YOUTUBE_API_KEY, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider,
-                                                 youTubePlayer: YouTubePlayer, wasResumed: Boolean) {
-                //                youTubePlayer.cueVideo(ArticleParser.getYouTubeVideoURL());
+                                                 youTubePlayer: YouTubePlayer,
+                                                 wasResumed: Boolean) {
             }
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider,
                                                  youTubeInitializationResult: YouTubeInitializationResult) {
-                Log.d(TAG, "onInitializationFailure: ")
+                Timber.d("onInitializationFailure: ")
 
             }
         })
-        fragmentManager.beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment)
-                .commit()
+        fragmentManager.beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit()
     }
 
 
@@ -280,10 +265,6 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         when (item.itemId) {
             R.id.action_open_in_browser -> startActivity(Intent(Intent.ACTION_VIEW,
                     Uri.parse(mUrl)))
@@ -301,12 +282,12 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupArticleWebView(w: WebView) {
-        Log.d(TAG, "setupArticleWebView: ")
+        Timber.d("setup web view")
         w.setBackgroundColor(webViewBackgroundColor)
         val settings = w.settings
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                Log.d(TAG, "shouldOverrideUrlLoading: url: " + url)
+                Timber.d("shouldOverrideUrlLoading: url: %s", url)
                 if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)").toRegex())) {
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -357,32 +338,29 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
                             toolbarArticle.setBackgroundColor(p.lightVibrantSwatch!!.rgb)
                             articleBackgroundNSV
                                     .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            Log.d(TAG, "onCreate: color from bitmap: " + p.lightVibrantSwatch!!.rgb
-                                    + "")
+                            Timber.d("onCreate: color from bitmap: %s", p.lightVibrantSwatch!!.rgb)
                         } else {
                             toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
                             articleBackgroundNSV
                                     .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            Log.d(TAG, "onCreate: else color from bitmap:TRANSPARENT ")
+                            Timber.d("onCreate: else color from bitmap:TRANSPARENT ")
                         }
                     }
                 })
 
             } catch (e: NullPointerException) {
-                handlePaltetException(isTransparent, e)
+                handlePalletException(isTransparent, e)
             } catch (ise: IllegalStateException) {
-                handlePaltetException(isTransparent, ise)
+                handlePalletException(isTransparent, ise)
             }
         }
     }
 
-    private fun handlePaltetException(isTransparent: Boolean, e: Exception) {
+    private fun handlePalletException(isTransparent: Boolean, e: Exception) {
         if (isTransparent) {
             toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
         } else {
-            Log.e(TAG,
-                    "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ",
-                    e.cause)
+             Timber.e(e, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ")
         }
     }
 
@@ -392,8 +370,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     }
 
     override fun loadArticle(articleHtml: String) {
-        article
-                .loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
+        article.loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
     }
 
     override fun setupSimilar(similar: ArrayList<Post>) {
@@ -430,20 +407,12 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
 
     companion object {
 
-        private val TAG = "ArticleFragment"
-
         private val YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4"
-
         lateinit var webViewTextColor: String
-
         lateinit var webViewLinkColor: String
-
         lateinit var webViewTableColor: String
-
         lateinit var webViewTableHeaderColor: String
-
         var webViewBackgroundColor: Int = 0
-
         var currentNightMode: Int = 0
 
         fun newInstance(): ArticleFragment {

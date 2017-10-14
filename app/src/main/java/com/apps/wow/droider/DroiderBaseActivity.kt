@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatDelegate
 import com.apps.wow.droider.Utils.Utils
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.google.firebase.analytics.FirebaseAnalytics
+import timber.log.Timber
 import java.util.*
 
 
@@ -22,19 +23,17 @@ open class DroiderBaseActivity : MvpAppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Obtain the FirebaseAnalytics newInstance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        if (BuildConfig.DEBUG)
+            Timber.plant(Timber.DebugTree())
     }
 
     protected open fun themeSetup() {
-        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_light),
-                com.apps.wow.droider.R.style.RedTheme)
-        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_dark),
-                com.apps.wow.droider.R.style.RedThemeDark)
-        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_adaptive),
-                com.apps.wow.droider.R.style.AdaptiveTheme)
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_light), com.apps.wow.droider.R.style.RedTheme)
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_dark), com.apps.wow.droider.R.style.RedThemeDark)
+        themesHashMap.put(getString(com.apps.wow.droider.R.string.pref_theme_entry_adaptive), com.apps.wow.droider.R.style.AdaptiveTheme)
 
         val themeName = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(getString(com.apps.wow.droider.R.string.pref_theme_key),
-                        getString(com.apps.wow.droider.R.string.pref_theme_entry_light))
+                .getString(getString(com.apps.wow.droider.R.string.pref_theme_key), getString(com.apps.wow.droider.R.string.pref_theme_entry_light))
 
         try {
             activeTheme = themesHashMap[themeName] as Int

@@ -11,7 +11,8 @@ import java.util.*
  * Created by Jackson on 04/06/2017.
  */
 
-class AuthorsRecyclerViewAdapter(val authorList: ArrayList<Author>, private val mRouter: AdapterToFragmentRouter) : RecyclerView.Adapter<AuthorsRecyclerViewAdapter.AuthorsViewHolder>() {
+class AuthorsRecyclerViewAdapter(private val authorList: ArrayList<Author>, private val mRouter: AdapterToFragmentRouter)
+    : RecyclerView.Adapter<AuthorsRecyclerViewAdapter.AuthorsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AuthorsViewHolder {
         return AuthorsViewHolder(AuthorsRecyclerViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
