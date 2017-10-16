@@ -3,73 +3,60 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent_light"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingEnd="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="10dp"
+        android:paddingStart="15dp"
+        android:paddingTop="8dp">
 
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/cd_play"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dr_cast_rounded"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/icon"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_gravity="center"
-                android:background="@drawable/play_button"
-                android:contentDescription="@string/cd_play"
-                android:scaleType="centerCrop"
-                android:src="@drawable/dr_cast"/>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/track_tv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/track_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/titleColor"
-                    tools:text="Song"
-                    />
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/status_bar_collapse"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_close"/>
-
-            <ImageButton
-                android:id="@+id/status_bar_play"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_gravity="center"
-                android:background="@drawable/play_button"
-                android:contentDescription="@string/cd_play"
-                android:scaleType="fitCenter"
-                android:src="@drawable/play"/>
-
+                android:textColor="@color/titleColor"
+                tools:text="Song"
+                />
         </LinearLayout>
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/status_bar_collapse"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close"/>
+
+        <ImageView
+            android:id="@+id/status_bar_play"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/cd_play"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play"/>
+    </LinearLayout>
 </layout>

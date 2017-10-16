@@ -8,7 +8,7 @@ interface FeedView : MvpView {
 
     fun onLoadCompleted(model: FeedModel, clear: Boolean)
 
-    fun onLoadCompleted(model: FeedModel)
+    fun onPopularLoadCompleted(model: FeedModel)
 
     fun onLoadFailed()
 }

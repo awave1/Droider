@@ -41,20 +41,21 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate<FeedFragmentBinding>(inflater, R.layout.feed_fragment, container, false)
-        orientationDebugging()
+        if (binding == null) {
+            binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false)
+            orientationDebugging()
 
-        swipeRefreshLayoutSetup()
-        currentCategory = arguments.getString(Const.EXTRA_CATEGORY)
-        currentSlug = arguments.getString(Const.EXTRA_SLUG)
+            swipeRefreshLayoutSetup()
+            binding!!.feedRecyclerView.setHasFixedSize(true)
+
+            currentCategory = arguments.getString(Const.EXTRA_CATEGORY)
+            currentSlug = arguments.getString(Const.EXTRA_SLUG)
+
+            presenter.loadData(currentCategory!!, currentSlug!!, Const.DEFAULT_COUNT, 0, true)
+        }
         return binding!!.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        presenter.loadData(currentCategory!!, currentSlug!!, Const.DEFAULT_COUNT, 0, true)
-        presenter.loadPopular()
-    }
 
     override fun onLoadingFeed() {
         binding!!.feedSwipeRefresh.isRefreshing = true
@@ -64,11 +65,10 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
         // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
         if (feedAdapter == null || clear) {
-            Log.d(TAG, "onLoadCompleted: is null")
+            Log.d(TAG, "onPopularLoadCompleted: is null")
             FeedOrientation.offsetPortrait = 0
             FeedOrientation.offsetLandscape = 0
 
-            binding!!.feedRecyclerView.setHasFixedSize(true)
             feedAdapter = FeedAdapter(model)
             binding!!.feedRecyclerView.adapter = feedAdapter
             initLayoutManager()
@@ -79,7 +79,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
     }
 
 
-    override fun onLoadCompleted(model: FeedModel) {
+    override fun onPopularLoadCompleted(model: FeedModel) {
         (activity as FeedActivity).setupPopularArticles(model)
         onTaskCompleted()
     }

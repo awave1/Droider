@@ -90,7 +90,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_gravity="center"
-                                app:srcCompat="@drawable/ic_share"/>
+                                android:src="@drawable/ic_share"/>
                         </FrameLayout>
 
                         <FrameLayout
@@ -116,7 +116,7 @@
                                 android:layout_gravity="center"
                                 android:background="@drawable/play_button"
                                 android:visibility="visible"
-                                app:srcCompat="@drawable/play"/>
+                                android:src="@drawable/play"/>
                         </FrameLayout>
 
 
@@ -130,11 +130,10 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_gravity="center"
-                                app:srcCompat="@drawable/ic_file_download"/>
+                                android:src="@drawable/ic_download"/>
                         </FrameLayout>
                     </LinearLayout>
                 </LinearLayout>
-
             </RelativeLayout>
         </LinearLayout>
 
@@ -167,7 +166,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
-
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </layout>
