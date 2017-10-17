@@ -51,7 +51,7 @@ dependencies {
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }
-    compile 'org.jsoup:jsoup:1.10.2'
+    compile 'org.jsoup:jsoup:1.10.3'
     compile "com.android.support:appcompat-v7:$support_lib"
     compile "com.android.support:design:$support_lib"
     compile "com.android.support:recyclerview-v7:$support_lib"
