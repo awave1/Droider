@@ -7,12 +7,10 @@ import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.apps.wow.droider.Adapters.FeedAdapter
-import com.apps.wow.droider.BuildConfig
 import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.Feed.Interactors.FeedOrientation
 import com.apps.wow.droider.Feed.Presenter.FeedPresenter
@@ -61,7 +59,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
         // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
         if (feedAdapter == null || clear) {
-            Timber.d(TAG, "onPopularLoadCompleted: is null")
+            Timber.d("onPopularLoadCompleted: is null")
             FeedOrientation.offsetPortrait = 0
             FeedOrientation.offsetLandscape = 0
 
