@@ -198,6 +198,7 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
             (activity as ArticleActivity).supportActionBar!!.setDisplayShowTitleEnabled(true)
             (activity as ArticleActivity).supportActionBar!!.title = ""
             (activity as ArticleActivity).supportActionBar!!.setDisplayShowHomeEnabled(true)
+            (activity as ArticleActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             (activity as ArticleActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
             toolbarArticle.setNavigationOnClickListener { activity.finish() }
