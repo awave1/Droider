@@ -13,7 +13,6 @@ import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -35,6 +34,7 @@ import io.codetail.animation.ViewAnimationUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.article.*
 import kotlinx.android.synthetic.main.article_card.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -44,13 +44,10 @@ import java.util.*
 class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
     private val youtubeFrame: FrameLayout? = null
-
+    private var isPalette: Boolean = false
     private var extras: Bundle? = null
-
     private var isAnimationPlayed = false
-
     private var mUrl: String? = null
-
     private lateinit var mRealm: Realm
 
     @InjectPresenter
@@ -174,7 +171,7 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
             mArticlePresenter.getPostDataForOutsideEvent()
 
         } else {
-            Log.d(TAG, "intentExtraChecking: inner")
+            Timber.d("intentExtraChecking: inner")
             mArticlePresenter.provideData(mUrl!!, setupArticleModel())
 
             articleHeader.text = extras?.getString(Const.EXTRA_ARTICLE_TITLE)
@@ -184,13 +181,6 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
         }
 
         mArticlePresenter.parseArticle(mRealm)
-
-//        Handler().postDelayed({
-//            if (Utils.getYoutubeImg()) {
-//                /** а зачем зря тратить память как говорится, поэтому находим этот фрагмент только когда он точно нужен **/
-//                setupYoutubePlayer()
-//            }
-//        }, 750)
     }
 
     private fun viewInitialisation() {
@@ -216,7 +206,7 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
     @Synchronized private fun setupYoutubePlayer() {
         youtubeFrame!!.visibility = View.VISIBLE
-        Log.d(TAG, "setupYoutubePlayer: ")
+        Timber.d("setup youtube player")
         val youtubeFragment = YouTubePlayerSupportFragment.newInstance()
         youtubeFragment.initialize(YOUTUBE_API_KEY, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider,
@@ -226,12 +216,11 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider,
                                                  youTubeInitializationResult: YouTubeInitializationResult) {
-                Log.d(TAG, "onInitializationFailure: ")
+                Timber.d("onInitializationFailure: ")
 
             }
         })
-        fragmentManager.beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment)
-                .commit()
+        fragmentManager.beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -244,10 +233,6 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         when (item.itemId) {
             R.id.action_open_in_browser -> startActivity(Intent(Intent.ACTION_VIEW,
                     Uri.parse(mUrl)))
@@ -265,12 +250,12 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupArticleWebView(w: WebView) {
-        Log.d(TAG, "setupArticleWebView: ")
+        Timber.d("setup web view")
         w.setBackgroundColor(webViewBackgroundColor)
         val settings = w.settings
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                Log.d(TAG, "shouldOverrideUrlLoading: url: " + url)
+                Timber.d("shouldOverrideUrlLoading: url: %s", url)
                 if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)").toRegex())) {
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -312,8 +297,7 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
     }
 
     override fun loadArticle(articleHtml: String) {
-        article
-                .loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
+        article.loadDataWithBaseURL("file:///android_asset/", articleHtml, "text/html", "UTF-8", "")
     }
 
     override fun setupSimilar(similar: ArrayList<Post>) {
@@ -350,20 +334,12 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
     companion object {
 
-        private val TAG = "ArticleFragment"
-
         private val YOUTUBE_API_KEY = "AIzaSyBl-6eQJ9SgBSznqnQV6ts_5MZ88o31sl4"
-
         lateinit var webViewTextColor: String
-
         lateinit var webViewLinkColor: String
-
         lateinit var webViewTableColor: String
-
         lateinit var webViewTableHeaderColor: String
-
         var webViewBackgroundColor: Int = 0
-
         var currentNightMode: Int = 0
 
         fun newInstance(): ArticleFragment {

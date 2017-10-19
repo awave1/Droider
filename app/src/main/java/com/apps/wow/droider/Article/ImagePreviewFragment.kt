@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.apps.wow.droider.R
 import com.apps.wow.droider.databinding.FragmentImagePrevBinding
+import timber.log.Timber
 
 
 /**
@@ -19,6 +20,7 @@ import com.apps.wow.droider.databinding.FragmentImagePrevBinding
  */
 
 class ImagePreviewFragment : Fragment() {
+
     lateinit var mBinding: FragmentImagePrevBinding
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,11 +36,10 @@ class ImagePreviewFragment : Fragment() {
         mBinding.img.setPhotoUri(Uri.parse(arguments.getString(IMAGE_URL)))
 
         mBinding.closeBtn.setOnClickListener {
-            activity
-                    .supportFragmentManager
+            activity.supportFragmentManager
                     .beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .remove(this@ImagePreviewFragment)
+                    .remove(this)
                     .commit()
 
             onDestroy()
@@ -48,16 +49,14 @@ class ImagePreviewFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: ")
+        Timber.d("onDestroy")
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             activity.window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-        }
+                                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
 
     companion object {
-        private val TAG = "ImagePreviewFragment"
         val IMAGE_URL = "IMAGE_URL"
 
         fun newInstance(imageUrl: String): ImagePreviewFragment {

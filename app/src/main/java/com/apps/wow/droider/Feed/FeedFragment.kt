@@ -24,38 +24,34 @@ import com.apps.wow.droider.databinding.FeedFragmentBinding
 import com.arellomobile.mvp.MvpFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
+import timber.log.Timber
 
 
 class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var presenter: FeedPresenter
-
     private var binding: FeedFragmentBinding? = null
-
     private var feedAdapter: FeedAdapter? = null
-
     private var currentCategory: String? = null
-
     private var currentSlug: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        if (binding == null) {
-            binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false)
-            orientationDebugging()
+        binding = DataBindingUtil.inflate<FeedFragmentBinding>(inflater, R.layout.feed_fragment, container, false)
+        orientationDebugging()
 
-            swipeRefreshLayoutSetup()
-            binding!!.feedRecyclerView.setHasFixedSize(true)
-
-            currentCategory = arguments.getString(Const.EXTRA_CATEGORY)
-            currentSlug = arguments.getString(Const.EXTRA_SLUG)
-
-            presenter.loadData(currentCategory!!, currentSlug!!, Const.DEFAULT_COUNT, 0, true)
-        }
+        swipeRefreshLayoutSetup()
+        currentCategory = arguments.getString(Const.EXTRA_CATEGORY)
+        currentSlug = arguments.getString(Const.EXTRA_SLUG)
         return binding!!.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.loadData(currentCategory!!, currentSlug!!, Const.DEFAULT_COUNT, 0, true)
+        presenter.loadPopular()
+    }
 
     override fun onLoadingFeed() {
         binding!!.feedSwipeRefresh.isRefreshing = true
@@ -65,7 +61,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
         // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
         if (feedAdapter == null || clear) {
-            Log.d(TAG, "onPopularLoadCompleted: is null")
+            Timber.d(TAG, "onPopularLoadCompleted: is null")
             FeedOrientation.offsetPortrait = 0
             FeedOrientation.offsetLandscape = 0
 
@@ -105,7 +101,8 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
 
     private fun swipeRefreshLayoutSetup() {
         binding!!.feedSwipeRefresh.setOnRefreshListener(this)
-        binding!!.feedSwipeRefresh.setColorSchemeResources(android.R.color.holo_red_dark,
+        binding!!.feedSwipeRefresh.setColorSchemeResources(
+                android.R.color.holo_red_dark,
                 android.R.color.holo_blue_dark, android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark)
         binding!!.feedSwipeRefresh.setSize(SwipeRefreshLayout.DEFAULT)
@@ -172,18 +169,12 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
     }
 
     private fun orientationDebugging() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onCreateView: orientation = " + activity.resources
-                    .configuration.orientation)
-        }
+        Timber.d("onCreateView: orientation = %s", activity.resources.configuration.orientation)
     }
 
     companion object {
 
-        private val TAG = "Feed"
-
         lateinit var sLinearLayoutManager: LinearLayoutManager
-
         lateinit var sStaggeredGridLayoutManager: StaggeredGridLayoutManager
 
         fun newInstance(category: String, slug: String): FeedFragment {

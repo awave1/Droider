@@ -15,6 +15,7 @@ import com.apps.wow.droider.Feed.FeedActivity
 import com.apps.wow.droider.Feed.Interactors.FeedLoadingInteractor
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.Const
+import timber.log.Timber
 import java.util.*
 
 
@@ -39,7 +40,7 @@ class NotifyService : Service() {
                         loadLastPost()
                     }
                 }, newPush(interval().toLong()), newPush(interval().toLong()))
-                Log.d("NOTIFY", "Repeat in " + interval() + "hour")
+                Timber.d("Repeat in %s hour(s)", interval());
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
             }

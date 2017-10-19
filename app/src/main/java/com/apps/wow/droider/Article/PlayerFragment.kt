@@ -32,6 +32,7 @@ import com.apps.wow.droider.databinding.PodcastFragmentBinding
 import org.jetbrains.anko.support.v4.browse
 import rx.Observable
 import rx.Subscription
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -171,9 +172,10 @@ class PlayerFragment : Fragment(), MainView {
             binding.slider.max = millis.toFloat()
         }
         binding.slider.setMin(0F)
-        Player.exoPlayer?.duration?.toFloat()?.let { binding.slider.max = it }
-        binding.slider.setTextFormatter { formatText(it.toLong()) }
 
+        Player.exoPlayer?.duration?.toFloat()?.let { binding.slider.max = it }
+
+        binding.slider.setTextFormatter { formatText(it.toLong()) }
         binding.slider.setTextMax(Player.exoPlayer?.duration?.let { formatText(it) })
 
         turnLoadingAnimation(false)
@@ -199,7 +201,7 @@ class PlayerFragment : Fragment(), MainView {
 
     private fun startPlayProgressUpdater() {
         if (Player.isPlaying) {
-            Log.d(javaClass.name, "Time in sec: " + Player.pauseTime)
+            Timber.d("Time in sec: %s", Player.pauseTime)
             playerSubscription = Observable.interval(1000L, TimeUnit.MILLISECONDS)
                     .timeInterval().subscribe({
                 if (Player.isPlaying) {
@@ -257,14 +259,16 @@ class PlayerFragment : Fragment(), MainView {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Intent.ACTION_HEADSET_PLUG) {
                 val state = intent.getIntExtra("state", -1)
+
+                // wtf is 0 and 1 ?!
                 when (state) {
                     0 -> {
                         if (isControlActivated)
                             togglePlayPause()
-                        Log.d(TAG, "Headset is unplugged")
+                        Timber.d("Headset is unplugged")
                     }
-                    1 -> Log.d(TAG, "Headset is plugged")
-                    else -> Log.d(TAG, "I have no idea what the headset state is")
+                    1 -> Timber.d("Headset is plugged")
+                    else -> Timber.d("I have no idea what the headset state is")
                 }
             }
         }
@@ -277,15 +281,6 @@ class PlayerFragment : Fragment(), MainView {
     private fun setupBottomSheet() {
         fragmentManager.beginTransaction().replace(R.id.podcastPostContainer,
                 ArticleForPlayerFragment.newInstance(arguments.getString(POST_HTML))).commit()
-
-//        val mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
-//        mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//            }
-//
-//            override fun onStateChanged(bottomSheet: View, newState: Int) {
-//            }
-//        })
     }
 
 

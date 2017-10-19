@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import timber.log.Timber
 
 
 /**
@@ -23,8 +24,6 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 class Player(URL: String, context: Context, view: MainView) {
 
     private var currentWindow: Int? = null
-
-    val TAG = Player::class.java.simpleName
 
     init {
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),
@@ -51,17 +50,17 @@ class Player(URL: String, context: Context, view: MainView) {
 
         exoPlayer?.addListener(object : ExoPlayer.EventListener {
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
-                Log.d(TAG, "onPlaybackParametersChanged: ")
+                Timber.d("onPlaybackParametersChanged: ")
             }
 
             override fun onPlayerError(error: ExoPlaybackException?) {
-                Log.e(TAG, "onPlayerError: ", error)
+                Timber.e(error, "onPlayerError: ")
                 release()
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 // This state if player is ready to work and loaded all data
-                Log.d(TAG, "onPlayerStateChanged: " + playbackState)
+                Timber.d( "onPlayerStateChanged: %s", playbackState)
                 if (playbackState == 3) {
                     mView.setVisibilityToControlButton(View.VISIBLE)
                     mView.setControlButtonImageResource(R.drawable.pause)
@@ -76,19 +75,19 @@ class Player(URL: String, context: Context, view: MainView) {
             }
 
             override fun onLoadingChanged(isLoading: Boolean) {
-                Log.d(TAG, "onLoadingChanged: ")
+                Timber.d("onLoadingChanged: ")
             }
 
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {
-                Log.d(TAG, "onTimelineChanged: ")
+                Timber.d("onTimelineChanged: ")
             }
 
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
-                Log.d(TAG, "onTracksChanged: ")
+                Timber.d("onTracksChanged: ")
             }
 
             override fun onPositionDiscontinuity() {
-                Log.d(TAG, "onPositionDiscontinuity: ")
+                Timber.d("onPositionDiscontinuity: ")
             }
 
         })

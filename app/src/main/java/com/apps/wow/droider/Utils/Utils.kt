@@ -16,11 +16,9 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorInt
-import android.util.Log
 import android.util.TypedValue
 import android.view.Window
 import android.view.WindowManager
-import com.apps.wow.droider.Article.ArticlePresenter.Companion.TAG
 import com.facebook.common.executors.CallerThreadExecutor
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
@@ -35,6 +33,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 object Utils {
@@ -125,7 +124,7 @@ object Utils {
 
                 public override fun onNewResultImpl(bitmap: Bitmap?) {
                     if (bitmap == null) {
-                        Log.d(TAG, "Bitmap data source returned success, but bitmap null.")
+                        Timber.d("Bitmap data source returned success, but bitmap null.")
                         return
                     }
 

@@ -7,9 +7,6 @@ import io.realm.RealmObject
  */
 @Deprecated("Redo on ROOM")
 open class Article : RealmObject()  {
-
     var articleHtml: String? = null
-
     var articleUrl : String? = null
-
 }

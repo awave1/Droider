@@ -13,9 +13,9 @@ import com.apps.wow.droider.Feed.FeedActivity;
 import com.apps.wow.droider.R;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class DroiderFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+import timber.log.Timber;
 
-    private static final String TAG = "MyFirebaseMsgService";
+public class DroiderFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     /**
      * Called when message is received.
@@ -37,11 +37,11 @@ public class DroiderFirebaseMessagingService extends com.google.firebase.messagi
 
         // TODO(developer): Handle FCM messages here. 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Timber.d("From: %s", remoteMessage.getFrom());
 
         // Check if message contains a data payload. 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Timber.d("Message data payload: %s", remoteMessage.getData());
 
             sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"));
         }
