@@ -3,19 +3,13 @@ package com.apps.wow.droider.Article
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.support.design.widget.AppBarLayout
-import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.content.res.AppCompatResources
-import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -30,9 +24,7 @@ import com.apps.wow.droider.Adapters.ArticleSimilarAdapter
 import com.apps.wow.droider.DroiderBaseActivity
 import com.apps.wow.droider.Model.Post
 import com.apps.wow.droider.R
-import com.apps.wow.droider.Utils.BitmapLoaded
 import com.apps.wow.droider.Utils.Const
-import com.apps.wow.droider.Utils.Utils
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -49,9 +41,7 @@ import java.util.*
  * Created by Jackson on 21/08/2017.
  */
 
-class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedListener, ArticleView {
-
-    var hasBlur: Boolean = false
+class ArticleFragment : MvpAppCompatFragment(), ArticleView {
 
     private val youtubeFrame: FrameLayout? = null
     private var isPalette: Boolean = false
@@ -70,7 +60,6 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         Realm.init(context)
         mRealm = Realm.getDefaultInstance()
-        getSharedPreferences()
 
         extras = activity.intent.extras ?: arguments
 
@@ -84,17 +73,9 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         toolbarSetup()
         setupArticleParser()
         backgroundTintColorSetup()
-        appbarArticle.addOnOffsetChangedListener(this)
 
         calculateMinimumHeight()
         setupArticleWebView(article)
-    }
-
-    private fun getSharedPreferences() {
-        hasBlur = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("beta_enableBlur", false)
-        isPalette = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("palette", false)
     }
 
     override fun onStart() {
@@ -217,7 +198,7 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
             (activity as ArticleActivity).supportActionBar!!.setDisplayShowTitleEnabled(true)
             (activity as ArticleActivity).supportActionBar!!.title = ""
             (activity as ArticleActivity).supportActionBar!!.setDisplayShowHomeEnabled(true)
-            (activity as ArticleActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+            (activity as ArticleActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
             toolbarArticle.setNavigationOnClickListener { activity.finish() }
         }
@@ -229,8 +210,8 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         val youtubeFragment = YouTubePlayerSupportFragment.newInstance()
         youtubeFragment.initialize(YOUTUBE_API_KEY, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider,
-                                                 youTubePlayer: YouTubePlayer,
-                                                 wasResumed: Boolean) {
+                                                 youTubePlayer: YouTubePlayer, wasResumed: Boolean) {
+//                                youTubePlayer.cueVideo(Utils.trimYoutubeId())
             }
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider,
@@ -242,25 +223,12 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         fragmentManager.beginTransaction().replace(R.id.YouTubeFrame, youtubeFragment).commit()
     }
 
-
-    override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-        if (Math.abs(verticalOffset) >= appBarLayout.bottom) {
-            setupPaletteBackground(false)
-        } else {
-            collapsingToolbar.title = ""
-            setupPaletteBackground(true)
-            (activity as ArticleActivity).supportActionBar!!.setHomeButtonEnabled(true)
-            (activity as ArticleActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_article, menu)
 
-        menu?.getItem(0)?.icon = ResourcesCompat
-                .getDrawable(resources, R.drawable.ic_open_in_browser_white_24dp, null)
-        menu?.getItem(1)?.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_share_white_24dp, null)
+        menu?.getItem(0)?.icon = ContextCompat
+                .getDrawable(context, R.drawable.ic_open_in_browser)
+        menu?.getItem(1)?.icon = ContextCompat.getDrawable(context, R.drawable.ic_share)
 
     }
 
@@ -323,47 +291,6 @@ class ArticleFragment : MvpAppCompatFragment(), AppBarLayout.OnOffsetChangedList
         }
         articleRelLayout.minimumHeight = screenHeight - actionBarHeight
     }
-
-    private fun setupPaletteBackground(isTransparent: Boolean) {
-        if (isPalette && (DroiderBaseActivity.Companion.activeTheme == R.style.RedTheme || currentNightMode == Configuration.UI_MODE_NIGHT_NO)) {
-            try {
-
-                Utils.drawableToBitmap(articleHeaderImg.drawable)
-                var p: Palette
-                Utils.convertImageUrlToBitmap(extras?.getString(Const.EXTRA_ARTICLE_IMG_URL)!!, context, object : BitmapLoaded {
-                    override fun readyToUse(bitmap: Bitmap) {
-                        p = Palette.Builder(bitmap).generate()
-
-                        if (p.lightVibrantSwatch != null && !isTransparent) {
-                            toolbarArticle.setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            articleBackgroundNSV
-                                    .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            Timber.d("onCreate: color from bitmap: %s", p.lightVibrantSwatch!!.rgb)
-                        } else {
-                            toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
-                            articleBackgroundNSV
-                                    .setBackgroundColor(p.lightVibrantSwatch!!.rgb)
-                            Timber.d("onCreate: else color from bitmap:TRANSPARENT ")
-                        }
-                    }
-                })
-
-            } catch (e: NullPointerException) {
-                handlePalletException(isTransparent, e)
-            } catch (ise: IllegalStateException) {
-                handlePalletException(isTransparent, ise)
-            }
-        }
-    }
-
-    private fun handlePalletException(isTransparent: Boolean, e: Exception) {
-        if (isTransparent) {
-            toolbarArticle.setBackgroundColor(Color.TRANSPARENT)
-        } else {
-             Timber.e(e, "onCreate: Переход по ссылке с заблюренной картинкой или Palette не может понять какой LightVibrantSwatch() ")
-        }
-    }
-
 
     override fun changeLoadingVisibility(isVisible: Boolean) {
         articleProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE

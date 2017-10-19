@@ -61,11 +61,10 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
         //потому что при переходе на другой фрагмент и этот фрагмент не удаляется, благодаря setRetainInstance(true);
         // но все данные прикреплённые к ресайлеру удаляются, так как вью инфлейтится заново
         if (feedAdapter == null || clear) {
-            Timber.d("onLoadCompleted: is null")
+            Timber.d(TAG, "onPopularLoadCompleted: is null")
             FeedOrientation.offsetPortrait = 0
             FeedOrientation.offsetLandscape = 0
 
-            binding!!.feedRecyclerView.setHasFixedSize(true)
             feedAdapter = FeedAdapter(model)
             binding!!.feedRecyclerView.adapter = feedAdapter
             initLayoutManager()
@@ -76,7 +75,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
     }
 
 
-    override fun onLoadCompleted(model: FeedModel) {
+    override fun onPopularLoadCompleted(model: FeedModel) {
         (activity as FeedActivity).setupPopularArticles(model)
         onTaskCompleted()
     }

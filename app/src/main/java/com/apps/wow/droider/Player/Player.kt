@@ -28,7 +28,6 @@ class Player(URL: String, context: Context, view: MainView) {
     init {
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),
                 DefaultTrackSelector(), DefaultLoadControl())
-//        val mediaSource = buildMediaSource(Uri.parse(URL))
         val mediaSource = buildMediaSource(Uri.parse(URL))
         exoPlayer!!.prepare(mediaSource, true, false)
         mView = view
@@ -44,8 +43,8 @@ class Player(URL: String, context: Context, view: MainView) {
         if (!wasPaused) {
             stop()
         }
-        if (pauseTime != null && pauseTime != 0.toLong() && !wasPaused) {
-            exoPlayer?.seekTo(pauseTime!!)
+        if (pauseTime != 0L && !wasPaused) {
+            exoPlayer?.seekTo(pauseTime)
         }
         exoPlayer?.playWhenReady = true
 
@@ -65,8 +64,10 @@ class Player(URL: String, context: Context, view: MainView) {
                 if (playbackState == 3) {
                     mView.setVisibilityToControlButton(View.VISIBLE)
                     mView.setControlButtonImageResource(R.drawable.pause)
-                    if (isPlaying)
+                    if (!isPlayerUISetuped && isPlaying) {
                         mView.setupSeekbar()
+                        isPlayerUISetuped = true
+                    }
                 } else if (playbackState == 1) {
                     mView.setVisibilityToControlButton(View.VISIBLE)
                     mView.setControlButtonImageResource(R.drawable.play)
@@ -122,10 +123,11 @@ class Player(URL: String, context: Context, view: MainView) {
 
     companion object {
         lateinit var mView: MainView
-        var pauseTime: Long? = 0
-        private var wasPaused: Boolean = true
+        var pauseTime: Long = 0
+        private var wasPaused = true
         @SuppressLint("StaticFieldLeak")
         var exoPlayer: SimpleExoPlayer? = null
+        private var isPlayerUISetuped = false
         val isPlaying: Boolean
             get() = exoPlayer != null && exoPlayer!!.playbackState == 3
                     && exoPlayer!!.playWhenReady

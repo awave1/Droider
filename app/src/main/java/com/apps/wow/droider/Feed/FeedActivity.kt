@@ -52,14 +52,15 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onStart() {
-        startService(Intent(this, NotifyService::class.java))
         super.onStart()
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", false))
+            startService(Intent(this, NotifyService::class.java))
     }
 
     override fun onStop() {
+        super.onStop()
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", false))
             stopService(Intent(this, NotifyService::class.java))
-        super.onStop()
     }
 
     override fun onBackPressed() {
@@ -81,9 +82,12 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
                 supportActionBar!!.title = getString(R.string.drawer_item_home)
                 activeFeedTitle = getString(R.string.drawer_item_home)
             }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.containerMain, FeedFragment.newInstance(Const.CATEGORY_MAIN, Const.SLUG_MAIN))
-                    .commit()
+
+            if (supportFragmentManager.findFragmentById(R.id.containerMain) == null) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.containerMain, FeedFragment.newInstance(Const.CATEGORY_MAIN, Const.SLUG_MAIN))
+                        .commit()
+            }
         }
     }
 
@@ -200,13 +204,13 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.title = mTitle
             supportActionBar!!.setDisplayShowHomeEnabled(true)
-            supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
+            supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu)
         }
         activeFeedTitle = getString(R.string.drawer_item_home)
         popularNews.overScrollMode = View.OVER_SCROLL_NEVER
     }
 
-    fun restoreActionBar() {
+    private fun restoreActionBar() {
         assert(supportActionBar != null)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.title = mTitle
@@ -215,9 +219,10 @@ class FeedActivity : DroiderBaseActivity(), NavigationView.OnNavigationItemSelec
     fun setupPopularArticles(model: FeedModel) {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val snapHelper = PagerSnapHelper()
-        //грязь - перенести их активити сюда, во фрагмент
+        //грязь - перенести из активити сюда, во фрагмент
         popularNews?.layoutManager = layoutManager
         popularNews?.adapter = ArticleSimilarAdapter(model.posts)
+
         try {
             snapHelper.attachToRecyclerView(popularNews)
         } catch (ise: IllegalStateException) {

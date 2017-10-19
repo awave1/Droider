@@ -22,6 +22,6 @@ class FeedLoadingInteractor {
 
     fun loadPopular(): Observable<Response<FeedModel>> {
         return api.getPopular()
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
     }
 }

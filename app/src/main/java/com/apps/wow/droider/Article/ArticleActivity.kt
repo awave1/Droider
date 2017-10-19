@@ -17,41 +17,40 @@ class ArticleActivity : DroiderBaseActivity() {
     private lateinit var castId: String
     private lateinit var pd: ProgressDialog
 
-    private val WEB_TABLE_COLOR_LIGHT = "#f5f5f5"
-    private val WEB_TABLE_HEADER_COLOR_LIGHT = "#eeeeee"
-    private val WEB_TABLE_COLOR_DARK = "#212121"
-    private val WEB_TABLE_HEADER_COLOR_DARK = "#616161"
+    val WEB_TABLE_COLOR_LIGHT: String = "#f5f5f5"
+    val WEB_TABLE_HEADER_COLOR_LIGHT: String = "#eeeeee"
+    val WEB_TABLE_COLOR_DARK: String = "#212121"
+    val WEB_TABLE_HEADER_COLOR_DARK: String = "#616161"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         themeSetup()
         // Fix for Circular Reveal animation on Pre-Lollipop
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.container)
-        if (supportFragmentManager.findFragmentById(R.id.container) == null) {
-            pd = ProgressDialog(this)
-            pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу") // lol
-            pd.show()
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
-                intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
-            else
-                intent.data.toString()
+        pd = ProgressDialog(this)
+        pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
+        pd.show()
 
-            val model = ArticleModel(ArticleFragment.webViewTextColor,
-                                     ArticleFragment.webViewLinkColor,
-                                     ArticleFragment.webViewTableColor,
-                                     ArticleFragment.webViewTableHeaderColor)
+        val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
+            intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
+        else
+            intent.data.toString()
 
-            model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
-                when {
-                    model.castID.size == 1 -> replaceFragment(
-                            PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))
-                    model.castID.size > 1 -> podcastAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
-                    else -> replaceFragment(ArticleFragment.newInstance())
-                }
-            })
-        }
+        val model = ArticleModel(ArticleFragment.webViewTextColor,
+                ArticleFragment.webViewLinkColor,
+                ArticleFragment.webViewTableColor,
+                ArticleFragment.webViewTableHeaderColor)
+
+        model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            when {
+                model.castID.size == 1 -> replaceFragment(
+                        PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))
+                model.castID.size > 1 -> podcastAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
+                else -> replaceFragment(ArticleFragment.newInstance())
+            }
+        })
     }
 
     private fun replaceFragment(fragment: Fragment) {

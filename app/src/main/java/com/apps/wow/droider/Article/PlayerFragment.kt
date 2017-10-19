@@ -70,9 +70,8 @@ class PlayerFragment : Fragment(), MainView {
 
             override fun valueChanged(slidr: androidslidr.Slidr?, currentValue: Float) {
                 // +-5 for corner cases
-                if (currentValue > lastTime + 5 || currentValue < lastTime - 5) {
+                if ((currentValue > (Player.pauseTime + 5)) || (currentValue < (Player.pauseTime - 5))) {
                     Player.exoPlayer?.seekTo(currentValue.toLong())
-                    lastTime = currentValue
                 }
             }
         })
@@ -206,8 +205,12 @@ class PlayerFragment : Fragment(), MainView {
             playerSubscription = Observable.interval(1000L, TimeUnit.MILLISECONDS)
                     .timeInterval().subscribe({
                 if (Player.isPlaying) {
-                    Player.exoPlayer?.currentPosition?.let { binding.slider.currentValue = it.toFloat() }
-                    binding.slider.setTextMin(formatText(Player.exoPlayer?.currentPosition!!))
+                    Player.exoPlayer?.currentPosition?.let {
+                        Player.pauseTime = it
+                        binding.slider.currentValue = it.toFloat()
+                        binding.slider.setTextMin(formatText(it))
+                    }
+
                 }
             }, { it.printStackTrace() })
         }

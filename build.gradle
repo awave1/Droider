@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.1.51'
-        gradle_version = '3.0.0-beta7'
+        gradle_version = '3.0.0-rc1'
         moxy_version = '1.5.2'
         support_lib = '26.1.0'
         databinding_lib = '2.3.0'
