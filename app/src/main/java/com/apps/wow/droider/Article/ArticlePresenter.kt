@@ -1,6 +1,5 @@
 package com.apps.wow.droider.Article
 
-import android.util.Log
 import com.apps.wow.droider.Article.repository.ArticleDataStoreFactory
 import com.apps.wow.droider.R
 import com.apps.wow.droider.Utils.AppContext

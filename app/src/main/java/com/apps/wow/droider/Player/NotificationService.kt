@@ -22,11 +22,10 @@ class NotificationService : Service() {
     var track = ""
     private var status: Notification? = null
     private var isPause = true
-    private val mView: MainView = BaseService.mView
+    private val mView : MainView? = BaseService.mView
 
     private fun showNotification(pos: Int) {
-        val views = RemoteViews(packageName,
-                R.layout.player_notification)
+        val views = RemoteViews(packageName, R.layout.player_notification)
 
         val notificationIntent = Intent(this, ArticleActivity::class.java)
         notificationIntent.action = Intent.ACTION_MAIN
@@ -52,7 +51,7 @@ class NotificationService : Service() {
         views.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent)
 
         if (track.isEmpty())
-            views.setTextViewText(R.id.track_tv, mView.podcastTitle)
+            views.setTextViewText(R.id.track_tv, mView?.podcastTitle)
         else
             views.setTextViewText(R.id.track_tv, track)
 
@@ -64,16 +63,16 @@ class NotificationService : Service() {
         if (pos == 1) {
             views.setImageViewResource(R.id.status_bar_play,
                     R.drawable.pause)
-            mView.setControlButtonImageResource(R.drawable.pause)
-            mView.setVisibilityToControlButton(View.GONE)
-            mView.isControlActivated = true
+            mView?.setControlButtonImageResource(R.drawable.pause)
+            mView?.setVisibilityToControlButton(View.GONE)
+            mView?.isControlActivated = true
         }
         if (pos == 2) {
             views.setImageViewResource(R.id.status_bar_play,
                     R.drawable.play)
-            mView.setControlButtonImageResource(R.drawable.play)
-            mView.setVisibilityToControlButton(View.VISIBLE)
-            mView.isControlActivated = false
+            mView?.setControlButtonImageResource(R.drawable.play)
+            mView?.setVisibilityToControlButton(View.VISIBLE)
+            mView?.isControlActivated = false
 
         }
 
@@ -113,24 +112,24 @@ class NotificationService : Service() {
         if (intent.action == Const.ACTION.STARTFOREGROUND_ACTION) {
             isPause = false
             showNotification(0)
-            mView.setupSeekbar()
+            mView?.setupSeekbar()
 
         } else if (intent.action == Const.ACTION.PLAY_ACTION) {
             if (!isPause) {
                 showNotification(2)
-                mView.pausePlayer()
+                mView?.pausePlayer()
                 isPause = true
             } else {
                 showNotification(1)
                 isPause = false
-                mView.startOrResume()
+                mView?.startOrResume()
             }
         } else if (intent.action == Const.ACTION.STOPFOREGROUND_ACTION) {
-            mView.setControlButtonImageResource(R.drawable.play)
-            mView.setVisibilityToControlButton(View.VISIBLE)
-            mView.isControlActivated = false
+            mView?.setControlButtonImageResource(R.drawable.play)
+            mView?.setVisibilityToControlButton(View.VISIBLE)
+            mView?.isControlActivated = false
 
-            mView.stopAndReleasePlayer()
+            mView?.stopAndReleasePlayer()
             stopForeground(true)
             stopSelf()
         }

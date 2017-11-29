@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import android.view.WindowManager
 import com.apps.wow.droider.R
 import com.apps.wow.droider.databinding.FragmentImagePrevBinding
 import timber.log.Timber
-
 
 /**
  * Created by awave on 2016-12-30.
@@ -36,13 +34,7 @@ class ImagePreviewFragment : Fragment() {
         mBinding.img.setPhotoUri(Uri.parse(arguments.getString(IMAGE_URL)))
 
         mBinding.closeBtn.setOnClickListener {
-            activity.supportFragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .remove(this)
-                    .commit()
-
-            onDestroy()
+            activity.onBackPressed()
         }
         return mBinding.root
     }

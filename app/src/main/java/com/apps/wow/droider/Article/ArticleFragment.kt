@@ -257,7 +257,7 @@ class ArticleFragment : MvpAppCompatFragment(), ArticleView {
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 Timber.d("shouldOverrideUrlLoading: url: %s", url)
-                if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|gif|png)").toRegex())) {
+                if (url.matches(("(http(s?):/)(/[^/]+)+" + "\\.(?:jpg|jpeg|gif|png)").toRegex())) {
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                             .addToBackStack("image_prev")

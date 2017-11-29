@@ -2,17 +2,16 @@ package com.apps.wow.droider.Article
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Vibrator
+import android.preference.PreferenceManager
 import android.support.annotation.Nullable
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +51,10 @@ class PlayerFragment : Fragment(), MainView {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         binding = PodcastFragmentBinding.inflate(inflater!!, container, false)
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(Const.CAST_URL,
+                arguments.getString(CAST_ID)).apply()
+
         controlButton = binding.controlButton
 
         binding.podcastName.text = arguments.getString(CAST_NAME)
@@ -132,6 +135,8 @@ class PlayerFragment : Fragment(), MainView {
                 activity.unregisterReceiver(headsetPlugReceiver)
                 activity.stopService(serviceIntent)
                 Player.exoPlayer?.release()
+                PreferenceManager.getDefaultSharedPreferences(context).edit().remove(Const.CAST_URL)
+                        .apply()
             }
             if (playerSubscription != null && !playerSubscription!!.isUnsubscribed)
                 playerSubscription!!.unsubscribe()

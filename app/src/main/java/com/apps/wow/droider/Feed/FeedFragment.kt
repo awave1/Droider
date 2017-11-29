@@ -36,7 +36,7 @@ class FeedFragment : MvpFragment(), FeedView, OnTaskCompleted, SwipeRefreshLayou
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate<FeedFragmentBinding>(inflater, R.layout.feed_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.feed_fragment, container, false)
         orientationDebugging()
 
         swipeRefreshLayoutSetup()

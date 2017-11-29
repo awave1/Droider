@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.1.51'
-        gradle_version = '3.0.0-rc1'
+        kotlin_version = '1.2.0'
+        gradle_version = '3.0.0'
         moxy_version = '1.5.2'
         support_lib = '26.1.0'
         databinding_lib = '2.3.0'
@@ -27,7 +27,6 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "https://maven.google.com" }
         google()
     }
 }

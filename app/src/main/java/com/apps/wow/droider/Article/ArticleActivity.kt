@@ -1,13 +1,17 @@
 package com.apps.wow.droider.Article
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import com.apps.wow.droider.DroiderBaseActivity
+import com.apps.wow.droider.Feed.FeedActivity
 import com.apps.wow.droider.R
+import com.apps.wow.droider.Utils.AppContext.Companion.context
 import com.apps.wow.droider.Utils.Const
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
@@ -16,6 +20,9 @@ class ArticleActivity : DroiderBaseActivity() {
 
     private lateinit var castId: String
     private lateinit var pd: ProgressDialog
+
+    private lateinit var mUrl: String
+
 
     val WEB_TABLE_COLOR_LIGHT: String = "#f5f5f5"
     val WEB_TABLE_HEADER_COLOR_LIGHT: String = "#eeeeee"
@@ -33,24 +40,33 @@ class ArticleActivity : DroiderBaseActivity() {
         pd.setMessage("Подождите пожалуйста, наша нейронка парсит страницу")
         pd.show()
 
-        val mUrl = if (intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null)
-            intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
-        else
-            intent.data.toString()
+        mUrl = when {
+            intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null
+            -> intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
 
-        val model = ArticleModel(ArticleFragment.webViewTextColor,
-                ArticleFragment.webViewLinkColor,
-                ArticleFragment.webViewTableColor,
-                ArticleFragment.webViewTableHeaderColor)
+            intent.data != null -> intent.data.toString()
 
-        model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            when {
-                model.castID.size == 1 -> replaceFragment(
-                        PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))
-                model.castID.size > 1 -> podcastAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
-                else -> replaceFragment(ArticleFragment.newInstance())
-            }
-        })
+            else -> PreferenceManager.getDefaultSharedPreferences(context).getString(Const.CAST_URL, "")
+        }
+
+        if (mUrl.isBlank()) {
+            startActivity(Intent(this, FeedActivity::class.java))
+            finish()
+        } else {
+            val model = ArticleModel(ArticleFragment.webViewTextColor,
+                    ArticleFragment.webViewLinkColor,
+                    ArticleFragment.webViewTableColor,
+                    ArticleFragment.webViewTableHeaderColor)
+
+            model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
+                when {
+                    model.castID.size == 1 -> replaceFragment(
+                            PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))
+                    model.castID.size > 1 -> podcastAlertDialogChooser(model.castID.toTypedArray(), it, model.castTitle)
+                    else -> replaceFragment(ArticleFragment.newInstance())
+                }
+            }, { _ -> finish() })
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {

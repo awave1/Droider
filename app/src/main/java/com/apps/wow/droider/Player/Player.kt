@@ -3,16 +3,18 @@ package com.apps.wow.droider.Player
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import com.apps.wow.droider.R
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+import com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import timber.log.Timber
 
@@ -26,8 +28,12 @@ class Player(URL: String, context: Context, view: MainView) {
     private var currentWindow: Int? = null
 
     init {
+        val defaultAllocator = DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE)
+        val defaultLoadControl = DefaultLoadControl(defaultAllocator, 60000,
+                600000, DEFAULT_BUFFER_FOR_PLAYBACK_MS.toLong(),
+                DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS.toLong())
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),
-                DefaultTrackSelector(), DefaultLoadControl())
+                DefaultTrackSelector(), defaultLoadControl)
         val mediaSource = buildMediaSource(Uri.parse(URL))
         exoPlayer!!.prepare(mediaSource, true, false)
         mView = view
@@ -60,7 +66,7 @@ class Player(URL: String, context: Context, view: MainView) {
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 // This state if player is ready to work and loaded all data
-                Timber.d( "onPlayerStateChanged: %s", playbackState)
+                Timber.d("onPlayerStateChanged: %s", playbackState)
                 if (playbackState == 3) {
                     mView.setVisibilityToControlButton(View.VISIBLE)
                     mView.setControlButtonImageResource(R.drawable.pause)
