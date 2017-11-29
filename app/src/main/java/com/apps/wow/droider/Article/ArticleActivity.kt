@@ -21,7 +21,7 @@ class ArticleActivity : DroiderBaseActivity() {
     private lateinit var castId: String
     private lateinit var pd: ProgressDialog
 
-    private lateinit var mUrl: String
+    private var mUrl: String? = null
 
 
     val WEB_TABLE_COLOR_LIGHT: String = "#f5f5f5"
@@ -44,12 +44,13 @@ class ArticleActivity : DroiderBaseActivity() {
             intent.extras != null && intent.extras!!.getString(Const.EXTRA_ARTICLE_URL) != null
             -> intent.extras!!.getString(Const.EXTRA_ARTICLE_URL)
 
-            intent.data != null -> intent.data.toString()
+            intent.data != null -> intent.data?.toString()
 
-            else -> PreferenceManager.getDefaultSharedPreferences(context).getString(Const.CAST_URL, "")
+            else -> Const.PODCAST_PATH_PLAYER.format(PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(Const.CAST_URL, ""))
         }
 
-        if (mUrl.isBlank()) {
+        if (mUrl == null) {
             startActivity(Intent(this, FeedActivity::class.java))
             finish()
         } else {
@@ -58,7 +59,7 @@ class ArticleActivity : DroiderBaseActivity() {
                     ArticleFragment.webViewTableColor,
                     ArticleFragment.webViewTableHeaderColor)
 
-            model.parseArticle(mUrl).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            model.parseArticle(mUrl!!).observeOn(AndroidSchedulers.mainThread()).subscribe({
                 when {
                     model.castID.size == 1 -> replaceFragment(
                             PlayerFragment.newInstance(it, model.castID[0].toString(), model.castTitle))

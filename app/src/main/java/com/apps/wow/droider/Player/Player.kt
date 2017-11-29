@@ -6,8 +6,6 @@ import android.net.Uri
 import android.view.View
 import com.apps.wow.droider.R
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
-import com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
@@ -29,9 +27,9 @@ class Player(URL: String, context: Context, view: MainView) {
 
     init {
         val defaultAllocator = DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE)
-        val defaultLoadControl = DefaultLoadControl(defaultAllocator, 60000,
-                600000, DEFAULT_BUFFER_FOR_PLAYBACK_MS.toLong(),
-                DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS.toLong())
+        val defaultLoadControl = DefaultLoadControl(defaultAllocator, 1000,
+                1000, 1000.toLong(),
+                1000.toLong())
         exoPlayer = ExoPlayerFactory.newSimpleInstance(DefaultRenderersFactory(context),
                 DefaultTrackSelector(), defaultLoadControl)
         val mediaSource = buildMediaSource(Uri.parse(URL))
